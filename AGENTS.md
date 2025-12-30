@@ -203,17 +203,18 @@ MIT License - See LICENSE file for details
 1. **Create a branch for isolating work** - Creating a new branch is important for isolating work. This will be managed in github PRs.
 2. **File issues for remaining work** - Create issues for anything that needs follow-up
 3. **Run quality gates** (if code changed) - Tests, linters, builds
-4. **Update issue status** - Close finished work, update in-progress items
-5. **PUSH TO REMOTE** - This is MANDATORY:
+4. **Bump Version** (if code changed) - Update .claude-plugin/plugin.json with semantic versioning. New agents/skills are just minor versions, patches to fix existing functionality.
+5. **Update issue status** - Close finished work, update in-progress items
+6. **PUSH TO REMOTE** - This is MANDATORY:
    ```bash
    git pull --rebase
    bd sync
    git push
    git status  # MUST show "up to date with origin"
    ```
-6. **Clean up** - Clear stashes, prune remote branches
-7. **Verify** - All changes committed AND pushed
-8. **Hand off** - Provide context for next session
+7. **Clean up** - Clear stashes, prune remote branches
+8. **Verify** - All changes committed AND pushed
+9. **Hand off** - Provide context for next session
 
 **CRITICAL RULES:**
 - Work is NOT complete until `git push` succeeds
