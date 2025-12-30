@@ -1,0 +1,11 @@
+{
+  "name": "datadog-api-claude-plugin",
+  "version": "0.0.1",
+  "author": {
+    "name": "DatadogHQ"
+  },
+  "description": "A Claude plugin to use Datadog directly through its APIs",
+  "license": "MIT",
+  "repository": "https://github.com/DataDog/datadog-api-claude-plugin",
+  "homepage": "http://www.datadoghq.com"
+}
