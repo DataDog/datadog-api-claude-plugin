@@ -2,7 +2,8 @@
   "name": "datadog-api-claude-plugin",
   "version": "1.0.0",
   "author": {
-    "name": "DatadogHQ"
+    "name": "Datadog",
+    "email": "support@datadoghq.com"
   },
   "description": "A Claude plugin to use Datadog directly through its APIs with code generation support",
   "license": "MIT",
