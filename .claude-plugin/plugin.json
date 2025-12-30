@@ -26,6 +26,7 @@
     "./agents/infrastructure.md",
     "./agents/admin.md",
     "./agents/cases.md",
+    "./agents/workflows.md",
     "./agents/cicd.md"
   ]
 }
