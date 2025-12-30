@@ -214,7 +214,8 @@ MIT License - See LICENSE file for details
    ```
 7. **Clean up** - Clear stashes, prune remote branches
 8. **Verify** - All changes committed AND pushed
-9. **Hand off** - Provide context for next session
+9. **Manage PR** - use the `gh` tool to create a PR, and update the description appropriately with information for a human or another AI code review bot.
+10. **Hand off** - Provide context for next session
 
 **CRITICAL RULES:**
 - Work is NOT complete until `git push` succeeds
