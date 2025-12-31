@@ -22,12 +22,18 @@ Data agents enable you to **query and analyze** observability data. These agents
 **Available Data Agents**:
 - **logs.md**: Search and analyze log data with flexible queries, time ranges, and tag-based filtering
 - **traces.md**: Query APM traces and spans for distributed tracing analysis and performance monitoring
+- **metrics.md**: Query and analyze time-series metrics data
+- **rum.md**: Access Real User Monitoring data for frontend performance analysis
+- **security.md**: Query security signals and findings
+- **events.md**: Search and analyze event data from across your infrastructure
 
 **Example queries**:
 ```
 "Show me error logs from the API service in the last hour"
 "Find slow traces for the checkout endpoint"
 "What database queries are taking more than 1 second?"
+"Show metrics for CPU usage on production hosts"
+"What security signals fired in the last 24 hours?"
 ```
 
 ### Configuration Agents (Setup & Management)
@@ -46,6 +52,7 @@ Configuration agents enable you to **configure and manage** how Datadog collects
 - **observability-pipelines.md**: Manage infrastructure-level data pipelines that collect, transform, and route observability data from various sources to multiple destinations (Datadog, S3, Splunk, etc.)
 - **log-configuration.md**: Manage Datadog backend log configuration including archives, processing pipelines, indexes, custom destinations, and RBAC restriction queries
 - **apm-configuration.md**: Manage APM retention filters (span indexing) and span-based metrics generation
+- **rum-metrics-retention.md**: Configure RUM data retention and custom metrics generation from RUM events
 
 **Example configurations**:
 ```
@@ -55,6 +62,7 @@ Configuration agents enable you to **configure and manage** how Datadog collects
 "Set up a pipeline to parse Nginx logs in Datadog"
 "Configure retention filters to sample staging traces at 10%"
 "Create a metric for API endpoint latency by status code"
+"Set up RUM session replay retention for production environment"
 ```
 
 #### Understanding Pipeline Types
@@ -124,6 +132,92 @@ Data and configuration agents complement each other in a typical workflow:
 **Key Distinction**:
 - **Data agents answer "What happened?"** - They query existing data
 - **Configuration agents answer "How should we handle data?"** - They set up infrastructure
+
+## Complete Agent Reference
+
+The plugin provides 41 specialized agents organized into functional categories. Each agent focuses on a specific area of Datadog functionality.
+
+### Monitoring & Observability
+
+Agents for setting up monitoring, alerting, visualization, and observability workflows:
+
+- **monitoring-alerting.md**: Complete monitoring lifecycle including monitors, templates, notification routing, and downtimes
+- **dashboards.md**: Create and manage visualization dashboards
+- **slos.md**: Define and track Service Level Objectives
+- **synthetics.md**: Configure synthetic monitoring tests
+- **notebooks.md**: Create collaborative investigation notebooks
+- **powerpacks.md**: Manage reusable dashboard widget templates
+
+### Infrastructure & Performance
+
+Agents for monitoring infrastructure, containers, databases, and network performance:
+
+- **infrastructure.md**: View and manage infrastructure host inventory (VMs, cloud instances, physical servers)
+- **container-monitoring.md**: Monitor container and Kubernetes performance metrics
+- **database-monitoring.md**: Database query performance and monitoring
+- **network-performance.md**: Network flow and performance analysis
+
+### Security & Compliance
+
+Agents for security monitoring, posture management, and threat detection:
+
+- **security-posture-management.md**: CSPM, vulnerability management, security findings, and SBOM analysis
+- **application-security.md**: Application Security Monitoring (ASM) for runtime threat detection
+- **cloud-workload-security.md**: Cloud Workload Security (CWS) for runtime security monitoring
+- **agentless-scanning.md**: Agentless vulnerability scanning for cloud resources
+
+### Development & Quality
+
+Agents for CI/CD integration, code quality, and developer workflows:
+
+- **cicd.md**: CI/CD pipeline visibility and testing
+- **error-tracking.md**: Track and manage application errors
+- **static-analysis.md**: Static code analysis and security scanning
+- **scorecards.md**: Service quality scorecards and best practices
+- **service-catalog.md**: Service registry and ownership tracking
+
+### Organization & Access
+
+Agents for user management, access control, and governance:
+
+- **user-access-management.md**: Comprehensive user, service account, team management, memberships, SCIM, and authentication mappings
+- **organization-management.md**: Multi-org settings, accounts, and billing management
+- **data-governance.md**: Data access controls, reference tables, sensitive data scanning, IP/domain allowlists
+- **audit-logs.md**: Audit trail for organizational changes and access
+- **api-management.md**: API key and application key management
+
+### Operations & Automation
+
+Agents for incident response, automation, and operational workflows:
+
+- **incident-response.md**: Complete incident workflow including on-call management, incident tracking, and case management
+- **workflows.md**: Automated workflows and orchestration
+- **fleet-automation.md**: Manage agent deployments and configurations at scale
+- **app-builder.md**: Build custom internal applications with Datadog data
+
+### Cost & Usage
+
+Agents for cost monitoring, usage tracking, and data management:
+
+- **cloud-cost.md**: Cloud cost monitoring and optimization
+- **usage-metering.md**: Track Datadog usage and attribution
+- **data-deletion.md**: Manage data retention and deletion policies
+
+### Quick Selection Guide
+
+**For investigating issues**: Start with data agents (logs, traces, metrics, rum, security, events)
+
+**For setting up infrastructure**: Use observability-pipelines, log-configuration, apm-configuration
+
+**For monitoring and alerting**: Use monitoring-alerting, dashboards, slos, synthetics
+
+**For security**: Use security-posture-management, application-security, cloud-workload-security
+
+**For team management**: Use user-access-management, organization-management, data-governance
+
+**For incidents**: Use incident-response for the complete workflow
+
+**For automation**: Use workflows, fleet-automation, app-builder
 
 ## Architecture
 
