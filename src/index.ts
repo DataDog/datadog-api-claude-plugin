@@ -20,6 +20,7 @@ import { createSecurityMonitoringApi } from './api/v2/security';
 import { createHostsApi } from './api/v1/hosts';
 import { createUsersApi } from './api/v2/users';
 import { createCasesApi } from './api/v2/cases';
+import { createKeyManagementApi } from './api/v2/key-management';
 import { generateTypeScriptCode } from './codegen/typescript-templates';
 import { generatePythonCode } from './codegen/python-templates';
 
@@ -173,6 +174,9 @@ async function main() {
       case 'admin':
         await handleAdminCommand(subcommand, commandArgs);
         break;
+      case 'keys':
+        await handleKeysCommand(subcommand, commandArgs);
+        break;
       case 'cases':
         await handleCasesCommand(subcommand, commandArgs);
         break;
@@ -220,6 +224,7 @@ Commands:
   security       Query security monitoring data
   infrastructure Manage hosts and integrations
   admin          Manage users, organizations, and API keys
+  keys           Manage API keys and Application keys
   cases          Manage case management and projects
   test           Test connection and credentials
   version        Show version information
@@ -332,9 +337,10 @@ Examples:
       }
 
       // Parse time parameters (default to last hour)
-      const now = Math.floor(Date.now() / 1000);
-      const fromTimestamp = from ? parseTimeParam(from) : now - 3600;
-      const toTimestamp = to ? parseTimeParam(to) : now;
+      // Note: Datadog API v2 requires milliseconds, not seconds
+      const now = Date.now();
+      const fromTimestamp = from ? parseTimeParam(from) * 1000 : now - 3600000;
+      const toTimestamp = to ? parseTimeParam(to) * 1000 : now;
 
       const metricsApi = createMetricsApi();
       const queryResult = await metricsApi.queryMetrics({
@@ -823,6 +829,214 @@ Examples:
     default:
       console.error(ResponseFormatter.formatError('Unknown subcommand', { subcommand }));
   }
+}
+
+/**
+ * Key Management command handler
+ */
+async function handleKeysCommand(subcommand: string, args: string[]) {
+  if (subcommand === 'help') {
+    console.log(`
+Keys Commands:
+  api-keys [subcommand]      Manage API keys
+  app-keys [subcommand]      Manage Application keys
+  my-app-keys [subcommand]   Manage current user's Application keys
+
+API Keys Subcommands:
+  list [--filter=<text>] [--page-size=<n>] [--page-number=<n>]
+  get <key-id>
+  create --name=<name>
+  update <key-id> --name=<name>
+  delete <key-id>
+
+Application Keys Subcommands:
+  list [--filter=<text>] [--page-size=<n>] [--page-number=<n>]
+  get <key-id>
+  update <key-id> --name=<name>
+  delete <key-id>
+
+My Application Keys Subcommands:
+  list [--filter=<text>] [--page-size=<n>] [--page-number=<n>]
+  create --name=<name> [--scopes=<scope1,scope2>]
+  delete <key-id>
+
+Examples:
+  dd-plugin keys api-keys list
+  dd-plugin keys api-keys get abc-123
+  dd-plugin keys api-keys create --name="My API Key"
+  dd-plugin keys api-keys delete abc-123
+  dd-plugin keys app-keys list
+  dd-plugin keys my-app-keys list
+  dd-plugin keys my-app-keys create --name="My App Key" --scopes="dashboards_read,monitors_read"
+    `);
+    return;
+  }
+
+  const api = createKeyManagementApi();
+
+  // Handle api-keys subcommand
+  if (subcommand === 'api-keys') {
+    const apiKeySubcommand = args[0];
+    const apiKeyArgs = args.slice(1);
+
+    switch (apiKeySubcommand) {
+      case 'list': {
+        const filter = apiKeyArgs.find((arg) => arg.startsWith('--filter='))?.split('=')[1];
+        const pageSize = apiKeyArgs.find((arg) => arg.startsWith('--page-size='))?.split('=')[1];
+        const pageNumber = apiKeyArgs.find((arg) => arg.startsWith('--page-number='))?.split('=')[1];
+        console.log(
+          await api.listApiKeys({
+            filter,
+            pageSize: pageSize ? parseInt(pageSize) : undefined,
+            pageNumber: pageNumber ? parseInt(pageNumber) : undefined,
+          })
+        );
+        break;
+      }
+
+      case 'get':
+        if (!apiKeyArgs[0]) {
+          console.error(ResponseFormatter.formatError('API key ID is required'));
+          return;
+        }
+        console.log(await api.getApiKey(apiKeyArgs[0]));
+        break;
+
+      case 'create': {
+        const name = apiKeyArgs.find((arg) => arg.startsWith('--name='))?.split('=')[1];
+        if (!name) {
+          console.error(ResponseFormatter.formatError('--name is required'));
+          return;
+        }
+        console.log(await api.createApiKey(name));
+        break;
+      }
+
+      case 'update': {
+        const keyId = apiKeyArgs[0];
+        const name = apiKeyArgs.find((arg) => arg.startsWith('--name='))?.split('=')[1];
+        if (!keyId || !name) {
+          console.error(ResponseFormatter.formatError('Key ID and --name are required'));
+          return;
+        }
+        console.log(await api.updateApiKey(keyId, name));
+        break;
+      }
+
+      case 'delete':
+        if (!apiKeyArgs[0]) {
+          console.error(ResponseFormatter.formatError('API key ID is required'));
+          return;
+        }
+        console.log(await api.deleteApiKey(apiKeyArgs[0]));
+        break;
+
+      default:
+        console.error(ResponseFormatter.formatError('Unknown api-keys subcommand', { apiKeySubcommand }));
+    }
+    return;
+  }
+
+  // Handle app-keys subcommand
+  if (subcommand === 'app-keys') {
+    const appKeySubcommand = args[0];
+    const appKeyArgs = args.slice(1);
+
+    switch (appKeySubcommand) {
+      case 'list': {
+        const filter = appKeyArgs.find((arg) => arg.startsWith('--filter='))?.split('=')[1];
+        const pageSize = appKeyArgs.find((arg) => arg.startsWith('--page-size='))?.split('=')[1];
+        const pageNumber = appKeyArgs.find((arg) => arg.startsWith('--page-number='))?.split('=')[1];
+        console.log(
+          await api.listApplicationKeys({
+            filter,
+            pageSize: pageSize ? parseInt(pageSize) : undefined,
+            pageNumber: pageNumber ? parseInt(pageNumber) : undefined,
+          })
+        );
+        break;
+      }
+
+      case 'get':
+        if (!appKeyArgs[0]) {
+          console.error(ResponseFormatter.formatError('Application key ID is required'));
+          return;
+        }
+        console.log(await api.getApplicationKey(appKeyArgs[0]));
+        break;
+
+      case 'update': {
+        const keyId = appKeyArgs[0];
+        const name = appKeyArgs.find((arg) => arg.startsWith('--name='))?.split('=')[1];
+        if (!keyId || !name) {
+          console.error(ResponseFormatter.formatError('Key ID and --name are required'));
+          return;
+        }
+        console.log(await api.updateApplicationKey(keyId, name));
+        break;
+      }
+
+      case 'delete':
+        if (!appKeyArgs[0]) {
+          console.error(ResponseFormatter.formatError('Application key ID is required'));
+          return;
+        }
+        console.log(await api.deleteApplicationKey(appKeyArgs[0]));
+        break;
+
+      default:
+        console.error(ResponseFormatter.formatError('Unknown app-keys subcommand', { appKeySubcommand }));
+    }
+    return;
+  }
+
+  // Handle my-app-keys subcommand
+  if (subcommand === 'my-app-keys') {
+    const myAppKeySubcommand = args[0];
+    const myAppKeyArgs = args.slice(1);
+
+    switch (myAppKeySubcommand) {
+      case 'list': {
+        const filter = myAppKeyArgs.find((arg) => arg.startsWith('--filter='))?.split('=')[1];
+        const pageSize = myAppKeyArgs.find((arg) => arg.startsWith('--page-size='))?.split('=')[1];
+        const pageNumber = myAppKeyArgs.find((arg) => arg.startsWith('--page-number='))?.split('=')[1];
+        console.log(
+          await api.listCurrentUserApplicationKeys({
+            filter,
+            pageSize: pageSize ? parseInt(pageSize) : undefined,
+            pageNumber: pageNumber ? parseInt(pageNumber) : undefined,
+          })
+        );
+        break;
+      }
+
+      case 'create': {
+        const name = myAppKeyArgs.find((arg) => arg.startsWith('--name='))?.split('=')[1];
+        const scopesStr = myAppKeyArgs.find((arg) => arg.startsWith('--scopes='))?.split('=')[1];
+        const scopes = scopesStr ? scopesStr.split(',') : undefined;
+        if (!name) {
+          console.error(ResponseFormatter.formatError('--name is required'));
+          return;
+        }
+        console.log(await api.createCurrentUserApplicationKey(name, scopes));
+        break;
+      }
+
+      case 'delete':
+        if (!myAppKeyArgs[0]) {
+          console.error(ResponseFormatter.formatError('Application key ID is required'));
+          return;
+        }
+        console.log(await api.deleteCurrentUserApplicationKey(myAppKeyArgs[0]));
+        break;
+
+      default:
+        console.error(ResponseFormatter.formatError('Unknown my-app-keys subcommand', { myAppKeySubcommand }));
+    }
+    return;
+  }
+
+  console.error(ResponseFormatter.formatError('Unknown keys subcommand', { subcommand }));
 }
 
 /**
