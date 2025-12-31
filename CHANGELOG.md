@@ -7,22 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.10.0] - 2025-12-31
+
 ### Added
-- **Case Management Support**: New cases agent for Datadog Case Management API
-  - Search and list cases with filtering (status, priority, project)
-  - Create new cases with title, type, priority, and description
-  - Update case status (OPEN, IN_PROGRESS, CLOSED) and priority (P1-P5)
-  - Assign/unassign cases to team members
-  - Archive and unarchive cases
-  - Add comments to cases
-  - Manage projects (create, list, get, delete)
-  - Full API wrapper implementation in `src/api/v2/cases.ts`
-  - CLI commands with comprehensive help text
-  - Agent documentation in `agents/cases.md`
+- **10 New Specialized Agents**: Expanded from 12 to 23 agents with comprehensive domain coverage
+  - **On-Call Management**: Manage on-call schedules, rotations, and paging workflows
+  - **Notebooks**: Create and manage collaborative documentation and runbooks
+  - **Network Performance Monitoring**: Monitor network devices, traffic, and performance
+  - **Cloud Cost Management**: Track and optimize cloud infrastructure costs
+  - **Events Management**: Query and analyze platform events
+  - **Error Tracking**: Track and investigate errors across traces, logs, and RUM
+  - **Service Catalog**: Manage service registry and ownership
+  - **Teams Management**: Manage team membership, permissions, and structure
+  - **Workflow Automation**: Create and manage automated workflows
+  - **CI/CD Visibility**: Monitor CI/CD pipeline performance and test results
+  - **Case Management**: Create and track support cases and incidents
 
 ### Changed
-- Updated agent count from 12 to 13 agents
-- Updated plugin description and documentation to include case management
+- Updated agent count from 12 to 23 agents across all documentation
+- Enhanced plugin capabilities with broader Datadog API coverage
+
+### Documentation
+- Added RELEASING.md with comprehensive release process guide
+- Updated README.md with agent list sorting and accurate agent count
 
 ## [1.0.0] - 2024-12-30
 
