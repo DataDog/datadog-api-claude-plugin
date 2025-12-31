@@ -21,6 +21,7 @@ import { createHostsApi } from './api/v1/hosts';
 import { createUsersApi } from './api/v2/users';
 import { createCasesApi } from './api/v2/cases';
 import { createKeyManagementApi } from './api/v2/key-management';
+import { createFleetAutomationApi } from './api/v2/fleet-automation';
 import { generateTypeScriptCode } from './codegen/typescript-templates';
 import { generatePythonCode } from './codegen/python-templates';
 
@@ -179,6 +180,9 @@ async function main() {
         break;
       case 'cases':
         await handleCasesCommand(subcommand, commandArgs);
+        break;
+      case 'fleet':
+        await handleFleetCommand(subcommand, commandArgs);
         break;
       case 'test':
         await handleTestCommand();
@@ -1453,6 +1457,375 @@ Examples:
         return;
       }
       console.log(await api.addCaseComment(caseId, comment));
+      break;
+    }
+
+    default:
+      console.error(ResponseFormatter.formatError('Unknown subcommand', { subcommand }));
+  }
+}
+
+/**
+ * Fleet Automation command handler
+ */
+async function handleFleetCommand(subcommand: string, args: string[]) {
+  if (subcommand === 'help') {
+    console.log(`
+Fleet Automation Commands:
+  agent-versions                    List available agent versions
+  agents list [options]             List all agents
+  agents get <agent-key>            Get agent details
+  deployments list [options]        List deployments
+  deployments get <id> [options]    Get deployment details
+  deployments create-config ...     Create configuration deployment
+  deployments create-upgrade ...    Create package upgrade deployment
+  deployments cancel <id>           Cancel a deployment
+  schedules list                    List schedules
+  schedules get <id>                Get schedule details
+  schedules create [options]        Create a schedule
+  schedules update <id> [options]   Update a schedule
+  schedules delete <id>             Delete a schedule
+  schedules trigger <id>            Manually trigger a schedule
+
+List Agents Options:
+  --filter=<query>                  Filter query (e.g. "env:prod AND service:web")
+  --tags=<tags>                     Comma-separated tags (e.g. "env:prod,service:web")
+  --page-number=<num>               Page number (minimum 1)
+  --page-size=<num>                 Page size (1-100, default 10)
+  --sort-attribute=<attr>           Sort by attribute
+  --sort-descending                 Sort in descending order
+
+List Deployments Options:
+  --page-size=<num>                 Page size (1-100, default 10)
+  --page-offset=<num>               Page offset (default 0)
+
+Get Deployment Options:
+  --limit=<num>                     Host limit per page (1-100, default 50)
+  --page=<num>                      Page index (default 0)
+
+Create Config Deployment:
+  --filter-query=<query>            Target hosts query
+  --file-path=<path>                Configuration file path
+  --file-op=<op>                    Operation: merge-patch or delete
+  --patch=<json>                    JSON patch for merge-patch operation
+
+Create Upgrade Deployment:
+  --filter-query=<query>            Target hosts query
+  --package-name=<name>             Package name (e.g. datadog-agent)
+  --package-version=<version>       Package version (e.g. 7.52.0)
+
+Create Schedule:
+  --name=<name>                     Schedule name (required)
+  --query=<query>                   Target hosts query (required)
+  --status=<status>                 active or inactive (default: active)
+  --version-to-latest=<num>         Version strategy: 0, 1, or 2 (default: 0)
+  --days-of-week=<days>             Days: Mon,Tue,Wed,Thu,Fri,Sat,Sun
+  --start-time=<time>               Start time HH:MM (e.g. 02:00)
+  --duration=<minutes>              Duration in minutes
+  --timezone=<tz>                   Timezone (e.g. America/New_York)
+
+Update Schedule:
+  --name=<name>                     Update name
+  --query=<query>                   Update query
+  --status=<status>                 Update status
+  --version-to-latest=<num>         Update version strategy
+  --days-of-week=<days>             Update days
+  --start-time=<time>               Update start time
+  --duration=<minutes>              Update duration
+  --timezone=<tz>                   Update timezone
+
+Examples:
+  dd-plugin fleet agent-versions
+  dd-plugin fleet agents list --filter="env:prod"
+  dd-plugin fleet agents get my-agent-hostname
+  dd-plugin fleet deployments list
+  dd-plugin fleet deployments get deployment-abc-123
+  dd-plugin fleet deployments create-config --filter-query="env:prod" --file-path="/datadog.yaml" --file-op="merge-patch" --patch='{"log_level":"info"}'
+  dd-plugin fleet deployments create-upgrade --filter-query="env:prod" --package-name="datadog-agent" --package-version="7.52.0"
+  dd-plugin fleet deployments cancel deployment-abc-123
+  dd-plugin fleet schedules list
+  dd-plugin fleet schedules create --name="Weekly Updates" --query="env:prod" --days-of-week="Mon,Wed" --start-time="02:00" --duration=180 --timezone="America/New_York"
+  dd-plugin fleet schedules update schedule-123 --status="inactive"
+  dd-plugin fleet schedules trigger schedule-123
+    `);
+    return;
+  }
+
+  const api = createFleetAutomationApi();
+
+  // Parse command arguments into options
+  const parseOptions = (args: string[]): Record<string, any> => {
+    const options: Record<string, any> = {};
+    args.forEach((arg) => {
+      if (arg.startsWith('--')) {
+        const [key, value] = arg.substring(2).split('=');
+        if (key) {
+          options[key] = value !== undefined ? value : true;
+        }
+      }
+    });
+    return options;
+  };
+
+  // Top-level commands
+  switch (subcommand) {
+    case 'agent-versions':
+      console.log(await api.listAgentVersions());
+      break;
+
+    case 'agents': {
+      const agentSubcommand = args[0];
+      const agentArgs = args.slice(1);
+
+      switch (agentSubcommand) {
+        case 'list': {
+          const options = parseOptions(agentArgs);
+          console.log(
+            await api.listAgents({
+              filter: options.filter,
+              tags: options.tags,
+              pageNumber: options['page-number'] ? parseInt(options['page-number']) : undefined,
+              pageSize: options['page-size'] ? parseInt(options['page-size']) : undefined,
+              sortAttribute: options['sort-attribute'],
+              sortDescending: options['sort-descending'] === true,
+            })
+          );
+          break;
+        }
+
+        case 'get': {
+          const agentKey = agentArgs[0];
+          if (!agentKey) {
+            console.error('Error: agent-key is required');
+            return;
+          }
+          console.log(await api.getAgentInfo(agentKey));
+          break;
+        }
+
+        default:
+          console.error(`Unknown agents subcommand: ${agentSubcommand}`);
+      }
+      break;
+    }
+
+    case 'deployments': {
+      const deploymentSubcommand = args[0];
+      const deploymentArgs = args.slice(1);
+
+      switch (deploymentSubcommand) {
+        case 'list': {
+          const options = parseOptions(deploymentArgs);
+          console.log(
+            await api.listDeployments({
+              pageSize: options['page-size'] ? parseInt(options['page-size']) : undefined,
+              pageOffset: options['page-offset'] ? parseInt(options['page-offset']) : undefined,
+            })
+          );
+          break;
+        }
+
+        case 'get': {
+          const deploymentId = deploymentArgs[0];
+          if (!deploymentId) {
+            console.error('Error: deployment-id is required');
+            return;
+          }
+          const options = parseOptions(deploymentArgs.slice(1));
+          console.log(
+            await api.getDeployment(deploymentId, {
+              limit: options.limit ? parseInt(options.limit) : undefined,
+              page: options.page ? parseInt(options.page) : undefined,
+            })
+          );
+          break;
+        }
+
+        case 'create-config': {
+          const options = parseOptions(deploymentArgs);
+          if (!options['file-path'] || !options['file-op']) {
+            console.error('Error: --file-path and --file-op are required');
+            return;
+          }
+
+          const configOp: any = {
+            fileOp: options['file-op'],
+            filePath: options['file-path'],
+          };
+
+          if (options.patch) {
+            try {
+              configOp.patch = JSON.parse(options.patch);
+            } catch (e) {
+              console.error('Error: --patch must be valid JSON');
+              return;
+            }
+          }
+
+          console.log(
+            await api.createConfigDeployment({
+              filterQuery: options['filter-query'],
+              configOperations: [configOp],
+            })
+          );
+          break;
+        }
+
+        case 'create-upgrade': {
+          const options = parseOptions(deploymentArgs);
+          if (!options['package-name'] || !options['package-version']) {
+            console.error('Error: --package-name and --package-version are required');
+            return;
+          }
+
+          console.log(
+            await api.createUpgradeDeployment({
+              filterQuery: options['filter-query'],
+              targetPackages: [
+                {
+                  name: options['package-name'],
+                  version: options['package-version'],
+                },
+              ],
+            })
+          );
+          break;
+        }
+
+        case 'cancel': {
+          const deploymentId = deploymentArgs[0];
+          if (!deploymentId) {
+            console.error('Error: deployment-id is required');
+            return;
+          }
+          console.log(await api.cancelDeployment(deploymentId));
+          break;
+        }
+
+        default:
+          console.error(`Unknown deployments subcommand: ${deploymentSubcommand}`);
+      }
+      break;
+    }
+
+    case 'schedules': {
+      const scheduleSubcommand = args[0];
+      const scheduleArgs = args.slice(1);
+
+      switch (scheduleSubcommand) {
+        case 'list':
+          console.log(await api.listSchedules());
+          break;
+
+        case 'get': {
+          const scheduleId = scheduleArgs[0];
+          if (!scheduleId) {
+            console.error('Error: schedule-id is required');
+            return;
+          }
+          console.log(await api.getSchedule(scheduleId));
+          break;
+        }
+
+        case 'create': {
+          const options = parseOptions(scheduleArgs);
+          if (
+            !options.name ||
+            !options.query ||
+            !options['days-of-week'] ||
+            !options['start-time'] ||
+            !options.duration ||
+            !options.timezone
+          ) {
+            console.error(
+              'Error: --name, --query, --days-of-week, --start-time, --duration, and --timezone are required'
+            );
+            return;
+          }
+
+          console.log(
+            await api.createSchedule({
+              name: options.name,
+              query: options.query,
+              status: options.status || 'active',
+              versionToLatest: options['version-to-latest']
+                ? parseInt(options['version-to-latest'])
+                : 0,
+              rule: {
+                daysOfWeek: options['days-of-week'].split(','),
+                startMaintenanceWindow: options['start-time'],
+                maintenanceWindowDuration: parseInt(options.duration),
+                timezone: options.timezone,
+              },
+            })
+          );
+          break;
+        }
+
+        case 'update': {
+          const scheduleId = scheduleArgs[0];
+          if (!scheduleId) {
+            console.error('Error: schedule-id is required');
+            return;
+          }
+
+          const options = parseOptions(scheduleArgs.slice(1));
+          const updateParams: any = {};
+
+          if (options.name) updateParams.name = options.name;
+          if (options.query) updateParams.query = options.query;
+          if (options.status) updateParams.status = options.status;
+          if (options['version-to-latest'])
+            updateParams.versionToLatest = parseInt(options['version-to-latest']);
+
+          if (
+            options['days-of-week'] ||
+            options['start-time'] ||
+            options.duration ||
+            options.timezone
+          ) {
+            // If any rule param is provided, we need all of them for the rule
+            updateParams.rule = {
+              daysOfWeek: options['days-of-week']
+                ? options['days-of-week'].split(',')
+                : undefined,
+              startMaintenanceWindow: options['start-time'],
+              maintenanceWindowDuration: options.duration ? parseInt(options.duration) : undefined,
+              timezone: options.timezone,
+            };
+            // Remove undefined values from rule
+            Object.keys(updateParams.rule).forEach(
+              (key) => updateParams.rule[key] === undefined && delete updateParams.rule[key]
+            );
+          }
+
+          console.log(await api.updateSchedule(scheduleId, updateParams));
+          break;
+        }
+
+        case 'delete': {
+          const scheduleId = scheduleArgs[0];
+          if (!scheduleId) {
+            console.error('Error: schedule-id is required');
+            return;
+          }
+          console.log(await api.deleteSchedule(scheduleId));
+          break;
+        }
+
+        case 'trigger': {
+          const scheduleId = scheduleArgs[0];
+          if (!scheduleId) {
+            console.error('Error: schedule-id is required');
+            return;
+          }
+          console.log(await api.triggerSchedule(scheduleId));
+          break;
+        }
+
+        default:
+          console.error(`Unknown schedules subcommand: ${scheduleSubcommand}`);
+      }
       break;
     }
 
