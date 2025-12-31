@@ -13,7 +13,6 @@
     "./skills/code-generation/SKILL.md"
   ],
   "agents": [
-    "./agents/admin.md",
     "./agents/application-security.md",
     "./agents/audit-logs.md",
     "./agents/cases.md",
@@ -39,8 +38,8 @@
     "./agents/service-catalog.md",
     "./agents/slos.md",
     "./agents/synthetics.md",
-    "./agents/teams.md",
     "./agents/traces.md",
+    "./agents/user-access-management.md",
     "./agents/workflows.md"
   ]
 }

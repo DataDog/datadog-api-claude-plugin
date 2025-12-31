@@ -108,7 +108,6 @@ The `agents` array must be alphabetically sorted. Read the current array and sor
 **Example sorted order:**
 ```json
 "agents": [
-  "./agents/admin.md",
   "./agents/cases.md",
   "./agents/cicd.md",
   "./agents/cloud-cost.md",
@@ -128,8 +127,8 @@ The `agents` array must be alphabetically sorted. Read the current array and sor
   "./agents/service-catalog.md",
   "./agents/slos.md",
   "./agents/synthetics.md",
-  "./agents/teams.md",
   "./agents/traces.md",
+  "./agents/user-access-management.md",
   "./agents/workflows.md"
 ]
 ```
