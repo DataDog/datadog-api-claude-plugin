@@ -18,6 +18,7 @@
     "./agents/cicd.md",
     "./agents/cloud-cost.md",
     "./agents/dashboards.md",
+    "./agents/database-monitoring.md",
     "./agents/error-tracking.md",
     "./agents/events.md",
     "./agents/incidents.md",
