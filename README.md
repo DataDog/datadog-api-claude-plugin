@@ -1,6 +1,6 @@
 # Datadog API Claude Plugin
 
-[![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)](https://github.com/DataDog/datadog-api-claude-plugin)
+[![Version](https://img.shields.io/badge/version-1.10.0-blue.svg)](https://github.com/DataDog/datadog-api-claude-plugin)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
 
@@ -37,7 +37,7 @@ node dist/index.js metrics query --query="avg:system.cpu.user{*}" --generate=pyt
 
 ### 🤖 Intelligent Agents
 
-13 specialized agents that understand natural language queries:
+23 specialized agents that understand natural language queries:
 
 - **Domain expertise**: Each agent specializes in one Datadog domain
 - **Context-aware**: Agents provide relevant suggestions and examples
@@ -142,18 +142,29 @@ node dist/index.js <domain> <action> [options]
 
 | Domain | Description | Example |
 |--------|-------------|---------|
+| `admin` | User management | `admin users` |
+| `cases` | Case management | `cases list` |
+| `cicd` | CI/CD Visibility | `cicd pipelines` |
+| `cloud-cost` | Cloud cost management | `cloud-cost aws list` |
+| `dashboards` | Manage dashboards | `dashboards get <id>` |
+| `error-tracking` | Error tracking | `errors search` |
+| `events` | Event management | `events search` |
+| `incidents` | Manage incidents | `incidents list` |
+| `infrastructure` | Manage hosts | `infrastructure hosts` |
+| `logs` | Search logs | `logs search --query="status:error"` |
 | `metrics` | Query and submit metrics | `metrics query --query="..."` |
 | `monitors` | Manage alerting monitors | `monitors list` |
-| `dashboards` | Manage dashboards | `dashboards get <id>` |
-| `logs` | Search logs | `logs search --query="status:error"` |
-| `traces` | Query APM traces | `traces search --query="service:api"` |
-| `slos` | Manage SLOs | `slos list` |
-| `incidents` | Manage incidents | `incidents list` |
-| `synthetics` | Manage synthetic tests | `synthetics list` |
+| `network-performance` | Network monitoring | `network connections` |
+| `notebooks` | Collaborative notebooks | `notebooks list` |
+| `on-call` | On-call management | `on-call schedule who-is-on-call` |
 | `rum` | Query RUM events | `rum search --query="@type:view"` |
 | `security` | Security monitoring | `security signals` |
-| `infrastructure` | Manage hosts | `infrastructure hosts` |
-| `admin` | User management | `admin users` |
+| `service-catalog` | Service catalog | `service-catalog list` |
+| `slos` | Manage SLOs | `slos list` |
+| `synthetics` | Manage synthetic tests | `synthetics list` |
+| `teams` | Team management | `teams list` |
+| `traces` | Query APM traces | `traces search --query="service:api"` |
+| `workflows` | Workflow automation | `workflows list` |
 
 ### Time Parameters
 
@@ -470,7 +481,7 @@ Generated code includes:
 
 ### Agent-Based Design
 
-The plugin uses 13 specialized agents, each focusing on a specific Datadog domain:
+The plugin uses 23 specialized agents, each focusing on a specific Datadog domain:
 
 ```
 User Query → Claude → Domain Agent → CLI Tool → Datadog API

@@ -195,11 +195,11 @@ Add a new section at the top of `CHANGELOG.md`:
 - Group related changes
 - Reference issue IDs where applicable: `(#123)`
 
-## Step 6: Commit Changes
+## Step 7: Commit Changes
 
 ```bash
 # Stage files
-git add .claude-plugin/plugin.json CHANGELOG.md
+git add .claude-plugin/plugin.json README.md CHANGELOG.md
 
 # Commit with descriptive message
 git commit -m "chore: prepare release v<NEW_VERSION>
@@ -210,7 +210,7 @@ git commit -m "chore: prepare release v<NEW_VERSION>
 "
 ```
 
-## Step 7: Push and Create Release PR
+## Step 8: Push and Create Release PR
 
 ```bash
 # Push release branch
@@ -249,7 +249,7 @@ After merge:
 "
 ```
 
-## Step 8: Wait for Review and Merge
+## Step 9: Wait for Review and Merge
 
 **HUMAN CHECKPOINT**: The release PR must be reviewed and approved by a human before proceeding.
 
@@ -264,7 +264,7 @@ Reply when the PR is merged.
 
 **Wait for user confirmation that the PR is merged.**
 
-## Step 9: Tag the Release
+## Step 10: Tag the Release
 
 After the PR is merged:
 
@@ -283,7 +283,7 @@ git tag -a v<NEW_VERSION> -m "Release v<NEW_VERSION>"
 git push origin v<NEW_VERSION>
 ```
 
-## Step 10: Create GitHub Release
+## Step 11: Create GitHub Release
 
 Generate release notes by summarizing changes:
 
@@ -337,7 +337,7 @@ gh release create v<NEW_VERSION> \
 **Full Changelog**: https://github.com/DataDog/datadog-api-claude-plugin/compare/<LAST_TAG>...v<NEW_VERSION>"
 ```
 
-## Step 11: Verify Release
+## Step 12: Verify Release
 
 Verify the release was created successfully:
 
@@ -349,7 +349,7 @@ git tag | grep v<NEW_VERSION>
 gh release view v<NEW_VERSION>
 ```
 
-## Step 12: Announce Release (Optional)
+## Step 13: Announce Release (Optional)
 
 If applicable, announce the release:
 - Update project README with latest version
@@ -367,6 +367,9 @@ Use this checklist to ensure all steps are completed:
 - [ ] Sort skills array alphabetically
 - [ ] Sort agents array alphabetically
 - [ ] Validate plugin.json is valid JSON
+- [ ] Update README.md version badge
+- [ ] Update README.md agent count
+- [ ] Sort agent lists/tables in README.md
 - [ ] Update CHANGELOG.md with categorized changes
 - [ ] Commit changes
 - [ ] Push release branch
@@ -451,37 +454,41 @@ git checkout -b release/v1.11.0
 # Step 4: Sort arrays (if needed) and validate
 cat .claude-plugin/plugin.json | jq . > /dev/null && echo "✓ Valid JSON"
 
-# Step 5: Update CHANGELOG.md
+# Step 5: Update README.md
+# Edit README.md: version badge "1.11.0", update agent count, sort agent lists
+
+# Step 6: Update CHANGELOG.md
 # Add new section at top with changes
 
-# Step 6: Commit
-git add .claude-plugin/plugin.json CHANGELOG.md
+# Step 7: Commit
+git add .claude-plugin/plugin.json README.md CHANGELOG.md
 git commit -m "chore: prepare release v1.11.0
 
 - Bump version to 1.11.0
 - Sort skills and agents arrays alphabetically
+- Update README.md version and agent list
 - Update CHANGELOG.md with release notes
 "
 
-# Step 7: Push and create PR
+# Step 8: Push and create PR
 git push -u origin release/v1.11.0
 gh pr create --title "Release v1.11.0" --body "..."
 
-# Step 8: Wait for human review and merge
+# Step 9: Wait for human review and merge
 # [User merges PR]
 
-# Step 9: Tag the release
+# Step 10: Tag the release
 git checkout main
 git pull origin main
 git tag -a v1.11.0 -m "Release v1.11.0"
 git push origin v1.11.0
 
-# Step 10: Create GitHub release
+# Step 11: Create GitHub release
 gh release create v1.11.0 \
   --title "v1.11.0" \
   --notes "Release notes here..."
 
-# Step 11: Verify
+# Step 12: Verify
 git tag | grep v1.11.0
 gh release view v1.11.0
 ```
