@@ -1,6 +1,6 @@
 {
   "name": "datadog-api-claude-plugin",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "author": {
     "name": "Datadog",
     "email": "support@datadoghq.com"
@@ -28,6 +28,7 @@
     "./agents/cases.md",
     "./agents/workflows.md",
     "./agents/cicd.md",
-    "./agents/teams.md"
+    "./agents/teams.md",
+    "./agents/service-catalog.md"
   ]
 }
