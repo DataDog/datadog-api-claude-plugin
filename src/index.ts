@@ -713,24 +713,247 @@ async function handleRumCommand(subcommand: string, args: string[]) {
     console.log(`
 RUM Commands:
   search --query=<query> [--from=<time>] [--to=<time>]   Search RUM events
+  metrics list                                            List all RUM metrics
+  metrics get <metric-id>                                 Get RUM metric details
+  metrics create --id=<id> --event-type=<type> ...        Create a RUM metric
+  metrics update <metric-id> [--filter=<filter>] ...      Update a RUM metric
+  metrics delete <metric-id>                              Delete a RUM metric
+  retention-filters list --app-id=<id>                    List retention filters
+  retention-filters get --app-id=<id> --filter-id=<id>   Get retention filter details
+  retention-filters create --app-id=<id> --name=<name> ... Create a retention filter
+  retention-filters update --app-id=<id> --filter-id=<id> ... Update a retention filter
+  retention-filters delete --app-id=<id> --filter-id=<id> Delete a retention filter
+  retention-filters order --app-id=<id> --filter-ids=<ids> Order retention filters
 
 Examples:
   dd-plugin rum search --query="@type:view" --from="1h"
+  dd-plugin rum metrics list
+  dd-plugin rum metrics create --id="rum.views.count" --event-type="view" --aggregation="count"
+  dd-plugin rum retention-filters list --app-id="abc123"
     `);
     return;
   }
 
   const api = createRUMApi();
-  const query = args.find((arg) => arg.startsWith('--query='))?.split('=')[1] || '*';
-  const from = args.find((arg) => arg.startsWith('--from='))?.split('=')[1];
-  const to = args.find((arg) => arg.startsWith('--to='))?.split('=')[1];
-  const now = Math.floor(Date.now() / 1000);
-  const result = await api.searchRUMEvents({
-    query,
-    from: from ? parseTimeParam(from) : now - 3600,
-    to: to ? parseTimeParam(to) : now,
-  });
-  console.log(result);
+
+  switch (subcommand) {
+    case 'search': {
+      const query = args.find((arg) => arg.startsWith('--query='))?.split('=')[1] || '*';
+      const from = args.find((arg) => arg.startsWith('--from='))?.split('=')[1];
+      const to = args.find((arg) => arg.startsWith('--to='))?.split('=')[1];
+      const now = Math.floor(Date.now() / 1000);
+      const result = await api.searchRUMEvents({
+        query,
+        from: from ? parseTimeParam(from) : now - 3600,
+        to: to ? parseTimeParam(to) : now,
+      });
+      console.log(result);
+      break;
+    }
+
+    case 'metrics': {
+      const metricSubcommand = args[0];
+      const metricArgs = args.slice(1);
+
+      switch (metricSubcommand) {
+        case 'list':
+          console.log(await api.listRumMetrics());
+          break;
+
+        case 'get': {
+          const metricId = metricArgs[0];
+          if (!metricId) {
+            console.error('Error: metric-id is required');
+            return;
+          }
+          console.log(await api.getRumMetric(metricId));
+          break;
+        }
+
+        case 'create': {
+          const id = metricArgs.find((arg) => arg.startsWith('--id='))?.split('=')[1];
+          const eventType = metricArgs.find((arg) => arg.startsWith('--event-type='))?.split('=')[1];
+          const aggregation = metricArgs.find((arg) => arg.startsWith('--aggregation='))?.split('=')[1];
+          const path = metricArgs.find((arg) => arg.startsWith('--path='))?.split('=')[1];
+          const filter = metricArgs.find((arg) => arg.startsWith('--filter='))?.split('=')[1];
+          const groupByStr = metricArgs.find((arg) => arg.startsWith('--group-by='))?.split('=')[1];
+          const includePercentiles = metricArgs.some((arg) => arg === '--include-percentiles');
+          const uniqueness = metricArgs.find((arg) => arg.startsWith('--uniqueness='))?.split('=')[1] as 'match' | 'end' | undefined;
+
+          if (!id || !eventType || !aggregation) {
+            console.error('Error: --id, --event-type, and --aggregation are required');
+            return;
+          }
+
+          const groupBy = groupByStr
+            ? groupByStr.split(',').map((g) => {
+                const [path, tagName] = g.split(':');
+                return { path, tagName };
+              })
+            : undefined;
+
+          console.log(await api.createRumMetric({
+            id,
+            eventType: eventType as any,
+            aggregationType: aggregation as 'count' | 'distribution',
+            path,
+            filter,
+            groupBy,
+            includePercentiles,
+            uniqueness,
+          }));
+          break;
+        }
+
+        case 'update': {
+          const metricId = metricArgs[0];
+          if (!metricId) {
+            console.error('Error: metric-id is required');
+            return;
+          }
+
+          const filter = metricArgs.find((arg) => arg.startsWith('--filter='))?.split('=')[1];
+          const groupByStr = metricArgs.find((arg) => arg.startsWith('--group-by='))?.split('=')[1];
+          const includePercentilesArg = metricArgs.find((arg) => arg.startsWith('--include-percentiles='));
+          const includePercentiles = includePercentilesArg ? includePercentilesArg.split('=')[1] === 'true' : undefined;
+
+          const groupBy = groupByStr
+            ? groupByStr.split(',').map((g) => {
+                const [path, tagName] = g.split(':');
+                return { path, tagName };
+              })
+            : undefined;
+
+          console.log(await api.updateRumMetric(metricId, {
+            filter,
+            groupBy,
+            includePercentiles,
+          }));
+          break;
+        }
+
+        case 'delete': {
+          const metricId = metricArgs[0];
+          if (!metricId) {
+            console.error('Error: metric-id is required');
+            return;
+          }
+          console.log(await api.deleteRumMetric(metricId));
+          break;
+        }
+
+        default:
+          console.error(`Unknown metrics subcommand: ${metricSubcommand}`);
+      }
+      break;
+    }
+
+    case 'retention-filters': {
+      const filterSubcommand = args[0];
+      const filterArgs = args.slice(1);
+      const appId = filterArgs.find((arg) => arg.startsWith('--app-id='))?.split('=')[1];
+
+      switch (filterSubcommand) {
+        case 'list':
+          if (!appId) {
+            console.error('Error: --app-id is required');
+            return;
+          }
+          console.log(await api.listRetentionFilters(appId));
+          break;
+
+        case 'get': {
+          const filterId = filterArgs.find((arg) => arg.startsWith('--filter-id='))?.split('=')[1];
+          if (!appId || !filterId) {
+            console.error('Error: --app-id and --filter-id are required');
+            return;
+          }
+          console.log(await api.getRetentionFilter(appId, filterId));
+          break;
+        }
+
+        case 'create': {
+          if (!appId) {
+            console.error('Error: --app-id is required');
+            return;
+          }
+
+          const name = filterArgs.find((arg) => arg.startsWith('--name='))?.split('=')[1];
+          const eventType = filterArgs.find((arg) => arg.startsWith('--event-type='))?.split('=')[1];
+          const sampleRateStr = filterArgs.find((arg) => arg.startsWith('--sample-rate='))?.split('=')[1];
+          const query = filterArgs.find((arg) => arg.startsWith('--query='))?.split('=')[1];
+          const enabled = filterArgs.some((arg) => arg === '--enabled');
+
+          if (!name || !eventType || !sampleRateStr) {
+            console.error('Error: --name, --event-type, and --sample-rate are required');
+            return;
+          }
+
+          console.log(await api.createRetentionFilter(appId, {
+            name,
+            eventType: eventType as any,
+            sampleRate: parseInt(sampleRateStr),
+            query,
+            enabled,
+          }));
+          break;
+        }
+
+        case 'update': {
+          const filterId = filterArgs.find((arg) => arg.startsWith('--filter-id='))?.split('=')[1];
+          if (!appId || !filterId) {
+            console.error('Error: --app-id and --filter-id are required');
+            return;
+          }
+
+          const name = filterArgs.find((arg) => arg.startsWith('--name='))?.split('=')[1];
+          const eventType = filterArgs.find((arg) => arg.startsWith('--event-type='))?.split('=')[1];
+          const sampleRateStr = filterArgs.find((arg) => arg.startsWith('--sample-rate='))?.split('=')[1];
+          const query = filterArgs.find((arg) => arg.startsWith('--query='))?.split('=')[1];
+          const enabledArg = filterArgs.find((arg) => arg.startsWith('--enabled='));
+          const enabled = enabledArg ? enabledArg.split('=')[1] === 'true' : undefined;
+
+          console.log(await api.updateRetentionFilter(appId, filterId, {
+            id: filterId,
+            name,
+            eventType: eventType as any,
+            sampleRate: sampleRateStr ? parseInt(sampleRateStr) : undefined,
+            query,
+            enabled,
+          }));
+          break;
+        }
+
+        case 'delete': {
+          const filterId = filterArgs.find((arg) => arg.startsWith('--filter-id='))?.split('=')[1];
+          if (!appId || !filterId) {
+            console.error('Error: --app-id and --filter-id are required');
+            return;
+          }
+          console.log(await api.deleteRetentionFilter(appId, filterId));
+          break;
+        }
+
+        case 'order': {
+          const filterIdsStr = filterArgs.find((arg) => arg.startsWith('--filter-ids='))?.split('=')[1];
+          if (!appId || !filterIdsStr) {
+            console.error('Error: --app-id and --filter-ids are required');
+            return;
+          }
+          const filterIds = filterIdsStr.split(',');
+          console.log(await api.orderRetentionFilters(appId, filterIds));
+          break;
+        }
+
+        default:
+          console.error(`Unknown retention-filters subcommand: ${filterSubcommand}`);
+      }
+      break;
+    }
+
+    default:
+      console.error(ResponseFormatter.formatError('Unknown subcommand', { subcommand }));
+  }
 }
 
 /**
