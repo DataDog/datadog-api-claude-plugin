@@ -34,6 +34,7 @@
     "./agents/rum.md",
     "./agents/scorecards.md",
     "./agents/security.md",
+    "./agents/static-analysis.md",
     "./agents/service-catalog.md",
     "./agents/slos.md",
     "./agents/synthetics.md",
