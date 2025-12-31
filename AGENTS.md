@@ -43,16 +43,67 @@ Configuration agents enable you to **configure and manage** how Datadog collects
 - Creating custom metrics from traces
 
 **Available Configuration Agents**:
-- **log-configuration.md**: Manage log archives, processing pipelines, indexes, custom destinations, and RBAC restriction queries
+- **observability-pipelines.md**: Manage infrastructure-level data pipelines that collect, transform, and route observability data from various sources to multiple destinations (Datadog, S3, Splunk, etc.)
+- **log-configuration.md**: Manage Datadog backend log configuration including archives, processing pipelines, indexes, custom destinations, and RBAC restriction queries
 - **apm-configuration.md**: Manage APM retention filters (span indexing) and span-based metrics generation
 
 **Example configurations**:
 ```
+"Create a pipeline to collect logs from Kafka and send to both Datadog and S3"
+"Set up PII redaction before logs leave my infrastructure"
 "Create an S3 archive for production logs"
-"Set up a pipeline to parse Nginx logs"
+"Set up a pipeline to parse Nginx logs in Datadog"
 "Configure retention filters to sample staging traces at 10%"
 "Create a metric for API endpoint latency by status code"
 ```
+
+#### Understanding Pipeline Types
+
+The plugin provides two distinct types of pipelines that serve different purposes:
+
+**Observability Pipelines** (observability-pipelines.md):
+- **Where**: Run in YOUR infrastructure (deployed and managed by you)
+- **When**: Process data BEFORE it reaches Datadog or other destinations
+- **Purpose**: Centralized data collection, transformation, and multi-destination routing
+- **Use cases**:
+  - Collect logs from diverse sources (Kafka, Splunk, S3, syslog, etc.)
+  - Apply transformations (parsing, filtering, enrichment) before ingestion
+  - Route data to multiple destinations (Datadog + S3 + Splunk simultaneously)
+  - Redact PII before data leaves your infrastructure
+  - Control costs with sampling and quota management at the source
+- **API**: `/api/v2/remote_config/products/obs_pipelines/pipelines` (Preview)
+
+**Log Pipelines** (log-configuration.md):
+- **Where**: Run in DATADOG's infrastructure (managed by Datadog)
+- **When**: Process logs AFTER they've been ingested by Datadog
+- **Purpose**: Parse, enrich, and structure logs for better searchability in Datadog
+- **Use cases**:
+  - Parse unstructured log messages with Grok patterns
+  - Extract and remap attributes for standardization
+  - Define official timestamp, status, and service fields
+  - Categorize and enrich logs for better filtering
+  - Link logs to APM traces
+- **API**: `/api/v1/logs/config/pipelines`
+
+**When to use each**:
+- Use **Observability Pipelines** when you need to:
+  - Collect data from non-Datadog sources
+  - Send data to multiple destinations
+  - Process/filter data before it enters any system
+  - Keep PII handling within your infrastructure
+  - Reduce ingestion costs through pre-filtering
+
+- Use **Log Pipelines** when you need to:
+  - Parse logs already in Datadog
+  - Standardize log attributes for searching
+  - Enrich logs with Datadog-specific features
+  - Link logs to traces and other Datadog data
+
+**They work together**:
+1. Observability Pipelines collect and route data to Datadog
+2. Log Pipelines then parse and enrich that data within Datadog
+3. Log Indexes organize the processed logs for searching
+4. Log Archives store logs long-term for compliance
 
 ### How They Work Together
 
