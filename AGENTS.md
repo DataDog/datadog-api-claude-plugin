@@ -140,7 +140,7 @@ Data and configuration agents complement each other in a typical workflow:
 
 ## Complete Agent Reference
 
-The plugin provides 45 specialized agents organized into functional categories. Each agent focuses on a specific area of Datadog functionality.
+The plugin provides 46 specialized agents organized into functional categories. Each agent focuses on a specific area of Datadog functionality.
 
 ### Monitoring & Observability
 
@@ -187,6 +187,7 @@ Agents for CI/CD integration, code quality, and developer workflows:
 Agents for user management, access control, and governance:
 
 - **user-access-management.md**: Comprehensive user, service account, team management, memberships, SCIM, and authentication mappings
+- **saml-configuration.md**: Configure SAML Single Sign-On (SSO) by uploading Identity Provider metadata
 - **organization-management.md**: Multi-org settings, accounts, and billing management
 - **data-governance.md**: Data access controls, reference tables, sensitive data scanning, IP/domain allowlists
 - **audit-logs.md**: Audit trail for organizational changes and access
@@ -278,6 +279,7 @@ What do you want to do?
 ├─ 👥 MANAGE (Organization & access)
 │  │
 │  ├─ Users & Teams → user-access-management
+│  ├─ SAML SSO setup → saml-configuration
 │  ├─ Organization settings → organization-management
 │  ├─ API keys → api-management
 │  ├─ Data permissions → data-governance
