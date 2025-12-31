@@ -203,21 +203,446 @@ Agents for cost monitoring, usage tracking, and data management:
 - **usage-metering.md**: Track Datadog usage and attribution
 - **data-deletion.md**: Manage data retention and deletion policies
 
-### Quick Selection Guide
+## Agent Selection Guide
 
-**For investigating issues**: Start with data agents (logs, traces, metrics, rum, security, events)
+This comprehensive guide helps you select the right agent(s) for your needs through decision trees, role-based guidance, and scenario-based examples.
 
-**For setting up infrastructure**: Use observability-pipelines, log-configuration, apm-configuration
+### Decision Tree: Finding Your Agent
 
-**For monitoring and alerting**: Use monitoring-alerting, dashboards, slos, synthetics
+Start here to quickly identify which agent(s) you need:
 
-**For security**: Use security-posture-management, application-security, cloud-workload-security
+```
+What do you want to do?
+│
+├─ 📊 INVESTIGATE/ANALYZE (Read-only queries)
+│  │
+│  ├─ Logs & Events
+│  │  ├─ Search log messages → logs
+│  │  └─ Query infrastructure events → events
+│  │
+│  ├─ Application Performance
+│  │  ├─ Trace distributed requests → traces
+│  │  ├─ Query custom metrics → metrics
+│  │  ├─ Frontend performance → rum
+│  │  └─ Error analysis → error-tracking
+│  │
+│  ├─ Infrastructure & Resources
+│  │  ├─ Host inventory & metrics → infrastructure
+│  │  ├─ Container/Kubernetes metrics → container-monitoring
+│  │  ├─ Database performance → database-monitoring
+│  │  └─ Network traffic analysis → network-performance
+│  │
+│  └─ Security & Compliance
+│     ├─ Security signals & threats → security
+│     ├─ Vulnerability findings → security-posture-management
+│     ├─ Runtime threats → application-security, cloud-workload-security
+│     └─ Audit trail → audit-logs
+│
+├─ ⚙️  CONFIGURE/SETUP (Read/write configuration)
+│  │
+│  ├─ Data Collection & Processing
+│  │  ├─ Collect from external sources → observability-pipelines
+│  │  ├─ Parse logs in Datadog → log-configuration
+│  │  ├─ Configure APM sampling → apm-configuration
+│  │  └─ RUM retention & metrics → rum-metrics-retention
+│  │
+│  ├─ Monitoring & Alerting
+│  │  ├─ Create/manage monitors → monitoring-alerting
+│  │  ├─ Build dashboards → dashboards
+│  │  ├─ Define SLOs → slos
+│  │  └─ Synthetic tests → synthetics
+│  │
+│  └─ Data Management
+│     ├─ Archive to cloud storage → log-configuration
+│     ├─ Retention policies → data-deletion, log-configuration
+│     └─ Access controls → data-governance
+│
+├─ 👥 MANAGE (Organization & access)
+│  │
+│  ├─ Users & Teams → user-access-management
+│  ├─ Organization settings → organization-management
+│  ├─ API keys → api-management
+│  ├─ Data permissions → data-governance
+│  └─ Audit activities → audit-logs
+│
+├─ 🔒 SECURE (Security operations)
+│  │
+│  ├─ Posture & vulnerabilities → security-posture-management
+│  ├─ Runtime protection → application-security, cloud-workload-security
+│  ├─ Cloud scanning → agentless-scanning
+│  └─ Code security → static-analysis
+│
+├─ 🚨 RESPOND (Incident management)
+│  │
+│  ├─ Full incident workflow → incident-response
+│  ├─ Investigation notebooks → notebooks
+│  └─ Error management → error-tracking
+│
+├─ 🔧 AUTOMATE (Workflows & operations)
+│  │
+│  ├─ Workflow automation → workflows
+│  ├─ Agent deployment → fleet-automation
+│  ├─ Custom apps → app-builder
+│  └─ CI/CD integration → cicd
+│
+└─ 💰 OPTIMIZE (Cost & usage)
+   │
+   ├─ Cloud costs → cloud-cost
+   ├─ Datadog usage → usage-metering
+   └─ Data lifecycle → data-deletion
+```
 
-**For team management**: Use user-access-management, organization-management, data-governance
+### Selection by User Role
 
-**For incidents**: Use incident-response for the complete workflow
+#### Site Reliability Engineer (SRE)
+**Primary focus**: System reliability, performance, and incident response
 
-**For automation**: Use workflows, fleet-automation, app-builder
+**Start here**:
+- **Investigating outages**: logs, traces, metrics, infrastructure, container-monitoring
+- **Setting up monitoring**: monitoring-alerting, dashboards, slos
+- **Incident management**: incident-response, notebooks
+- **Performance analysis**: traces, database-monitoring, network-performance
+
+**Example workflow**: "Production API is slow"
+1. traces → Find slow requests and identify bottlenecks
+2. logs → Check for errors during slow periods
+3. database-monitoring → Analyze database query performance
+4. monitoring-alerting → Create alert for latency threshold
+
+#### DevOps Engineer
+**Primary focus**: Infrastructure, deployment, automation
+
+**Start here**:
+- **Infrastructure visibility**: infrastructure, container-monitoring
+- **Log management**: observability-pipelines, log-configuration
+- **CI/CD**: cicd, fleet-automation
+- **Automation**: workflows, app-builder
+
+**Example workflow**: "Set up logging for new microservice"
+1. observability-pipelines → Configure log collection from Kubernetes
+2. log-configuration → Create parsing pipeline for application logs
+3. log-configuration → Set up archive to S3 for compliance
+4. monitoring-alerting → Create alerts for error rates
+
+#### Security Engineer
+**Primary focus**: Threat detection, compliance, vulnerability management
+
+**Start here**:
+- **Posture management**: security-posture-management, agentless-scanning
+- **Threat detection**: application-security, cloud-workload-security
+- **Compliance**: audit-logs, data-governance
+- **Code security**: static-analysis
+
+**Example workflow**: "Investigate security alert"
+1. security → Query recent security signals
+2. application-security → Check for attack patterns
+3. logs → Search for suspicious activity
+4. audit-logs → Review access patterns
+
+#### Application Developer
+**Primary focus**: Application performance, errors, user experience
+
+**Start here**:
+- **Error tracking**: error-tracking, logs
+- **Performance**: traces, rum, metrics
+- **Testing**: synthetics, cicd
+- **Service management**: service-catalog, scorecards
+
+**Example workflow**: "Debug production error"
+1. error-tracking → Find error details and frequency
+2. traces → Locate traces with errors
+3. logs → View log context around errors
+4. rum → Check if users are affected
+
+#### Platform Engineer
+**Primary focus**: Internal platforms, data pipelines, cost optimization
+
+**Start here**:
+- **Data pipelines**: observability-pipelines, log-configuration
+- **Cost management**: cloud-cost, usage-metering
+- **Access control**: user-access-management, data-governance
+- **Internal tools**: app-builder, workflows
+
+**Example workflow**: "Optimize observability costs"
+1. usage-metering → Analyze Datadog usage by team
+2. log-configuration → Adjust log retention policies
+3. apm-configuration → Configure smart trace sampling
+4. cloud-cost → Identify expensive cloud resources
+
+### Selection by Common Scenarios
+
+#### Scenario: Troubleshooting Production Issues
+
+**Goal**: Quickly identify and resolve production incidents
+
+**Agent sequence**:
+1. **Initial investigation** (Data agents - parallel):
+   - logs → Search for errors and warnings
+   - metrics → Check system resource usage
+   - traces → Find slow or failed requests
+   - events → Look for deployment or configuration changes
+
+2. **Deep dive** (Based on findings):
+   - database-monitoring → If DB performance suspected
+   - network-performance → If network issues suspected
+   - rum → If frontend/user experience affected
+   - security → If suspicious activity detected
+
+3. **Context gathering** (Documentation):
+   - notebooks → Document investigation findings
+   - incident-response → Create/update incident record
+
+4. **Prevention** (Configuration agents):
+   - monitoring-alerting → Create alerts to prevent recurrence
+   - dashboards → Build dashboard for this scenario
+
+**Example queries**:
+```
+"Show error logs from checkout service in last 30 minutes"
+"Find traces with 500 errors for /api/payment endpoint"
+"What changed in production in the last hour?" (events)
+"Is this affecting real users?" (rum)
+```
+
+#### Scenario: Setting Up a New Service
+
+**Goal**: Configure complete observability for a new microservice
+
+**Agent sequence**:
+1. **Data collection setup** (Configuration agents - sequential):
+   - observability-pipelines → Configure log collection from service
+   - log-configuration → Create parsing pipeline for log format
+   - apm-configuration → Set up trace sampling rules
+
+2. **Monitoring setup** (Configuration agents - parallel):
+   - monitoring-alerting → Create key alerts (errors, latency, resources)
+   - dashboards → Build service overview dashboard
+   - slos → Define SLO for service availability/performance
+
+3. **Testing** (Configuration agents):
+   - synthetics → Create synthetic tests for critical endpoints
+
+4. **Documentation** (Configuration agents):
+   - service-catalog → Register service with metadata
+   - scorecards → Define quality standards
+
+5. **Validation** (Data agents):
+   - logs → Verify logs are flowing
+   - traces → Confirm traces are captured
+   - metrics → Check metrics are reporting
+
+**Example queries**:
+```
+"Create pipeline to parse JSON logs from my new Python service"
+"Set up alert when error rate exceeds 1% for 5 minutes"
+"Build a dashboard showing request rate, latency, and errors"
+"Define SLO: 99.9% of requests complete in under 500ms"
+```
+
+#### Scenario: Security Audit & Compliance
+
+**Goal**: Review security posture and ensure compliance
+
+**Agent sequence**:
+1. **Posture assessment** (Data agents - parallel):
+   - security-posture-management → Query vulnerability findings
+   - agentless-scanning → Check for unpatched resources
+   - audit-logs → Review access and configuration changes
+   - security → Check recent security signals
+
+2. **Code security** (Data agents):
+   - static-analysis → Review code security findings
+   - application-security → Check runtime threats
+
+3. **Access review** (Data/Config agents):
+   - user-access-management → Audit user access and permissions
+   - data-governance → Review data access controls
+   - api-management → Audit API key usage
+
+4. **Remediation** (Configuration agents):
+   - data-governance → Update access policies
+   - user-access-management → Adjust user permissions
+   - monitoring-alerting → Create security alerts
+
+**Example queries**:
+```
+"Show all critical vulnerabilities in production"
+"Who accessed sensitive data in the last 30 days?" (audit-logs)
+"What security signals fired this week?"
+"List all users with admin access" (user-access-management)
+```
+
+#### Scenario: Cost Optimization
+
+**Goal**: Reduce observability and infrastructure costs
+
+**Agent sequence**:
+1. **Cost analysis** (Data agents - parallel):
+   - usage-metering → Analyze Datadog usage by product/team
+   - cloud-cost → Review cloud infrastructure costs
+   - logs → Identify high-volume log sources
+   - traces → Identify high-volume trace sources
+
+2. **Optimization actions** (Configuration agents):
+   - log-configuration → Adjust retention and exclusion filters
+   - apm-configuration → Configure intelligent trace sampling
+   - data-deletion → Set up data lifecycle policies
+   - observability-pipelines → Add sampling at collection point
+
+3. **Monitoring** (Configuration agents):
+   - dashboards → Create cost tracking dashboard
+   - monitoring-alerting → Alert on cost anomalies
+
+4. **Validation** (Data agents):
+   - usage-metering → Verify cost reductions
+
+**Example queries**:
+```
+"Which services generate the most indexed logs?"
+"What's our current APM span usage by service?"
+"Set up sampling to reduce trace volume by 50% for staging"
+"Create archive to S3 and reduce log retention to 15 days"
+```
+
+#### Scenario: Building Internal Tools
+
+**Goal**: Create custom internal applications with Datadog data
+
+**Agent sequence**:
+1. **Planning** (Data agents - exploration):
+   - metrics, logs, traces → Identify data sources needed
+   - dashboards → Review existing visualizations
+
+2. **Data access** (Data agents):
+   - Use relevant data agents (logs, traces, metrics, etc.) to query data
+   - rum → If building user analytics tools
+   - usage-metering → If building cost dashboards
+
+3. **Application development** (Configuration agents):
+   - app-builder → Build UI and workflows
+   - workflows → Create automation
+   - api-management → Generate API keys for application
+
+4. **Integration** (Configuration agents):
+   - dashboards → Embed Datadog dashboards
+   - notebooks → Integrate investigation tools
+
+**Example queries**:
+```
+"Build an app showing team-level cost attribution"
+"Create workflow to auto-remediate common issues"
+"Generate API key for internal monitoring dashboard"
+"Embed deployment dashboard in internal portal"
+```
+
+### Common Multi-Agent Workflows
+
+#### Workflow: Comprehensive Service Health Check
+
+This workflow combines multiple agents to get complete service visibility:
+
+```
+1. infrastructure → Check host health and resource usage
+2. container-monitoring → Verify pod/container status (if applicable)
+3. traces → Analyze request latency and error rates
+4. logs → Check for errors and warnings
+5. database-monitoring → Review query performance
+6. rum → Verify user experience metrics (if frontend service)
+7. synthetics → Check endpoint availability
+8. monitoring-alerting → Review active alerts
+```
+
+**Use when**: Performing routine health checks or pre-deployment validation
+
+#### Workflow: End-to-End Log Management
+
+This workflow sets up complete log infrastructure:
+
+```
+1. observability-pipelines → Collect logs from sources
+   ↓
+2. log-configuration → Parse and enrich logs
+   ↓
+3. log-configuration → Configure indexes for searching
+   ↓
+4. log-configuration → Set up archives for long-term storage
+   ↓
+5. data-governance → Apply access controls
+   ↓
+6. logs → Validate logs are searchable (data agent)
+```
+
+**Use when**: Setting up logging for new services or migrating log infrastructure
+
+#### Workflow: Security Incident Response
+
+This workflow handles security incidents from detection to resolution:
+
+```
+1. security → Detect and triage security signals
+   ↓
+2. application-security → Analyze attack patterns
+   ↓
+3. logs → Search for related suspicious activity
+   ↓
+4. traces → Identify affected requests/services
+   ↓
+5. audit-logs → Review access patterns
+   ↓
+6. incident-response → Document incident
+   ↓
+7. cloud-workload-security → Verify runtime protections
+   ↓
+8. monitoring-alerting → Create prevention alerts
+```
+
+**Use when**: Responding to security alerts or investigating breaches
+
+#### Workflow: Performance Optimization
+
+This workflow identifies and resolves performance issues:
+
+```
+1. traces → Identify slow endpoints and services
+   ↓
+2. database-monitoring → Analyze slow queries
+   ↓
+3. metrics → Check resource utilization trends
+   ↓
+4. logs → Look for performance-related warnings
+   ↓
+5. rum → Validate user-perceived performance
+   ↓
+6. apm-configuration → Create metrics for tracking
+   ↓
+7. monitoring-alerting → Set up performance alerts
+   ↓
+8. dashboards → Build performance dashboard
+```
+
+**Use when**: Addressing performance complaints or proactive optimization
+
+### Quick Reference by Intent
+
+**"I want to know what happened"** → Data agents (logs, traces, metrics, events, security)
+
+**"I want to set up..."** → Configuration agents (observability-pipelines, log-configuration, apm-configuration)
+
+**"I want to be alerted when..."** → monitoring-alerting, slos, synthetics
+
+**"I want to see..."** → dashboards, notebooks (visualization) OR data agents (query data)
+
+**"I want to manage users/access"** → user-access-management, data-governance, organization-management
+
+**"I want to respond to an incident"** → incident-response, notebooks, logs, traces
+
+**"I want to automate..."** → workflows, app-builder, fleet-automation
+
+**"I want to reduce costs"** → cloud-cost, usage-metering, data-deletion, log-configuration
+
+**"I want to improve security"** → security-posture-management, application-security, cloud-workload-security
+
+**"I want to build something"** → app-builder (UI apps), workflows (automation), dashboards (visualizations)
 
 ## Architecture
 
