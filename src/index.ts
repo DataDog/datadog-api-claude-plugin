@@ -24,6 +24,7 @@ import { createKeyManagementApi } from './api/v2/key-management';
 import { createFleetAutomationApi } from './api/v2/fleet-automation';
 import { generateTypeScriptCode } from './codegen/typescript-templates';
 import { generatePythonCode } from './codegen/python-templates';
+import { generateJavaCode } from './codegen/java-templates';
 
 /**
  * Helper function to parse time parameters
@@ -69,9 +70,9 @@ function parseTimeParam(timeStr: string): number {
 
 /**
  * Check if --generate flag is present and return language
- * Returns: 'typescript', 'python', or null if not generating
+ * Returns: 'typescript', 'python', 'java', or null if not generating
  */
-function getGenerateLanguage(args: string[]): 'typescript' | 'python' | null {
+function getGenerateLanguage(args: string[]): 'typescript' | 'python' | 'java' | null {
   const generateFlag = args.find((arg) => arg === '--generate' || arg.startsWith('--generate='));
 
   if (!generateFlag) {
@@ -86,6 +87,8 @@ function getGenerateLanguage(args: string[]): 'typescript' | 'python' | null {
       return 'typescript';
     } else if (language === 'python' || language === 'py') {
       return 'python';
+    } else if (language === 'java') {
+      return 'java';
     }
   }
 
@@ -96,6 +99,8 @@ function getGenerateLanguage(args: string[]): 'typescript' | 'python' | null {
       return 'typescript';
     } else if (language === 'python' || language === 'py') {
       return 'python';
+    } else if (language === 'java') {
+      return 'java';
     }
   }
 
@@ -107,13 +112,15 @@ function getGenerateLanguage(args: string[]): 'typescript' | 'python' | null {
  * Generate code for a command
  */
 function generateCode(
-  language: 'typescript' | 'python',
+  language: 'typescript' | 'python' | 'java',
   domain: string,
   operation: string,
   params: Record<string, any>
 ): string {
   if (language === 'python') {
     return generatePythonCode({ domain, operation, params });
+  } else if (language === 'java') {
+    return generateJavaCode({ domain, operation, params });
   } else {
     return generateTypeScriptCode({ domain, operation, params });
   }

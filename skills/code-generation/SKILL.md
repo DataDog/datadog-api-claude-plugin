@@ -1,11 +1,11 @@
 ---
-description: Generate TypeScript or Python code for Datadog API operations instead of executing them directly
-tags: [code-generation, typescript, python, templates]
+description: Generate TypeScript, Python, or Java code for Datadog API operations instead of executing them directly
+tags: [code-generation, typescript, python, java, templates]
 ---
 
 # Code Generation Skill
 
-This skill enables you to generate ready-to-use TypeScript or Python code for Datadog API operations instead of executing them directly. This is useful when users want to integrate Datadog operations into their own applications.
+This skill enables you to generate ready-to-use TypeScript, Python, or Java code for Datadog API operations instead of executing them directly. This is useful when users want to integrate Datadog operations into their own applications.
 
 ## When to Use This Skill
 
@@ -28,6 +28,7 @@ The code generation system:
 
 - **TypeScript** (using `@datadog/datadog-api-client`)
 - **Python** (using `datadog-api-client`)
+- **Java** (using `com.datadoghq:datadog-api-client`)
 
 ## Usage Pattern
 
@@ -40,8 +41,11 @@ node dist/index.js metrics query --query="..." --generate
 # Generate Python
 node dist/index.js metrics query --query="..." --generate=python
 
+# Generate Java
+node dist/index.js metrics query --query="..." --generate=java
+
 # Alternative syntax
-node dist/index.js metrics query --query="..." --generate --language=python
+node dist/index.js metrics query --query="..." --generate --language=java
 ```
 
 ## Supported Operations
@@ -133,6 +137,28 @@ To use this code:
 3. Set environment variables: `export DD_API_KEY="..." DD_APP_KEY="..."`
 4. Make it executable: `chmod +x create_monitor.py`
 5. Run: `./create_monitor.py`
+```
+
+### Example 2.5: Generate Java Code for Monitor Creation
+
+**User**: "Generate Java code to create a monitor"
+
+**Response**:
+```
+I'll generate Java code to create a Datadog monitor.
+
+<Execute: node dist/index.js monitors create --name="High CPU" --query="avg(last_5m):avg:system.cpu.user{*} > 90" --generate=java>
+
+Here's the Java code:
+
+[Generated code output]
+
+To use this code:
+1. Save it to a file (e.g., `MonitorsCreateExample.java`)
+2. Add to pom.xml: `<dependency><groupId>com.datadoghq</groupId><artifactId>datadog-api-client</artifactId></dependency>`
+3. Set environment variables: `export DD_API_KEY="..." DD_APP_KEY="..."`
+4. Compile: `javac MonitorsCreateExample.java`
+5. Run: `java com.datadog.api.example.MonitorsCreateExample`
 ```
 
 ### Example 3: Generate Code for Application Integration
@@ -229,6 +255,33 @@ if __name__ == "__main__":
     main()
 ```
 
+## Java Generated Code Structure
+
+```java
+package com.datadog.api.example;
+
+// Imports
+import com.datadog.api.client.ApiClient;
+import com.datadog.api.client.ApiException;
+import com.datadog.api.client.v2.api.MetricsApi;
+
+public class MetricsQueryExample {
+    // Main method with configuration
+    public static void main(String[] args) {
+        // Environment variable validation
+        // API client configuration
+        // Authentication setup
+        // Operation execution
+    }
+
+    // Operation method
+    private static void queryMetrics(ApiClient apiClient) throws ApiException {
+        MetricsApi apiInstance = new MetricsApi(apiClient);
+        // ... operation logic
+    }
+}
+```
+
 ## When NOT to Use Code Generation
 
 Don't use code generation when:
@@ -244,17 +297,21 @@ Instead, execute the command directly and only suggest code generation if they a
 2. **Explain how to use the code**: Always provide instructions for running generated code
 3. **Suggest improvements**: Point out how they can extend or customize the code
 4. **Security reminders**: Remind users not to commit credentials to version control
-5. **Install instructions**: Provide package installation commands
+5. **Install instructions**: Provide package installation commands for each language:
+   - TypeScript: `npm install @datadog/datadog-api-client`
+   - Python: `pip install datadog-api-client`
+   - Java: Add Maven/Gradle dependency for `com.datadoghq:datadog-api-client`
 
 ## Common User Phrases That Trigger This Skill
 
 - "Generate code to..."
-- "Show me how to... in TypeScript/Python"
+- "Show me how to... in TypeScript/Python/Java"
 - "I need a script that..."
 - "How do I integrate Datadog with..."
-- "Create a Python program to..."
-- "Write TypeScript code for..."
+- "Create a Python/Java program to..."
+- "Write TypeScript/Java code for..."
 - "I want to automate..."
+- "Generate Java code for..."
 
 ## Integration with Agents
 
@@ -286,7 +343,7 @@ Each agent can trigger code generation by adding the `--generate` flag to their 
 
 Planned improvements:
 - Generate code for WRITE operations (create, update, delete)
-- Support for additional languages (Go, Java, Ruby)
+- Support for additional languages (Ruby, more JVM languages)
 - Generate complete applications (multi-file projects)
 - Add unit tests to generated code
 - Generate Terraform/IaC configurations
@@ -297,6 +354,9 @@ Planned improvements:
 The code generation system uses template-based generation:
 - TypeScript templates in `src/codegen/typescript-templates.ts`
 - Python templates in `src/codegen/python-templates.ts`
+- Java templates in `src/codegen/java-templates.ts`
+- Go templates in `src/codegen/go-templates.ts`
+- Rust templates in `src/codegen/rust-templates.ts`
 - Each domain has specific templates for common operations
 - Parameters are interpolated into templates at generation time
 - Generated code uses official Datadog API clients for type safety and compatibility

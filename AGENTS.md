@@ -668,6 +668,7 @@ Unlike traditional MCP-based approaches, this plugin leverages Datadog's officia
 - **Python Client**: [datadog-api-client-python](https://github.com/DataDog/datadog-api-client-python)
 - **Go Client**: [datadog-api-client-go](https://github.com/DataDog/datadog-api-client-go)
 - **Rust Client**: [datadog-api-client-rust](https://github.com/DataDog/datadog-api-client-rust)
+- **Java Client**: [datadog-api-client-java](https://github.com/DataDog/datadog-api-client-java)
 - **API Documentation**: [Datadog API Reference](https://docs.datadoghq.com/api/latest/?tab=typescript)
 - **OpenAPI Specifications**: Available in the private `datadog-api-spec` repository (locally ../datadog-api-spec, or https://github.com/DataDog/datadog-api-spec on github)
 
@@ -730,6 +731,7 @@ The plugin intelligently selects the appropriate Datadog API client based on the
 - **Python**: Uses `datadog-api-client-python` for Python applications
 - **Go**: Uses `datadog-api-client-go` for Go applications
 - **Rust**: Uses `datadog-api-client` for Rust applications
+- **Java**: Uses `datadog-api-client-java` for Java applications
 - **Other Languages**: Provides HTTP API guidance with examples
 
 When generating code, the plugin ensures:
@@ -793,6 +795,9 @@ Claude: [Generates complete Go application using datadog-api-client-go]
 
 User: "Help me build a Rust application that searches logs"
 Claude: [Generates complete Rust application using datadog-api-client]
+
+User: "Help me build a Java application that queries metrics"
+Claude: [Generates complete Java application using datadog-api-client-java]
 ```
 
 ### Dashboard Management
@@ -858,6 +863,7 @@ MIT License - See LICENSE file for details
 - [Datadog API Client Python](https://github.com/DataDog/datadog-api-client-python)
 - [Datadog API Client Go](https://github.com/DataDog/datadog-api-client-go)
 - [Datadog API Client Rust](https://github.com/DataDog/datadog-api-client-rust)
+- [Datadog API Client Java](https://github.com/DataDog/datadog-api-client-java)
 - [Datadog OpenAPI Specification](https://github.com/DataDog/datadog-api-spec) (Private)
 
 ## Landing the Plane (Session Completion)
