@@ -4,6 +4,76 @@
 
 The Datadog API Claude Plugin enables Claude to directly interact with Datadog APIs without requiring an MCP (Model Context Protocol) server. This plugin provides seamless integration with Datadog's comprehensive monitoring and observability platform, allowing users to query, read, and write data through natural language interactions.
 
+## Agent Organization
+
+The plugin provides two categories of specialized agents that work together to provide comprehensive Datadog functionality:
+
+### Data Agents (Query & Analysis)
+
+Data agents enable you to **query and analyze** observability data. These agents provide read-only access to your telemetry data for investigation and troubleshooting.
+
+**When to use**:
+- Investigating production issues
+- Searching for errors or anomalies
+- Analyzing application performance
+- Troubleshooting distributed systems
+- Viewing historical data
+
+**Available Data Agents**:
+- **logs.md**: Search and analyze log data with flexible queries, time ranges, and tag-based filtering
+- **traces.md**: Query APM traces and spans for distributed tracing analysis and performance monitoring
+
+**Example queries**:
+```
+"Show me error logs from the API service in the last hour"
+"Find slow traces for the checkout endpoint"
+"What database queries are taking more than 1 second?"
+```
+
+### Configuration Agents (Setup & Management)
+
+Configuration agents enable you to **configure and manage** how Datadog collects, processes, stores, and forwards your telemetry data. These agents provide both read and write access to your Datadog configuration.
+
+**When to use**:
+- Setting up log archival to S3/GCS/Azure
+- Creating log processing pipelines
+- Configuring retention policies
+- Managing data forwarding to external systems
+- Controlling APM span indexing
+- Creating custom metrics from traces
+
+**Available Configuration Agents**:
+- **log-configuration.md**: Manage log archives, processing pipelines, indexes, custom destinations, and RBAC restriction queries
+- **apm-configuration.md**: Manage APM retention filters (span indexing) and span-based metrics generation
+
+**Example configurations**:
+```
+"Create an S3 archive for production logs"
+"Set up a pipeline to parse Nginx logs"
+"Configure retention filters to sample staging traces at 10%"
+"Create a metric for API endpoint latency by status code"
+```
+
+### How They Work Together
+
+Data and configuration agents complement each other in a typical workflow:
+
+1. **Configuration Phase**: Use configuration agents to set up how data is collected and processed
+   - Example: Create log pipelines to parse and enrich logs
+   - Example: Configure APM retention filters to control indexing costs
+
+2. **Analysis Phase**: Use data agents to query and analyze the data
+   - Example: Search parsed logs to investigate errors
+   - Example: Query indexed traces to analyze performance
+
+3. **Optimization Phase**: Use configuration agents to refine based on insights
+   - Example: Adjust retention filters based on which traces are most valuable
+   - Example: Create span-based metrics for key performance indicators
+
+**Key Distinction**:
+- **Data agents answer "What happened?"** - They query existing data
+- **Configuration agents answer "How should we handle data?"** - They set up infrastructure
+
 ## Architecture
 
 ### Direct API Integration
