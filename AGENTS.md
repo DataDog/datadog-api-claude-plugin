@@ -24,6 +24,7 @@ Data agents enable you to **query and analyze** observability data. These agents
 - **traces.md**: Query APM traces and spans for distributed tracing analysis and performance monitoring
 - **metrics.md**: Query and analyze time-series metrics data
 - **rum.md**: Access Real User Monitoring data for frontend performance analysis
+- **audience-management.md**: Query and segment RUM users and accounts, analyze audience attributes and behavior patterns
 - **security.md**: Query security signals and findings
 - **events.md**: Search and analyze event data from across your infrastructure
 
@@ -34,6 +35,8 @@ Data agents enable you to **query and analyze** observability data. These agents
 "What database queries are taking more than 1 second?"
 "Show metrics for CPU usage on production hosts"
 "What security signals fired in the last 24 hours?"
+"Find all enterprise users in the US who haven't logged in for 30 days"
+"Show me the browser distribution for users experiencing errors"
 ```
 
 ### Configuration Agents (Setup & Management)
@@ -53,6 +56,7 @@ Configuration agents enable you to **configure and manage** how Datadog collects
 - **log-configuration.md**: Manage Datadog backend log configuration including archives, processing pipelines, indexes, custom destinations, and RBAC restriction queries
 - **apm-configuration.md**: Manage APM retention filters (span indexing) and span-based metrics generation
 - **rum-metrics-retention.md**: Configure RUM data retention and custom metrics generation from RUM events
+- **audience-management.md**: Manage data connections to enrich RUM user and account data with external sources (CRM, reference tables)
 
 **Example configurations**:
 ```
@@ -63,6 +67,7 @@ Configuration agents enable you to **configure and manage** how Datadog collects
 "Configure retention filters to sample staging traces at 10%"
 "Create a metric for API endpoint latency by status code"
 "Set up RUM session replay retention for production environment"
+"Connect our CRM to enrich user profiles with subscription tier and lifetime value"
 ```
 
 #### Understanding Pipeline Types
@@ -135,7 +140,7 @@ Data and configuration agents complement each other in a typical workflow:
 
 ## Complete Agent Reference
 
-The plugin provides 41 specialized agents organized into functional categories. Each agent focuses on a specific area of Datadog functionality.
+The plugin provides 42 specialized agents organized into functional categories. Each agent focuses on a specific area of Datadog functionality.
 
 ### Monitoring & Observability
 
@@ -175,6 +180,7 @@ Agents for CI/CD integration, code quality, and developer workflows:
 - **static-analysis.md**: Static code analysis and security scanning
 - **scorecards.md**: Service quality scorecards and best practices
 - **service-catalog.md**: Service registry and ownership tracking
+- **audience-management.md**: RUM user and account segmentation, audience analytics, and data enrichment
 
 ### Organization & Access
 
@@ -224,6 +230,7 @@ What do you want to do?
 │  │  ├─ Trace distributed requests → traces
 │  │  ├─ Query custom metrics → metrics
 │  │  ├─ Frontend performance → rum
+│  │  ├─ User & audience segmentation → audience-management
 │  │  └─ Error analysis → error-tracking
 │  │
 │  ├─ Infrastructure & Resources
@@ -244,7 +251,8 @@ What do you want to do?
 │  │  ├─ Collect from external sources → observability-pipelines
 │  │  ├─ Parse logs in Datadog → log-configuration
 │  │  ├─ Configure APM sampling → apm-configuration
-│  │  └─ RUM retention & metrics → rum-metrics-retention
+│  │  ├─ RUM retention & metrics → rum-metrics-retention
+│  │  └─ Enrich user data with CRM → audience-management
 │  │
 │  ├─ Monitoring & Alerting
 │  │  ├─ Create/manage monitors → monitoring-alerting
@@ -345,6 +353,7 @@ What do you want to do?
 **Start here**:
 - **Error tracking**: error-tracking, logs
 - **Performance**: traces, rum, metrics
+- **User analytics**: audience-management, rum
 - **Testing**: synthetics, cicd
 - **Service management**: service-catalog, scorecards
 
@@ -386,6 +395,7 @@ What do you want to do?
    - database-monitoring → If DB performance suspected
    - network-performance → If network issues suspected
    - rum → If frontend/user experience affected
+   - audience-management → To identify which user segments are affected
    - security → If suspicious activity detected
 
 3. **Context gathering** (Documentation):
@@ -643,6 +653,10 @@ This workflow identifies and resolves performance issues:
 **"I want to improve security"** → security-posture-management, application-security, cloud-workload-security
 
 **"I want to build something"** → app-builder (UI apps), workflows (automation), dashboards (visualizations)
+
+**"I want to understand my users"** → audience-management, rum, error-tracking
+
+**"I want to segment my audience"** → audience-management (query users/accounts, create segments)
 
 ## Architecture
 
