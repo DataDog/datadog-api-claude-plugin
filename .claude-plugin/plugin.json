@@ -29,6 +29,7 @@
     "./agents/notebooks.md",
     "./agents/on-call.md",
     "./agents/rum.md",
+    "./agents/scorecards.md",
     "./agents/security.md",
     "./agents/service-catalog.md",
     "./agents/slos.md",

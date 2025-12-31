@@ -37,7 +37,7 @@ node dist/index.js metrics query --query="avg:system.cpu.user{*}" --generate=pyt
 
 ### 🤖 Intelligent Agents
 
-23 specialized agents that understand natural language queries:
+24 specialized agents that understand natural language queries:
 
 - **Domain expertise**: Each agent specializes in one Datadog domain
 - **Context-aware**: Agents provide relevant suggestions and examples
@@ -158,6 +158,7 @@ node dist/index.js <domain> <action> [options]
 | `notebooks` | Collaborative notebooks | `notebooks list` |
 | `on-call` | On-call management | `on-call schedule who-is-on-call` |
 | `rum` | Query RUM events | `rum search --query="@type:view"` |
+| `scorecards` | Service scorecards | `scorecards rules list` |
 | `security` | Security monitoring | `security signals` |
 | `service-catalog` | Service catalog | `service-catalog list` |
 | `slos` | Manage SLOs | `slos list` |
@@ -481,7 +482,7 @@ Generated code includes:
 
 ### Agent-Based Design
 
-The plugin uses 23 specialized agents, each focusing on a specific Datadog domain:
+The plugin uses 24 specialized agents, each focusing on a specific Datadog domain:
 
 ```
 User Query → Claude → Domain Agent → CLI Tool → Datadog API
