@@ -140,7 +140,7 @@ Data and configuration agents complement each other in a typical workflow:
 
 ## Complete Agent Reference
 
-The plugin provides 42 specialized agents organized into functional categories. Each agent focuses on a specific area of Datadog functionality.
+The plugin provides 45 specialized agents organized into functional categories. Each agent focuses on a specific area of Datadog functionality.
 
 ### Monitoring & Observability
 
@@ -200,6 +200,7 @@ Agents for incident response, automation, and operational workflows:
 - **workflows.md**: Automated workflows and orchestration
 - **fleet-automation.md**: Manage agent deployments and configurations at scale
 - **app-builder.md**: Build custom internal applications with Datadog data
+- **spark-pod-autosizing.md**: Optimize Spark pod resource allocation based on workload analysis
 
 ### Cost & Usage
 
@@ -208,6 +209,13 @@ Agents for cost monitoring, usage tracking, and data management:
 - **cloud-cost.md**: Cloud cost monitoring and optimization
 - **usage-metering.md**: Track Datadog usage and attribution
 - **data-deletion.md**: Manage data retention and deletion policies
+
+### Cloud & Third-Party Integrations
+
+Agents for integrating with cloud providers and external services:
+
+- **aws-integration.md**: Configure AWS account integration for monitoring, log collection, metrics, traces, and security (CSPM)
+- **third-party-integrations.md**: Manage integrations with PagerDuty, Slack, OpsGenie, Microsoft Teams, Fastly, Confluent Cloud, Cloudflare, and Okta
 
 ## Agent Selection Guide
 
