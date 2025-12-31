@@ -215,6 +215,8 @@ Agents for cost monitoring, usage tracking, and data management:
 Agents for integrating with cloud providers and external services:
 
 - **aws-integration.md**: Configure AWS account integration for monitoring, log collection, metrics, traces, and security (CSPM)
+- **gcp-integration.md**: Configure GCP project integration for monitoring, metrics collection, and security (CSPM, Security Command Center)
+- **azure-integration.md**: Configure Azure subscription integration for monitoring, metrics collection, and security (CSPM)
 - **third-party-integrations.md**: Manage integrations with PagerDuty, Slack, OpsGenie, Microsoft Teams, Fastly, Confluent Cloud, Cloudflare, and Okta
 
 ## Agent Selection Guide
