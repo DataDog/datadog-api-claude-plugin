@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.11.0] - 2025-12-31
+
+### Added
+- **5 New Specialized Agents**: Expanded from 23 to 28 agents with enhanced security, monitoring, and compliance coverage
+  - **Database Monitoring**: Monitor database performance, query metrics, and connection health across PostgreSQL, MySQL, SQL Server, and Oracle
+  - **Container Monitoring**: Monitor Kubernetes clusters, Docker containers, pods, deployments, and control plane health
+  - **Application Security**: Manage ASM/WAF rules, detect application-level threats, and protect APIs with OWASP coverage
+  - **Static Analysis**: SAST and SCA for code quality, security vulnerabilities, and dependency management across 14+ languages
+  - **Audit Logs**: Query audit trail events for compliance, security auditing, and user activity tracking with support for HIPAA, PCI DSS, SOC 2, GDPR, SOX, and ISO 27001
+
+### Changed
+- Updated agent count from 23 to 28 agents across all documentation
+- Enhanced security and compliance capabilities with ASM, SAST/SCA, and audit trail support
+
+### Documentation
+- Added comprehensive documentation for database monitoring (DBM) features
+- Added Kubernetes and Docker container monitoring guidance
+- Added OWASP Top 10 coverage for application security
+- Added compliance reporting guidance for regulatory requirements
+
 ## [1.10.0] - 2025-12-31
 
 ### Added
