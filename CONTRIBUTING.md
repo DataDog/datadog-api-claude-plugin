@@ -93,9 +93,9 @@ DD_SITE=datadoghq.com
 datadog-api-claude-plugin/
 ├── .claude-plugin/          # Claude Code plugin configuration
 │   ├── plugin.json          # Plugin metadata and agent registry
-│   ├── agents/              # Agent definitions (12 domain agents)
+│   ├── agents/              # Agent definitions
 │   │   ├── metrics.md
-│   │   ├── monitors.md
+│   │   ├── monitoring-alerting.md
 │   │   └── ...
 │   └── skills/              # Skill definitions
 │       └── code-generation/ # Code generation skill

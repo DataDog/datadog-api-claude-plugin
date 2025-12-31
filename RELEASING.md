@@ -118,7 +118,7 @@ The `agents` array must be alphabetically sorted. Read the current array and sor
   "./agents/infrastructure.md",
   "./agents/logs.md",
   "./agents/metrics.md",
-  "./agents/monitors.md",
+  "./agents/monitoring-alerting.md",
   "./agents/network-performance.md",
   "./agents/notebooks.md",
   "./agents/on-call.md",
