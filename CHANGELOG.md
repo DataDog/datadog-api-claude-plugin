@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.14.0] - 2025-12-31
+
+### Added
+- **13 New Specialized Agents**: Expanded from 28 to 41 agents with comprehensive coverage across Datadog platform
+  - **App Builder**: Create and manage custom applications with Datadog's App Builder platform
+  - **Powerpacks**: Manage reusable dashboard components and widget templates
+  - **Monitor Templates**: Create and manage monitor templates for consistent alerting
+  - **Notification Rules**: Configure notification routing and escalation policies
+  - **Cloud Workload Security**: Monitor runtime security threats and compliance in cloud workloads
+  - **Usage Metering**: Track and analyze Datadog usage metrics and billing
+  - **Restriction Policies**: Manage data access restrictions and security policies
+  - **Log Configuration**: Configure log pipelines, indexes, and processing rules
+  - **APM Configuration**: Configure APM settings, retention filters, and service ingestion
+  - **Observability Pipelines**: Manage data routing and transformation pipelines
+  - **Agentless Scanning**: Configure cloud security posture management without agents
+  - **Data Deletion**: GDPR-compliant data deletion for logs, traces, and RUM data
+  - **Data Management**: Comprehensive data lifecycle management and retention policies
+
+### Changed
+- Updated agent count from 28 to 41 agents across all documentation
+- Enhanced platform coverage with infrastructure, security, and compliance capabilities
+
 ## [1.11.0] - 2025-12-31
 
 ### Added
