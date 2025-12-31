@@ -1,6 +1,6 @@
 # Datadog API Claude Plugin
 
-[![Version](https://img.shields.io/badge/version-1.10.0-blue.svg)](https://github.com/DataDog/datadog-api-claude-plugin)
+[![Version](https://img.shields.io/badge/version-1.15.0-blue.svg)](https://github.com/DataDog/datadog-api-claude-plugin)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
 
@@ -8,20 +8,87 @@ A comprehensive Claude Code plugin that provides direct integration with Datadog
 
 ## Features
 
-### 🎯 Full Datadog API Coverage
+### 🎯 Comprehensive Agent Coverage
 
-- **Metrics**: Query time-series data, submit custom metrics, list available metrics
-- **Monitors**: Create, update, delete, and manage alerting monitors
-- **Dashboards**: Build and manage dashboards with widgets and visualizations
-- **Logs**: Search and analyze log data with flexible queries
-- **Traces**: Query APM traces and spans for distributed tracing analysis
-- **SLOs**: Manage Service Level Objectives and track error budgets
-- **Incidents**: Track and manage incident response workflows
-- **Synthetics**: Monitor synthetic tests and API endpoints
-- **RUM**: Query Real User Monitoring events and analytics
-- **Security**: Search security signals and manage detection rules
-- **Infrastructure**: View and manage hosts across your infrastructure
-- **Admin**: Manage users, teams, and organizational settings
+The plugin provides **48 specialized agents** organized into functional categories:
+
+#### Data & Observability
+Query and analyze telemetry data:
+- **logs**: Search and analyze log data
+- **traces**: Query APM traces and spans
+- **metrics**: Query time-series metrics
+- **rum**: Real User Monitoring data
+- **events**: Infrastructure events
+- **security**: Security signals and findings
+- **audience-management**: RUM user/account segmentation and analytics
+
+#### Monitoring & Alerting
+Set up monitoring and visualization:
+- **monitoring-alerting**: Monitors, templates, notifications, downtimes
+- **dashboards**: Visualization dashboards
+- **slos**: Service Level Objectives
+- **synthetics**: Synthetic monitoring tests
+- **notebooks**: Investigation notebooks
+- **powerpacks**: Reusable dashboard templates
+
+#### Configuration & Data Management
+Configure data collection and processing:
+- **observability-pipelines**: Infrastructure-level data collection and routing
+- **log-configuration**: Log archives, pipelines, indexes, destinations
+- **apm-configuration**: APM retention and span-based metrics
+- **rum-metrics-retention**: RUM retention and metrics
+
+#### Infrastructure & Performance
+Monitor infrastructure and performance:
+- **infrastructure**: Host inventory and monitoring
+- **container-monitoring**: Kubernetes and container metrics
+- **database-monitoring**: Database performance
+- **network-performance**: Network flow analysis
+- **fleet-automation**: Agent deployment at scale
+- **spark-pod-autosizing**: Spark resource optimization
+
+#### Security & Compliance
+Security operations and posture management:
+- **security-posture-management**: CSPM, vulnerabilities, SBOM
+- **application-security**: ASM runtime threat detection
+- **cloud-workload-security**: CWS runtime security
+- **agentless-scanning**: Cloud resource scanning
+- **static-analysis**: Code security scanning
+
+#### Cloud & Integrations
+Cloud provider and third-party integrations:
+- **aws-integration**: AWS monitoring and security
+- **gcp-integration**: GCP monitoring and security
+- **azure-integration**: Azure monitoring and security
+- **third-party-integrations**: PagerDuty, Slack, OpsGenie, etc.
+
+#### Development & Quality
+CI/CD and code quality:
+- **cicd**: Pipeline visibility and testing
+- **error-tracking**: Application error management
+- **scorecards**: Service quality tracking
+- **service-catalog**: Service registry
+
+#### Operations & Automation
+Incident response and automation:
+- **incident-response**: On-call, incidents, case management
+- **workflows**: Automated workflows
+- **app-builder**: Custom internal applications
+
+#### Organization & Access
+User management and governance:
+- **user-access-management**: Users, teams, SCIM, auth mappings
+- **saml-configuration**: SAML SSO setup
+- **organization-management**: Multi-org settings
+- **data-governance**: Access controls, sensitive data
+- **audit-logs**: Audit trail
+- **api-management**: API and application keys
+
+#### Cost & Usage
+Cost monitoring and optimization:
+- **cloud-cost**: Cloud cost tracking
+- **usage-metering**: Datadog usage attribution
+- **data-deletion**: Data retention policies
 
 ### 🚀 Code Generation
 
@@ -40,7 +107,7 @@ node dist/index.js metrics query --query="avg:system.cpu.user{*}" --generate=go
 
 ### 🤖 Intelligent Agents
 
-24 specialized agents that understand natural language queries:
+48 specialized agents that understand natural language queries:
 
 - **Domain expertise**: Each agent specializes in one Datadog domain
 - **Context-aware**: Agents provide relevant suggestions and examples
@@ -515,7 +582,7 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for more details.
 
 ### Agent-Based Design
 
-The plugin uses 24 specialized agents, each focusing on a specific Datadog domain:
+The plugin uses 48 specialized agents, each focusing on a specific Datadog domain:
 
 ```
 User Query → Claude → Domain Agent → CLI Tool → Datadog API
@@ -536,9 +603,9 @@ Three-tier permission model:
 ```
 datadog-api-claude-plugin/
 ├── .claude-plugin/          # Plugin configuration
-│   ├── plugin.json          # Plugin metadata
-│   ├── agents/              # 12 domain agents
+│   ├── plugin.json          # Plugin metadata (references 48 agents)
 │   └── skills/              # Code generation skill
+├── agents/                  # 48 specialized domain agents
 ├── src/
 │   ├── lib/                 # Core utilities
 │   │   ├── client.ts        # Datadog client wrapper
