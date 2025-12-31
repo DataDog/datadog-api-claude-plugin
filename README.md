@@ -480,6 +480,8 @@ Generated code includes:
 
 ## Architecture
 
+See [ARCHITECTURE.md](ARCHITECTURE.md) for more details.
+
 ### Agent-Based Design
 
 The plugin uses 24 specialized agents, each focusing on a specific Datadog domain:
