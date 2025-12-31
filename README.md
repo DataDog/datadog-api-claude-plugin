@@ -25,7 +25,7 @@ A comprehensive Claude Code plugin that provides direct integration with Datadog
 
 ### 🚀 Code Generation
 
-Generate production-ready TypeScript or Python code for any Datadog operation:
+Generate production-ready TypeScript, Python, or Go code for any Datadog operation:
 
 ```bash
 # Generate TypeScript code
@@ -33,6 +33,9 @@ node dist/index.js metrics query --query="avg:system.cpu.user{*}" --generate
 
 # Generate Python code
 node dist/index.js metrics query --query="avg:system.cpu.user{*}" --generate=python
+
+# Generate Go code
+node dist/index.js metrics query --query="avg:system.cpu.user{*}" --generate=go
 ```
 
 ### 🤖 Intelligent Agents
@@ -128,6 +131,9 @@ node dist/index.js metrics query --query="avg:system.cpu.user{*}" --generate > q
 
 # Generate Python code to create a monitor
 node dist/index.js monitors create --name="High CPU" --generate=python > create_monitor.py
+
+# Generate Go code to list monitors
+node dist/index.js monitors list --generate=go > list_monitors.go
 ```
 
 ## Usage
@@ -189,8 +195,8 @@ Many commands accept `--from` and `--to` time parameters with flexible formats:
 
 ### Common Options
 
-- `--generate` or `--generate=python` - Generate code instead of executing
-- `--language=typescript` or `--language=python` - Specify code generation language
+- `--generate` or `--generate=python` or `--generate=go` - Generate code instead of executing
+- `--language=typescript` or `--language=python` or `--language=go` - Specify code generation language
 - `--filter=<pattern>` - Filter results by pattern
 - `--limit=<n>` - Limit number of results
 - `--help` - Show help for a specific command
@@ -468,13 +474,38 @@ export DD_APP_KEY="..."
 python query_metrics.py
 ```
 
+### Go
+
+Generate Go code using the official `datadog-api-client-go`:
+
+```bash
+node dist/index.js metrics query \
+  --query="avg:system.cpu.user{*}" \
+  --generate=go > query_metrics.go
+```
+
+**To use generated Go code:**
+
+```bash
+# Initialize module (if needed)
+go mod init myapp
+go mod tidy
+
+# Set credentials
+export DD_API_KEY="..."
+export DD_APP_KEY="..."
+
+# Run
+go run query_metrics.go
+```
+
 ### Code Generation Features
 
 Generated code includes:
 - Complete imports from official Datadog clients
 - Configuration with environment variable handling
 - Proper error handling with detailed messages
-- Type annotations (TypeScript) or type hints (Python)
+- Type annotations (TypeScript), type hints (Python), or strong typing (Go)
 - Documentation comments explaining usage
 - Main execution function ready to run
 
@@ -627,13 +658,14 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 - [Datadog API Client TypeScript](https://github.com/DataDog/datadog-api-client-typescript)
 - [Datadog API Client Python](https://github.com/DataDog/datadog-api-client-python)
+- [Datadog API Client Go](https://github.com/DataDog/datadog-api-client-go)
 - [Claude Code Documentation](https://docs.anthropic.com/claude/docs)
 
 ## Changelog
 
 ### v0.2.0 (Current)
 
-- ✨ Added code generation for TypeScript and Python
+- ✨ Added code generation for TypeScript, Python, and Go
 - ✨ Implemented 12 domain agents with comprehensive documentation
 - ✨ Added support for all major Datadog APIs
 - 🔒 Implemented three-tier permission system

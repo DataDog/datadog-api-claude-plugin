@@ -666,6 +666,7 @@ Unlike traditional MCP-based approaches, this plugin leverages Datadog's officia
 
 - **TypeScript Client**: [datadog-api-client-typescript](https://github.com/DataDog/datadog-api-client-typescript)
 - **Python Client**: [datadog-api-client-python](https://github.com/DataDog/datadog-api-client-python)
+- **Go Client**: [datadog-api-client-go](https://github.com/DataDog/datadog-api-client-go)
 - **API Documentation**: [Datadog API Reference](https://docs.datadoghq.com/api/latest/?tab=typescript)
 - **OpenAPI Specifications**: Available in the private `datadog-api-spec` repository (locally ../datadog-api-spec, or https://github.com/DataDog/datadog-api-spec on github)
 
@@ -726,6 +727,7 @@ The plugin intelligently selects the appropriate Datadog API client based on the
 
 - **TypeScript/JavaScript**: Uses `datadog-api-client-typescript` for Node.js applications
 - **Python**: Uses `datadog-api-client-python` for Python applications
+- **Go**: Uses `datadog-api-client-go` for Go applications
 - **Other Languages**: Provides HTTP API guidance with examples
 
 When generating code, the plugin ensures:
@@ -783,6 +785,9 @@ Claude: [Generates monitor configuration and asks for confirmation before creati
 ```
 User: "Help me build a Python script that exports all my monitors to JSON files"
 Claude: [Generates complete Python application using datadog-api-client-python]
+
+User: "Help me build a Go program that queries metrics"
+Claude: [Generates complete Go application using datadog-api-client-go]
 ```
 
 ### Dashboard Management
@@ -846,6 +851,7 @@ MIT License - See LICENSE file for details
 - [Datadog Documentation](https://docs.datadoghq.com/)
 - [Datadog API Client TypeScript](https://github.com/DataDog/datadog-api-client-typescript)
 - [Datadog API Client Python](https://github.com/DataDog/datadog-api-client-python)
+- [Datadog API Client Go](https://github.com/DataDog/datadog-api-client-go)
 - [Datadog OpenAPI Specification](https://github.com/DataDog/datadog-api-spec) (Private)
 
 ## Landing the Plane (Session Completion)
