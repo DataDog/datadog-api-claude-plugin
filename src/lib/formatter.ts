@@ -2,11 +2,14 @@
  * Response formatting utilities for Datadog API data
  */
 
+import * as asciichart from 'asciichart';
+
 export enum OutputFormat {
   JSON = 'json',
   COMPACT = 'compact',
   TABLE = 'table',
   LIST = 'list',
+  CHART = 'chart',
 }
 
 /**
@@ -45,6 +48,29 @@ export interface TableOptions {
 }
 
 /**
+ * Chart types for ASCII visualization
+ */
+export enum ChartType {
+  LINE = 'line',
+  BAR = 'bar',
+  SPARKLINE = 'sparkline',
+}
+
+/**
+ * Chart formatting options
+ */
+export interface ChartOptions {
+  type?: ChartType;
+  width?: number;
+  height?: number;
+  title?: string;
+  showLegend?: boolean;
+  colors?: boolean;
+  labels?: string[];
+  format?: 'percent' | 'number' | 'bytes';
+}
+
+/**
  * Response formatter for Datadog API data
  */
 export class ResponseFormatter {
@@ -64,6 +90,8 @@ export class ResponseFormatter {
         return this.formatTable(data);
       case OutputFormat.LIST:
         return this.formatList(data);
+      case OutputFormat.CHART:
+        return this.formatChart(data);
       default:
         return this.formatJSON(data);
     }
@@ -247,6 +275,231 @@ export class ResponseFormatter {
       return value;
     }
     return value.substring(0, maxWidth - 3) + '...';
+  }
+
+  /**
+   * Formats data as a chart
+   * @param data Array of numbers (single series) or array of arrays (multiple series) or object with series data
+   * @param options Chart formatting options
+   * @returns ASCII chart string
+   */
+  static formatChart(data: any, options?: ChartOptions): string {
+    const opts: ChartOptions = {
+      type: ChartType.LINE,
+      height: 10,
+      title: '',
+      showLegend: true,
+      colors: true,
+      ...options,
+    };
+
+    // Normalize data to array format
+    let seriesData: number[][] = [];
+    let seriesLabels: string[] = [];
+
+    if (Array.isArray(data)) {
+      if (data.length === 0) {
+        return 'No data to display.';
+      }
+
+      // Check if it's a single series or multiple series
+      if (Array.isArray(data[0])) {
+        seriesData = data as number[][];
+        seriesLabels = opts.labels || data.map((_, i) => `Series ${i + 1}`);
+      } else {
+        seriesData = [data as number[]];
+        seriesLabels = opts.labels || ['Data'];
+      }
+    } else if (data && typeof data === 'object') {
+      // Handle object format like { series1: [1,2,3], series2: [4,5,6] }
+      seriesLabels = Object.keys(data);
+      seriesData = seriesLabels.map((key) => data[key]);
+    } else {
+      return this.formatJSON(data);
+    }
+
+    // Validate series data
+    if (seriesData.length === 0 || seriesData.every((s) => s.length === 0)) {
+      return 'No data to display.';
+    }
+
+    switch (opts.type) {
+      case ChartType.LINE:
+        return this.formatLineChart(seriesData, seriesLabels, opts);
+      case ChartType.BAR:
+        return this.formatBarChart(seriesData, seriesLabels, opts);
+      case ChartType.SPARKLINE:
+        return this.formatSparkline(seriesData, seriesLabels, opts);
+      default:
+        return this.formatLineChart(seriesData, seriesLabels, opts);
+    }
+  }
+
+  /**
+   * Formats data as a line chart using asciichart
+   */
+  private static formatLineChart(
+    seriesData: number[][],
+    seriesLabels: string[],
+    options: ChartOptions
+  ): string {
+    const output: string[] = [];
+
+    // Add title
+    if (options.title) {
+      output.push(options.title);
+      output.push('');
+    }
+
+    // Configure asciichart options
+    const chartConfig: any = {
+      height: options.height || 10,
+    };
+
+    if (options.colors) {
+      const colors = [
+        asciichart.blue,
+        asciichart.green,
+        asciichart.red,
+        asciichart.yellow,
+        asciichart.magenta,
+        asciichart.cyan,
+      ];
+      chartConfig.colors = seriesData.map((_, i) => colors[i % colors.length]);
+    }
+
+    // Plot the chart
+    const chart = asciichart.plot(seriesData.length === 1 ? seriesData[0] : seriesData, chartConfig);
+    output.push(chart);
+
+    // Add legend if multiple series
+    if (options.showLegend && seriesData.length > 1) {
+      output.push('');
+      output.push('Legend:');
+      seriesLabels.forEach((label, i) => {
+        const color = options.colors ? ['blue', 'green', 'red', 'yellow', 'magenta', 'cyan'][i % 6] : '';
+        output.push(`  ${color ? `[${color}]` : ''} ${label}`);
+      });
+    }
+
+    return output.join('\n');
+  }
+
+  /**
+   * Formats data as a horizontal bar chart
+   */
+  private static formatBarChart(
+    seriesData: number[][],
+    seriesLabels: string[],
+    options: ChartOptions
+  ): string {
+    const output: string[] = [];
+
+    // Add title
+    if (options.title) {
+      output.push(options.title);
+      output.push('');
+    }
+
+    // For bar charts, we typically show one value per label
+    // If multiple series, we'll take the first value or average
+    const values = seriesData.map((series) => {
+      if (series.length === 0) return 0;
+      if (series.length === 1) return series[0];
+      // Average the series for bar chart
+      return series.reduce((a, b) => a + b, 0) / series.length;
+    });
+
+    const maxValue = Math.max(...values.filter((v) => !isNaN(v) && isFinite(v)));
+    const maxLabelWidth = Math.max(...seriesLabels.map((l) => l.length));
+    const barWidth = options.width || 40;
+
+    values.forEach((value, i) => {
+      const label = seriesLabels[i].padEnd(maxLabelWidth);
+      const percentage = maxValue > 0 ? (value / maxValue) * 100 : 0;
+      const filledWidth = Math.round((percentage / 100) * barWidth);
+      const emptyWidth = barWidth - filledWidth;
+
+      const bar = '█'.repeat(filledWidth) + '░'.repeat(emptyWidth);
+      const formattedValue = this.formatValue(value, options.format);
+      const percentStr = `(${percentage.toFixed(0)}%)`;
+
+      output.push(`${label} │${bar} ${formattedValue} ${percentStr}`);
+    });
+
+    return output.join('\n');
+  }
+
+  /**
+   * Formats data as sparklines (compact inline charts)
+   */
+  private static formatSparkline(
+    seriesData: number[][],
+    seriesLabels: string[],
+    options: ChartOptions
+  ): string {
+    const output: string[] = [];
+
+    // Add title
+    if (options.title) {
+      output.push(options.title);
+      output.push('');
+    }
+
+    const sparkChars = ['▁', '▂', '▃', '▄', '▅', '▆', '▇', '█'];
+
+    seriesData.forEach((series, idx) => {
+      if (series.length === 0) {
+        output.push(`${seriesLabels[idx]}: (no data)`);
+        return;
+      }
+
+      const min = Math.min(...series);
+      const max = Math.max(...series);
+      const range = max - min;
+
+      const sparkline = series
+        .map((value) => {
+          if (range === 0) return sparkChars[4]; // Middle char for flat line
+          const normalized = (value - min) / range;
+          const index = Math.min(Math.floor(normalized * sparkChars.length), sparkChars.length - 1);
+          return sparkChars[index];
+        })
+        .join('');
+
+      const minStr = this.formatValue(min, options.format);
+      const maxStr = this.formatValue(max, options.format);
+
+      output.push(`${seriesLabels[idx]}: ${sparkline} [${minStr} - ${maxStr}]`);
+    });
+
+    return output.join('\n');
+  }
+
+  /**
+   * Formats a numeric value based on format type
+   */
+  private static formatValue(value: number, format?: string): string {
+    if (format === 'percent') {
+      return `${value.toFixed(1)}%`;
+    } else if (format === 'bytes') {
+      const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+      let size = value;
+      let unitIndex = 0;
+      while (size >= 1024 && unitIndex < units.length - 1) {
+        size /= 1024;
+        unitIndex++;
+      }
+      return `${size.toFixed(1)}${units[unitIndex]}`;
+    } else {
+      // Format large numbers with commas
+      if (value >= 1000000) {
+        return `${(value / 1000000).toFixed(1)}M`;
+      } else if (value >= 1000) {
+        return `${(value / 1000).toFixed(1)}K`;
+      }
+      return value.toFixed(0);
+    }
   }
 
   /**

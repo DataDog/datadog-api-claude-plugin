@@ -40,10 +40,12 @@
   },
   "dependencies": {
     "@datadog/datadog-api-client": "^1.29.0",
+    "asciichart": "^1.5.25",
     "inquirer": "^13.1.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
+    "@types/asciichart": "^1.5.8",
     "@types/inquirer": "^9.0.7",
     "@types/jest": "^29.5.11",
     "@types/node": "^25.0.3",

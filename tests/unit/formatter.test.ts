@@ -7,6 +7,8 @@ import {
   OutputFormat,
   PaginationOptions,
   TableOptions,
+  ChartOptions,
+  ChartType,
 } from '../../src/lib/formatter';
 
 describe('ResponseFormatter', () => {
@@ -457,6 +459,285 @@ describe('ResponseFormatter', () => {
         expect(result).toContain('id');
         expect(result).toContain('name');
         expect(result).toContain('Showing 1-3 of 50 items');
+      });
+    });
+  });
+
+  describe('Chart Formatting', () => {
+    describe('formatChart() - Line Charts', () => {
+      it('should format single series as line chart', () => {
+        const data = [1, 2, 3, 4, 5, 4, 3, 2, 1];
+        const result = ResponseFormatter.formatChart(data, {
+          type: ChartType.LINE,
+          height: 5,
+          colors: false,
+        });
+
+        expect(result).toBeTruthy();
+        expect(result.split('\n').length).toBeGreaterThan(5);
+      });
+
+      it('should format multiple series as line chart', () => {
+        const data = [
+          [1, 2, 3, 4, 5],
+          [5, 4, 3, 2, 1],
+        ];
+        const options: ChartOptions = {
+          type: ChartType.LINE,
+          height: 5,
+          labels: ['Series A', 'Series B'],
+          showLegend: true,
+          colors: false,
+        };
+        const result = ResponseFormatter.formatChart(data, options);
+
+        expect(result).toBeTruthy();
+        expect(result).toContain('Legend:');
+        expect(result).toContain('Series A');
+        expect(result).toContain('Series B');
+      });
+
+      it('should format object with series data', () => {
+        const data = {
+          cpu: [10, 20, 30, 40, 50],
+          memory: [50, 40, 30, 20, 10],
+        };
+        const options: ChartOptions = {
+          type: ChartType.LINE,
+          title: 'System Metrics',
+          height: 5,
+          colors: false,
+        };
+        const result = ResponseFormatter.formatChart(data, options);
+
+        expect(result).toContain('System Metrics');
+        expect(result).toBeTruthy();
+      });
+
+      it('should handle empty data', () => {
+        const result = ResponseFormatter.formatChart([], {
+          type: ChartType.LINE,
+        });
+
+        expect(result).toBe('No data to display.');
+      });
+
+      it('should add title when provided', () => {
+        const data = [1, 2, 3];
+        const result = ResponseFormatter.formatChart(data, {
+          type: ChartType.LINE,
+          title: 'Test Chart',
+          colors: false,
+        });
+
+        expect(result).toContain('Test Chart');
+      });
+    });
+
+    describe('formatChart() - Bar Charts', () => {
+      it('should format bar chart with single values', () => {
+        const data = [[100], [75], [50], [25]];
+        const options: ChartOptions = {
+          type: ChartType.BAR,
+          labels: ['Service A', 'Service B', 'Service C', 'Service D'],
+          width: 20,
+        };
+        const result = ResponseFormatter.formatChart(data, options);
+
+        expect(result).toContain('Service A');
+        expect(result).toContain('Service B');
+        expect(result).toContain('█'); // Filled bar
+        expect(result).toContain('░'); // Empty bar
+        expect(result).toContain('(100%)');
+      });
+
+      it('should format bar chart with averaged series', () => {
+        const data = [
+          [10, 20, 30], // Average: 20
+          [40, 50, 60], // Average: 50
+        ];
+        const options: ChartOptions = {
+          type: ChartType.BAR,
+          labels: ['Low', 'High'],
+        };
+        const result = ResponseFormatter.formatChart(data, options);
+
+        expect(result).toContain('Low');
+        expect(result).toContain('High');
+        expect(result).toContain('█');
+      });
+
+      it('should format values based on format option', () => {
+        const data = [[1500000], [2500000]];
+        const options: ChartOptions = {
+          type: ChartType.BAR,
+          labels: ['Requests A', 'Requests B'],
+          format: 'number',
+        };
+        const result = ResponseFormatter.formatChart(data, options);
+
+        expect(result).toContain('1.5M');
+        expect(result).toContain('2.5M');
+      });
+
+      it('should format bytes correctly', () => {
+        const data = [[1024], [2048], [1048576]];
+        const options: ChartOptions = {
+          type: ChartType.BAR,
+          labels: ['Small', 'Medium', 'Large'],
+          format: 'bytes',
+        };
+        const result = ResponseFormatter.formatChart(data, options);
+
+        expect(result).toContain('KB');
+        expect(result).toContain('MB');
+      });
+
+      it('should format percentages correctly', () => {
+        const data = [[95.5], [87.3], [72.8]];
+        const options: ChartOptions = {
+          type: ChartType.BAR,
+          labels: ['Prod', 'Staging', 'Dev'],
+          format: 'percent',
+        };
+        const result = ResponseFormatter.formatChart(data, options);
+
+        expect(result).toContain('95.5%');
+        expect(result).toContain('87.3%');
+        expect(result).toContain('72.8%');
+      });
+    });
+
+    describe('formatChart() - Sparklines', () => {
+      it('should format sparkline for single series', () => {
+        const data = [1, 2, 3, 4, 5, 4, 3, 2, 1];
+        const options: ChartOptions = {
+          type: ChartType.SPARKLINE,
+          labels: ['Metric'],
+        };
+        const result = ResponseFormatter.formatChart(data, options);
+
+        expect(result).toContain('Metric:');
+        expect(result).toContain('▁'); // Should contain sparkline characters
+        expect(result).toMatch(/\[.*-.*\]/); // Should contain range
+      });
+
+      it('should format multiple sparklines', () => {
+        const data = [
+          [1, 2, 3, 4, 5],
+          [5, 4, 3, 2, 1],
+          [3, 3, 3, 3, 3],
+        ];
+        const options: ChartOptions = {
+          type: ChartType.SPARKLINE,
+          labels: ['Increasing', 'Decreasing', 'Flat'],
+        };
+        const result = ResponseFormatter.formatChart(data, options);
+
+        expect(result).toContain('Increasing:');
+        expect(result).toContain('Decreasing:');
+        expect(result).toContain('Flat:');
+      });
+
+      it('should handle empty series in sparkline', () => {
+        const data = [[], [1, 2, 3]];
+        const options: ChartOptions = {
+          type: ChartType.SPARKLINE,
+          labels: ['Empty', 'Data'],
+        };
+        const result = ResponseFormatter.formatChart(data, options);
+
+        expect(result).toContain('Empty: (no data)');
+        expect(result).toContain('Data:');
+      });
+
+      it('should format sparkline values based on format', () => {
+        const data = [[1000, 2000, 3000, 4000, 5000]];
+        const options: ChartOptions = {
+          type: ChartType.SPARKLINE,
+          labels: ['Requests'],
+          format: 'number',
+        };
+        const result = ResponseFormatter.formatChart(data, options);
+
+        expect(result).toContain('Requests:');
+        expect(result).toContain('1.0K');
+        expect(result).toContain('5.0K');
+      });
+    });
+
+    describe('formatChart() - Data Input Formats', () => {
+      it('should handle single array as single series', () => {
+        const data = [1, 2, 3, 4, 5];
+        const result = ResponseFormatter.formatChart(data);
+
+        expect(result).toBeTruthy();
+        expect(result).not.toBe('No data to display.');
+      });
+
+      it('should handle array of arrays as multiple series', () => {
+        const data = [
+          [1, 2, 3],
+          [4, 5, 6],
+        ];
+        const result = ResponseFormatter.formatChart(data);
+
+        expect(result).toBeTruthy();
+      });
+
+      it('should handle object with named series', () => {
+        const data = {
+          cpu: [10, 20, 30],
+          memory: [30, 20, 10],
+        };
+        const result = ResponseFormatter.formatChart(data);
+
+        expect(result).toBeTruthy();
+      });
+
+      it('should return JSON for non-array, non-object data', () => {
+        const data = 'invalid';
+        const result = ResponseFormatter.formatChart(data);
+
+        expect(result).toBe(JSON.stringify(data, null, 2));
+      });
+
+      it('should handle all empty series', () => {
+        const data = [[], [], []];
+        const result = ResponseFormatter.formatChart(data);
+
+        expect(result).toBe('No data to display.');
+      });
+    });
+
+    describe('formatChart() - Default Options', () => {
+      it('should use default options when not specified', () => {
+        const data = [1, 2, 3, 4, 5];
+        const result = ResponseFormatter.formatChart(data);
+
+        // Should default to line chart
+        expect(result).toBeTruthy();
+        expect(result).not.toBe('No data to display.');
+      });
+
+      it('should override defaults with provided options', () => {
+        const data = [1, 2, 3];
+        const result = ResponseFormatter.formatChart(data, {
+          title: 'Custom Title',
+          height: 15,
+        });
+
+        expect(result).toContain('Custom Title');
+      });
+    });
+
+    describe('format() with CHART', () => {
+      it('should support CHART format in format() method', () => {
+        const data = [1, 2, 3, 4, 5];
+        const result = ResponseFormatter.format(data, OutputFormat.CHART);
+
+        expect(result).toBeTruthy();
+        expect(result).not.toContain('{'); // Should not be JSON
       });
     });
   });
