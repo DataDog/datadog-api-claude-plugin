@@ -1,6 +1,6 @@
 {
   "name": "datadog-api-claude-plugin",
-  "version": "1.15.0",
+  "version": "1.16.0",
   "description": "A Claude plugin to use Datadog directly through its APIs with code generation support",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
