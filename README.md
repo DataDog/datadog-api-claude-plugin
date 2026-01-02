@@ -117,7 +117,9 @@ node dist/index.js metrics query --query="avg:system.cpu.user{*}" --generate=go
 ### 🔒 Security First
 
 - Environment variable-based credentials (no hardcoded keys)
+- **Interactive confirmation prompts** for WRITE and DELETE operations
 - Permission checks before destructive operations
+- Auto-approve mode for automation (`--yes` flag or `DD_AUTO_APPROVE=true`)
 - Input sanitization and validation
 - Secure error handling (credentials never logged)
 
@@ -266,7 +268,56 @@ Many commands accept `--from` and `--to` time parameters with flexible formats:
 - `--language=typescript` or `--language=python` or `--language=go` - Specify code generation language
 - `--filter=<pattern>` - Filter results by pattern
 - `--limit=<n>` - Limit number of results
+- `--yes` or `-y` - Skip confirmation prompts (auto-approve all operations)
 - `--help` - Show help for a specific command
+
+### Interactive Safety Prompts
+
+The plugin includes interactive confirmation prompts for WRITE and DELETE operations to prevent accidental changes:
+
+**WRITE Operations** (create, update):
+```bash
+# Example: Creating a monitor will prompt for confirmation
+node dist/index.js monitors create --name="High CPU Alert"
+
+⚠️  WRITE OPERATION
+Resource: monitors
+Identifier: High CPU Alert
+Action: This will create a new monitor: "High CPU Alert"
+
+? Do you want to proceed? (y/N)
+```
+
+**DELETE Operations** (permanent deletion):
+```bash
+# Example: Deleting a monitor requires explicit confirmation
+node dist/index.js monitors delete 12345678
+
+🚨 DESTRUCTIVE DELETE OPERATION
+Resource: monitors
+Identifier: 12345678
+Impact: This will permanently delete the monitor and all its alert history
+Warning: This action cannot be undone
+
+? Are you sure you want to DELETE this resource? This action cannot be undone. (y/N)
+```
+
+**Auto-Approve for Automation**:
+
+For scripts and CI/CD pipelines, you can skip prompts using:
+
+```bash
+# Using the --yes flag
+node dist/index.js monitors delete 12345678 --yes
+
+# Using the -y short flag
+node dist/index.js monitors create --name="Test" -y
+
+# Using environment variable
+DD_AUTO_APPROVE=true node dist/index.js monitors delete 12345678
+```
+
+**Note**: READ operations (list, get, search) never prompt for confirmation.
 
 ## Examples
 
@@ -734,7 +785,7 @@ See [CHANGELOG.md](CHANGELOG.md) for more details.
 
 ## Roadmap
 
-- [ ] Interactive permission prompts for WRITE/DELETE operations
+- [x] Interactive permission prompts for WRITE/DELETE operations
 - [ ] Enhanced response formatting with tables and pagination
 - [ ] Support for additional Datadog APIs
 - [ ] Plugin marketplace publication

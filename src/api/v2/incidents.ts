@@ -26,7 +26,7 @@ export class IncidentsApi {
   async listIncidents(): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('incidents', 'list')
       );
 
@@ -60,7 +60,7 @@ export class IncidentsApi {
   async getIncident(incidentId: string): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('incidents', incidentId)
       );
 

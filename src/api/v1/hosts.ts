@@ -27,7 +27,7 @@ export class HostsApi {
   async listHosts(filter?: string): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('hosts', 'list')
       );
 
@@ -65,7 +65,7 @@ export class HostsApi {
   async getHostTotals(): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('hosts', 'totals')
       );
 

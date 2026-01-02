@@ -34,7 +34,7 @@ export class SpansApi {
   async searchSpans(params: SpanSearchParams): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('spans', 'search')
       );
 
@@ -82,7 +82,7 @@ export class SpansApi {
   async aggregateSpans(query: string, _from: number, _to: number): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('spans', 'aggregate')
       );
 

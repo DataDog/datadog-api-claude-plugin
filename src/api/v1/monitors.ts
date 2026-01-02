@@ -56,7 +56,7 @@ export class MonitorsApi {
   async listMonitors(params: MonitorListParams = {}): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('monitors', 'list')
       );
 
@@ -99,7 +99,7 @@ export class MonitorsApi {
   async getMonitor(monitorId: number): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('monitors', String(monitorId))
       );
 
@@ -123,7 +123,7 @@ export class MonitorsApi {
   async createMonitor(params: MonitorCreateParams): Promise<string> {
     try {
       // Check permissions - WRITE operation
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createWriteCheck(
           'monitors',
           params.name,
@@ -167,7 +167,7 @@ export class MonitorsApi {
   async updateMonitor(monitorId: number, params: MonitorUpdateParams): Promise<string> {
     try {
       // Check permissions - WRITE operation
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createWriteCheck(
           'monitors',
           String(monitorId),
@@ -209,7 +209,7 @@ export class MonitorsApi {
   async deleteMonitor(monitorId: number): Promise<string> {
     try {
       // Check permissions - DELETE operation
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createDeleteCheck(
           'monitors',
           String(monitorId),
@@ -239,7 +239,7 @@ export class MonitorsApi {
   async searchMonitors(query: string): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('monitors', 'search')
       );
 

@@ -26,7 +26,7 @@ export class SyntheticsApi {
   async listTests(): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('synthetics', 'list')
       );
 
@@ -59,7 +59,7 @@ export class SyntheticsApi {
   async getTest(publicId: string): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('synthetics', publicId)
       );
 

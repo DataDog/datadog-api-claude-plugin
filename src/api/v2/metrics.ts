@@ -50,7 +50,7 @@ export class MetricsApi {
   async queryMetrics(params: MetricQueryParams): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('metrics', params.query)
       );
 
@@ -96,7 +96,7 @@ export class MetricsApi {
     try {
       // Check permissions - WRITE operation
       const metricNames = params.series.map((s) => s.metric).join(', ');
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createWriteCheck(
           'metrics',
           metricNames,
@@ -140,7 +140,7 @@ export class MetricsApi {
   async listMetrics(params: MetricListParams = {}): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('metrics', 'list')
       );
 
@@ -167,7 +167,7 @@ export class MetricsApi {
   async getMetricMetadata(metricName: string): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('metrics', metricName)
       );
 

@@ -6,6 +6,7 @@ export interface DatadogConfig {
   apiKey: string;
   appKey: string;
   site: string;
+  autoApprove: boolean;
 }
 
 export class ConfigError extends Error {
@@ -33,6 +34,7 @@ export class ConfigValidator {
     const apiKey = process.env.DD_API_KEY;
     const appKey = process.env.DD_APP_KEY;
     const site = process.env.DD_SITE || 'datadoghq.com';
+    const autoApprove = process.env.DD_AUTO_APPROVE === 'true';
 
     if (!apiKey) {
       throw new ConfigError(
@@ -81,7 +83,7 @@ export class ConfigValidator {
       );
     }
 
-    this.instance = { apiKey, appKey, site };
+    this.instance = { apiKey, appKey, site, autoApprove };
     return this.instance;
   }
 

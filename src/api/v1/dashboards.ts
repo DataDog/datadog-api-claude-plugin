@@ -55,7 +55,7 @@ export class DashboardsApi {
   async listDashboards(params: DashboardListParams = {}): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('dashboards', 'list')
       );
 
@@ -94,7 +94,7 @@ export class DashboardsApi {
   async getDashboard(dashboardId: string): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('dashboards', dashboardId)
       );
 
@@ -118,7 +118,7 @@ export class DashboardsApi {
   async createDashboard(params: DashboardCreateParams): Promise<string> {
     try {
       // Check permissions - WRITE operation
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createWriteCheck(
           'dashboards',
           params.title,
@@ -163,7 +163,7 @@ export class DashboardsApi {
   async updateDashboard(dashboardId: string, params: DashboardUpdateParams): Promise<string> {
     try {
       // Check permissions - WRITE operation
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createWriteCheck(
           'dashboards',
           dashboardId,
@@ -211,7 +211,7 @@ export class DashboardsApi {
   async deleteDashboard(dashboardId: string): Promise<string> {
     try {
       // Check permissions - DELETE operation
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createDeleteCheck(
           'dashboards',
           dashboardId,
@@ -241,7 +241,7 @@ export class DashboardsApi {
   async getDashboardPublicUrl(dashboardId: string): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('dashboards', dashboardId)
       );
 
