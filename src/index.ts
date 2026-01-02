@@ -148,6 +148,17 @@ async function main() {
     // Parse command line arguments
     const args = process.argv.slice(2);
 
+    // Check for --yes or -y flag BEFORE processing commands
+    const autoApproveFlag = args.includes('--yes') || args.includes('-y');
+    if (autoApproveFlag) {
+      // Set environment variable so PermissionManager can access it
+      process.env.DD_CLI_AUTO_APPROVE = 'true';
+      // Remove flag from args so it doesn't interfere with command parsing
+      const filteredArgs = args.filter(arg => arg !== '--yes' && arg !== '-y');
+      // Update process.argv to reflect the filtered args
+      process.argv = process.argv.slice(0, 2).concat(filteredArgs);
+    }
+
     if (args.length === 0) {
       printUsage();
       process.exit(0);
@@ -255,10 +266,16 @@ Commands:
   version        Show version information
   help           Show this help message
 
+Global Options:
+  --yes, -y          Skip confirmation prompts (auto-approve all operations)
+  --generate         Generate code instead of executing
+  --language=<lang>  Code generation language (typescript, python, go, java, rust)
+
 Environment Variables:
-  DD_API_KEY     Datadog API key (required)
-  DD_APP_KEY     Datadog Application key (required)
-  DD_SITE        Datadog site (default: datadoghq.com)
+  DD_API_KEY         Datadog API key (required)
+  DD_APP_KEY         Datadog Application key (required)
+  DD_SITE            Datadog site (default: datadoghq.com)
+  DD_AUTO_APPROVE    Skip all confirmation prompts (true/false)
 
 Examples:
   dd-plugin metrics list

@@ -26,7 +26,7 @@ export class SLOsApi {
   async listSLOs(): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('slos', 'list')
       );
 
@@ -60,7 +60,7 @@ export class SLOsApi {
   async getSLO(sloId: string): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('slos', sloId)
       );
 
@@ -84,7 +84,7 @@ export class SLOsApi {
   async deleteSLO(sloId: string): Promise<string> {
     try {
       // Check permissions - DELETE operation
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createDeleteCheck(
           'slos',
           sloId,
@@ -116,7 +116,7 @@ export class SLOsApi {
   async getSLOHistory(sloId: string, from: number, to: number): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('slos', sloId)
       );
 

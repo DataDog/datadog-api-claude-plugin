@@ -34,7 +34,7 @@ export class SecurityMonitoringApi {
   async listSecuritySignals(params: SecuritySignalSearchParams): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('security', 'signals')
       );
 
@@ -77,7 +77,7 @@ export class SecurityMonitoringApi {
   async listSecurityRules(): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('security', 'rules')
       );
 

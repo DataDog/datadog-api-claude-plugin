@@ -39,9 +39,11 @@
     "node": ">=16.0.0"
   },
   "dependencies": {
-    "@datadog/datadog-api-client": "^1.29.0"
+    "@datadog/datadog-api-client": "^1.29.0",
+    "inquirer": "^9.2.12"
   },
   "devDependencies": {
+    "@types/inquirer": "^9.0.7",
     "@types/jest": "^29.5.11",
     "@types/node": "^20.10.6",
     "@typescript-eslint/eslint-plugin": "^6.17.0",

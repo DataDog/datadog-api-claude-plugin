@@ -36,7 +36,7 @@ export class CasesApi {
   } = {}): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('cases', 'search')
       );
 
@@ -84,7 +84,7 @@ export class CasesApi {
   async getCase(caseId: string): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('cases', caseId)
       );
 
@@ -113,7 +113,7 @@ export class CasesApi {
   }): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createWriteCheck(
           'cases',
           'create',
@@ -169,7 +169,7 @@ export class CasesApi {
   async updateCaseStatus(caseId: string, status: string): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createWriteCheck(
           'cases',
           caseId,
@@ -204,7 +204,7 @@ export class CasesApi {
   async updateCasePriority(caseId: string, priority: string): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createWriteCheck(
           'cases',
           caseId,
@@ -239,7 +239,7 @@ export class CasesApi {
   async assignCase(caseId: string, userId: string): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createWriteCheck(
           'cases',
           caseId,
@@ -281,7 +281,7 @@ export class CasesApi {
   async unassignCase(caseId: string): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createWriteCheck(
           'cases',
           caseId,
@@ -313,7 +313,7 @@ export class CasesApi {
   async archiveCase(caseId: string): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createDeleteCheck(
           'cases',
           caseId,
@@ -345,7 +345,7 @@ export class CasesApi {
   async unarchiveCase(caseId: string): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createWriteCheck(
           'cases',
           caseId,
@@ -378,7 +378,7 @@ export class CasesApi {
   async addCaseComment(caseId: string, comment: string): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createWriteCheck(
           'cases',
           caseId,
@@ -403,7 +403,7 @@ export class CasesApi {
   async listProjects(): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('cases.projects', 'list')
       );
 
@@ -435,7 +435,7 @@ export class CasesApi {
   async getProject(projectId: string): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('cases.projects', projectId)
       );
 
@@ -458,7 +458,7 @@ export class CasesApi {
   async createProject(name: string): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createWriteCheck(
           'cases.projects',
           'create',
@@ -497,7 +497,7 @@ export class CasesApi {
   async deleteProject(projectId: string): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createDeleteCheck(
           'cases.projects',
           projectId,

@@ -32,7 +32,7 @@ export class KeyManagementApi {
   }): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('api-keys', 'list')
       );
 
@@ -80,7 +80,7 @@ export class KeyManagementApi {
   async getApiKey(keyId: string): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('api-keys', keyId)
       );
 
@@ -103,7 +103,7 @@ export class KeyManagementApi {
   async createApiKey(name: string): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createWriteCheck('api-keys', 'create', `Creating API key: ${name}`)
       );
 
@@ -134,7 +134,7 @@ export class KeyManagementApi {
   async updateApiKey(keyId: string, name: string): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createWriteCheck('api-keys', keyId, `Updating API key ${keyId} to name: ${name}`)
       );
 
@@ -166,7 +166,7 @@ export class KeyManagementApi {
   async deleteApiKey(keyId: string): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createDeleteCheck(
           'api-keys',
           keyId,
@@ -198,7 +198,7 @@ export class KeyManagementApi {
   }): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('application-keys', 'list')
       );
 
@@ -246,7 +246,7 @@ export class KeyManagementApi {
   async getApplicationKey(keyId: string): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('application-keys', keyId)
       );
 
@@ -270,7 +270,7 @@ export class KeyManagementApi {
   async updateApplicationKey(keyId: string, name: string): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createWriteCheck('application-keys', keyId, `Updating application key ${keyId} to name: ${name}`)
       );
 
@@ -302,7 +302,7 @@ export class KeyManagementApi {
   async deleteApplicationKey(keyId: string): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createDeleteCheck(
           'application-keys',
           keyId,
@@ -334,7 +334,7 @@ export class KeyManagementApi {
   }): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('current-user-application-keys', 'list')
       );
 
@@ -383,7 +383,7 @@ export class KeyManagementApi {
   async createCurrentUserApplicationKey(name: string, scopes?: string[]): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createWriteCheck('current-user-application-keys', 'create', `Creating application key for current user: ${name}`)
       );
 
@@ -420,7 +420,7 @@ export class KeyManagementApi {
   async deleteCurrentUserApplicationKey(keyId: string): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createDeleteCheck(
           'current-user-application-keys',
           keyId,

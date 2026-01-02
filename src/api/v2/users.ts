@@ -26,7 +26,7 @@ export class UsersApi {
   async listUsers(): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('users', 'list')
       );
 
@@ -59,7 +59,7 @@ export class UsersApi {
   async getUser(userId: string): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('users', userId)
       );
 

@@ -35,7 +35,7 @@ export class LogsApi {
   async searchLogs(params: LogSearchParams): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('logs', 'search')
       );
 
@@ -82,7 +82,7 @@ export class LogsApi {
   async aggregateLogs(query: string, _from: number, _to: number): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('logs', 'aggregate')
       );
 

@@ -72,7 +72,7 @@ export class RUMApi {
   async searchRUMEvents(params: RUMSearchParams): Promise<string> {
     try {
       // Check permissions
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('rum', 'search')
       );
 
@@ -107,7 +107,7 @@ export class RUMApi {
    */
   async listRumMetrics(): Promise<string> {
     try {
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('rum', 'list metrics')
       );
 
@@ -125,7 +125,7 @@ export class RUMApi {
    */
   async getRumMetric(metricId: string): Promise<string> {
     try {
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('rum', 'get metric')
       );
 
@@ -143,7 +143,7 @@ export class RUMApi {
    */
   async createRumMetric(params: RUMMetricCreateParams): Promise<string> {
     try {
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createWriteCheck(
           'rum',
           'create metric',
@@ -205,7 +205,7 @@ export class RUMApi {
    */
   async updateRumMetric(metricId: string, params: RUMMetricUpdateParams): Promise<string> {
     try {
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createWriteCheck('rum', 'update metric', `ID: ${metricId}`)
       );
 
@@ -248,7 +248,7 @@ export class RUMApi {
    */
   async deleteRumMetric(metricId: string): Promise<string> {
     try {
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createDeleteCheck('rum', 'metric', metricId)
       );
 
@@ -266,7 +266,7 @@ export class RUMApi {
    */
   async listRetentionFilters(appId: string): Promise<string> {
     try {
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('rum', 'list retention filters')
       );
 
@@ -285,7 +285,7 @@ export class RUMApi {
    */
   async getRetentionFilter(appId: string, rfId: string): Promise<string> {
     try {
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('rum', 'get retention filter')
       );
 
@@ -307,7 +307,7 @@ export class RUMApi {
     params: RUMRetentionFilterCreateParams
   ): Promise<string> {
     try {
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createWriteCheck(
           'rum',
           'create retention filter',
@@ -354,7 +354,7 @@ export class RUMApi {
     params: RUMRetentionFilterUpdateParams
   ): Promise<string> {
     try {
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createWriteCheck(
           'rum',
           'update retention filter',
@@ -405,7 +405,7 @@ export class RUMApi {
    */
   async deleteRetentionFilter(appId: string, rfId: string): Promise<string> {
     try {
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createDeleteCheck('rum', 'retention filter', rfId)
       );
 
@@ -427,7 +427,7 @@ export class RUMApi {
    */
   async orderRetentionFilters(appId: string, filterIds: string[]): Promise<string> {
     try {
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createWriteCheck(
           'rum',
           'order retention filters',

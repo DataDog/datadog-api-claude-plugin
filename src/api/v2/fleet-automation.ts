@@ -88,7 +88,7 @@ export class FleetAutomationApi {
    */
   async listAgentVersions(): Promise<string> {
     try {
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('fleet', 'list agent versions')
       );
 
@@ -106,7 +106,7 @@ export class FleetAutomationApi {
    */
   async listAgents(params?: FleetAgentsListParams): Promise<string> {
     try {
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('fleet', 'list agents')
       );
 
@@ -124,7 +124,7 @@ export class FleetAutomationApi {
    */
   async getAgentInfo(agentKey: string): Promise<string> {
     try {
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('fleet', 'get agent info')
       );
 
@@ -142,7 +142,7 @@ export class FleetAutomationApi {
    */
   async listDeployments(params?: FleetDeploymentsListParams): Promise<string> {
     try {
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('fleet', 'list deployments')
       );
 
@@ -164,7 +164,7 @@ export class FleetAutomationApi {
     params?: FleetDeploymentGetParams
   ): Promise<string> {
     try {
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('fleet', 'get deployment')
       );
 
@@ -185,7 +185,7 @@ export class FleetAutomationApi {
    */
   async createConfigDeployment(params: FleetConfigDeploymentParams): Promise<string> {
     try {
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createWriteCheck(
           'fleet',
           'create configuration deployment',
@@ -227,7 +227,7 @@ export class FleetAutomationApi {
       const packagesDesc = params.targetPackages
         .map((p) => `${p.name}:${p.version}`)
         .join(', ');
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createWriteCheck(
           'fleet',
           'create package upgrade deployment',
@@ -262,7 +262,7 @@ export class FleetAutomationApi {
    */
   async cancelDeployment(deploymentId: string): Promise<string> {
     try {
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createDeleteCheck('fleet', 'deployment', deploymentId)
       );
 
@@ -281,7 +281,7 @@ export class FleetAutomationApi {
    */
   async listSchedules(): Promise<string> {
     try {
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('fleet', 'list schedules')
       );
 
@@ -299,7 +299,7 @@ export class FleetAutomationApi {
    */
   async getSchedule(scheduleId: string): Promise<string> {
     try {
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createReadCheck('fleet', 'get schedule')
       );
 
@@ -317,7 +317,7 @@ export class FleetAutomationApi {
    */
   async createSchedule(params: FleetScheduleCreateParams): Promise<string> {
     try {
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createWriteCheck(
           'fleet',
           'create schedule',
@@ -364,7 +364,7 @@ export class FleetAutomationApi {
    */
   async updateSchedule(scheduleId: string, params: FleetScheduleUpdateParams): Promise<string> {
     try {
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createWriteCheck('fleet', 'update schedule', `ID: ${scheduleId}`)
       );
 
@@ -414,7 +414,7 @@ export class FleetAutomationApi {
    */
   async deleteSchedule(scheduleId: string): Promise<string> {
     try {
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createDeleteCheck('fleet', 'schedule', scheduleId)
       );
 
@@ -434,7 +434,7 @@ export class FleetAutomationApi {
    */
   async triggerSchedule(scheduleId: string): Promise<string> {
     try {
-      PermissionManager.requirePermission(
+      await PermissionManager.requirePermission(
         PermissionManager.createWriteCheck('fleet', 'trigger schedule', `ID: ${scheduleId}`)
       );
 
