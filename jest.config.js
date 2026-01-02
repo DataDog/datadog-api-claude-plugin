@@ -4,6 +4,7 @@ module.exports = {
   testEnvironment: 'node',
   roots: ['<rootDir>/tests'],
   testMatch: ['**/*.test.ts'],
+  moduleDirectories: ['node_modules', '<rootDir>/tests/__mocks__'],
   collectCoverageFrom: [
     'src/**/*.ts',
     '!src/**/*.d.ts',
@@ -21,6 +22,10 @@ module.exports = {
   },
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
+    '^(\\.{1,2}/.*)\\.js$': '$1',
   },
+  transformIgnorePatterns: [
+    'node_modules/(?!(inquirer|@inquirer|@ljharb|ansi-escapes|chalk|cli-cursor|cli-width|figures|strip-ansi|wrap-ansi|string-width)/)',
+  ],
   verbose: true,
 };
