@@ -39,7 +39,7 @@
     "node": ">=16.0.0"
   },
   "dependencies": {
-    "@datadog/datadog-api-client": "^1.29.0",
+    "@datadog/datadog-api-client": "^1.51.0",
     "asciichart": "^1.5.25",
     "inquirer": "^13.1.0"
   },
