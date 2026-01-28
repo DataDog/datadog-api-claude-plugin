@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Datadog Support
+    url: https://www.datadoghq.com/support/
+    about: For issues with Datadog services or APIs, contact Datadog Support
+  - name: Datadog Community
+    url: https://community.datadoghq.com/
+    about: Ask questions and discuss with the Datadog community
+  - name: Security Issues
+    url: https://www.datadoghq.com/security/
+    about: Report security vulnerabilities through Datadog's security program

@@ -1,0 +1,16 @@
+Component,Origin,License,Copyright
+@datadog/datadog-api-client,https://github.com/DataDog/datadog-api-client-typescript,Apache-2.0,Copyright Datadog Inc.
+asciichart,https://github.com/kroitor/asciichart,MIT,Copyright (c) 2016 Igor Kroitor
+inquirer,https://github.com/SBoudrias/Inquirer.js,MIT,Copyright (c) 2023 Simon Boudrias
+@eslint/js,https://github.com/eslint/eslint,MIT,Copyright OpenJS Foundation and other contributors
+@types/asciichart,https://github.com/DefinitelyTyped/DefinitelyTyped,MIT,Copyright (c) Microsoft Corporation
+@types/inquirer,https://github.com/DefinitelyTyped/DefinitelyTyped,MIT,Copyright (c) Microsoft Corporation
+@types/jest,https://github.com/DefinitelyTyped/DefinitelyTyped,MIT,Copyright (c) Microsoft Corporation
+@types/node,https://github.com/DefinitelyTyped/DefinitelyTyped,MIT,Copyright (c) Microsoft Corporation
+eslint,https://github.com/eslint/eslint,MIT,Copyright OpenJS Foundation and other contributors
+globals,https://github.com/sindresorhus/globals,MIT,Copyright (c) Sindre Sorhus
+jest,https://github.com/jestjs/jest,MIT,Copyright (c) Meta Platforms Inc. and affiliates
+prettier,https://github.com/prettier/prettier,MIT,Copyright (c) James Long and contributors
+ts-jest,https://github.com/kulshekhar/ts-jest,MIT,Copyright (c) 2016-2018
+typescript,https://github.com/microsoft/TypeScript,Apache-2.0,Copyright (c) Microsoft Corporation
+typescript-eslint,https://github.com/typescript-eslint/typescript-eslint,MIT,Copyright (c) 2019 typescript-eslint and other contributors
