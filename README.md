@@ -123,6 +123,17 @@ node dist/index.js metrics query --query="avg:system.cpu.user{*}" --generate=go
 - Input sanitization and validation
 - Secure error handling (credentials never logged)
 
+### 🏷️ Agent Identification
+
+The plugin automatically identifies which AI agent is using it and reports this information with each API request:
+
+- **Automatic detection**: Identifies Claude, Letta, ChatGPT, and other agents
+- **Transparent reporting**: Sends agent type, version, and metadata via HTTP headers
+- **Privacy-focused**: No user data, API keys, or request content included
+- **Customizable**: Explicitly set agent type via environment variables
+
+See [AGENT_IDENTIFICATION.md](./AGENT_IDENTIFICATION.md) for detailed information.
+
 ## Installation
 
 ### Prerequisites

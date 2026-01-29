@@ -670,6 +670,22 @@ This workflow identifies and resolves performance issues:
 
 **"I want to segment my audience"** → audience-management (query users/accounts, create segments)
 
+## Agent Identification
+
+The plugin automatically identifies which AI agent (Claude, Letta, ChatGPT, etc.) is using it and reports this information with every API request. This enables:
+
+- **Better support**: Datadog can provide agent-specific help and optimization
+- **Usage analytics**: Understanding which agents are using the API
+- **Enhanced debugging**: Easier troubleshooting of agent-specific issues
+
+The identification is:
+- **Automatic**: Detects agent type from environment variables
+- **Privacy-focused**: No user data, API keys, or request content is included
+- **Transparent**: Sends agent info via HTTP headers with each request
+- **Customizable**: Can be explicitly configured via `DD_AGENT_TYPE` and `DD_AGENT_VERSION` environment variables
+
+For detailed information, see [AGENT_IDENTIFICATION.md](./AGENT_IDENTIFICATION.md).
+
 ## Architecture
 
 ### Direct API Integration

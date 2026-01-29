@@ -140,4 +140,73 @@ describe('ConfigValidator', () => {
       expect(current).toBe(config);
     });
   });
+
+  describe('Agent Identification', () => {
+    beforeEach(() => {
+      process.env.DD_API_KEY = 'a'.repeat(32);
+      process.env.DD_APP_KEY = 'b'.repeat(32);
+    });
+
+    it('should detect Claude agent from CLAUDE_MODEL environment variable', () => {
+      process.env.CLAUDE_MODEL = 'claude-3-opus-20240229';
+      const config = ConfigValidator.validate();
+
+      expect(config.agentInfo.type).toBe('claude');
+      expect(config.agentInfo.metadata?.model).toBe('claude-3-opus-20240229');
+    });
+
+    it('should detect Claude agent from ANTHROPIC_API_KEY', () => {
+      process.env.ANTHROPIC_API_KEY = 'sk-ant-test123';
+      const config = ConfigValidator.validate();
+
+      expect(config.agentInfo.type).toBe('claude');
+    });
+
+    it('should detect Letta agent from LETTA_API_KEY', () => {
+      process.env.LETTA_API_KEY = 'test-key';
+      const config = ConfigValidator.validate();
+
+      expect(config.agentInfo.type).toBe('letta');
+    });
+
+    it('should detect ChatGPT agent from OPENAI_API_KEY', () => {
+      process.env.OPENAI_API_KEY = 'sk-test123';
+      process.env.OPENAI_MODEL = 'gpt-4';
+      const config = ConfigValidator.validate();
+
+      expect(config.agentInfo.type).toBe('chatgpt');
+      expect(config.agentInfo.metadata?.model).toBe('gpt-4');
+    });
+
+    it('should use explicit DD_AGENT_TYPE when provided', () => {
+      process.env.DD_AGENT_TYPE = 'custom-agent';
+      process.env.DD_AGENT_VERSION = '1.0.0';
+      process.env.CLAUDE_MODEL = 'claude-3-opus-20240229'; // Should be ignored
+      const config = ConfigValidator.validate();
+
+      expect(config.agentInfo.type).toBe('custom-agent');
+      expect(config.agentInfo.version).toBe('1.0.0');
+    });
+
+    it('should default to unknown agent type when not detected', () => {
+      const config = ConfigValidator.validate();
+
+      expect(config.agentInfo.type).toBe('unknown');
+    });
+
+    it('should include runtime metadata', () => {
+      const config = ConfigValidator.validate();
+
+      expect(config.agentInfo.metadata?.runtime).toBe('nodejs');
+      expect(config.agentInfo.metadata?.node_version).toBe(process.version);
+      expect(config.agentInfo.metadata?.plugin_version).toBeDefined();
+    });
+
+    it('should use AI_ASSISTANT_TYPE for generic assistants', () => {
+      process.env.AI_ASSISTANT_TYPE = 'generic-ai';
+      const config = ConfigValidator.validate();
+
+      expect(config.agentInfo.type).toBe('generic-ai');
+    });
+  });
 });

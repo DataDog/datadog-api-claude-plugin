@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Agent Identification**: Automatic detection and reporting of AI agent information with every API request
+  - Detects Claude, Letta, ChatGPT, and other AI agents from environment variables
+  - Sends agent type, version, and metadata via HTTP headers (`DD-Agent-Type`, `DD-Agent-Version`, `DD-Agent-Metadata`)
+  - Includes runtime context (Node.js version, plugin version) for better support and debugging
+  - Privacy-focused: No user data, API keys, or request content included
+  - Customizable via `DD_AGENT_TYPE` and `DD_AGENT_VERSION` environment variables
+  - See [AGENT_IDENTIFICATION.md](./AGENT_IDENTIFICATION.md) for detailed documentation
+
+### Changed
+- Enhanced HTTP client to automatically inject agent identification headers on all requests
+- Updated configuration system to detect and store agent information
+- Added comprehensive test coverage for agent detection and identification
+
 ## [1.14.0] - 2025-12-31
 
 ### Added

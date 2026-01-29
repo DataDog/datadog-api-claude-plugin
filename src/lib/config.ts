@@ -7,11 +7,18 @@
  * Configuration and credential validation for Datadog API
  */
 
+export interface AgentInfo {
+  type: string;
+  version?: string;
+  metadata?: Record<string, string>;
+}
+
 export interface DatadogConfig {
   apiKey: string;
   appKey: string;
   site: string;
   autoApprove: boolean;
+  agentInfo: AgentInfo;
 }
 
 export class ConfigError extends Error {
@@ -28,6 +35,67 @@ export class ConfigValidator {
   private static instance: DatadogConfig | null = null;
 
   /**
+   * Detects agent information from environment variables and process context
+   * @returns AgentInfo object with detected agent details
+   */
+  private static detectAgentInfo(): AgentInfo {
+    // Check for explicit agent identification via environment variables
+    const agentType = process.env.DD_AGENT_TYPE;
+    const agentVersion = process.env.DD_AGENT_VERSION;
+
+    // Auto-detect agent type from common environment variables
+    let detectedType = agentType || 'unknown';
+    const metadata: Record<string, string> = {};
+
+    // Claude detection
+    if (!agentType) {
+      if (process.env.CLAUDE_MODEL || process.env.ANTHROPIC_API_KEY) {
+        detectedType = 'claude';
+        if (process.env.CLAUDE_MODEL) {
+          metadata.model = process.env.CLAUDE_MODEL;
+        }
+      }
+      // Letta detection
+      else if (process.env.LETTA_API_KEY || process.env.LETTA_BASE_URL) {
+        detectedType = 'letta';
+        if (process.env.LETTA_VERSION) {
+          metadata.version = process.env.LETTA_VERSION;
+        }
+      }
+      // ChatGPT/OpenAI detection
+      else if (process.env.OPENAI_API_KEY || process.env.OPENAI_MODEL) {
+        detectedType = 'chatgpt';
+        if (process.env.OPENAI_MODEL) {
+          metadata.model = process.env.OPENAI_MODEL;
+        }
+      }
+      // Generic AI assistant detection
+      else if (process.env.AI_ASSISTANT_TYPE) {
+        detectedType = process.env.AI_ASSISTANT_TYPE;
+      }
+    }
+
+    // Add runtime information
+    metadata.runtime = 'nodejs';
+    metadata.node_version = process.version;
+
+    // Add plugin version from package.json if available
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const packageJson = require('../../package.json');
+      metadata.plugin_version = packageJson.version;
+    } catch {
+      // Ignore if package.json is not available
+    }
+
+    return {
+      type: detectedType,
+      version: agentVersion,
+      metadata,
+    };
+  }
+
+  /**
    * Validates and returns Datadog configuration
    * @throws {ConfigError} If required environment variables are missing
    */
@@ -40,6 +108,7 @@ export class ConfigValidator {
     const appKey = process.env.DD_APP_KEY;
     const site = process.env.DD_SITE || 'datadoghq.com';
     const autoApprove = process.env.DD_AUTO_APPROVE === 'true';
+    const agentInfo = this.detectAgentInfo();
 
     if (!apiKey) {
       throw new ConfigError(
@@ -88,7 +157,7 @@ export class ConfigValidator {
       );
     }
 
-    this.instance = { apiKey, appKey, site, autoApprove };
+    this.instance = { apiKey, appKey, site, autoApprove, agentInfo };
     return this.instance;
   }
 

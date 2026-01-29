@@ -19,6 +19,23 @@ const mockedInquirer = inquirer as jest.Mocked<typeof inquirer>;
 jest.mock('../../src/lib/config');
 const mockedConfigValidator = ConfigModule.ConfigValidator as jest.Mocked<typeof ConfigModule.ConfigValidator>;
 
+// Helper to create mock config with all required fields
+const createMockConfig = (overrides: Partial<ConfigModule.DatadogConfig> = {}): ConfigModule.DatadogConfig => ({
+  apiKey: 'test-api-key',
+  appKey: 'test-app-key',
+  site: 'datadoghq.com',
+  autoApprove: false,
+  agentInfo: {
+    type: 'test-agent',
+    metadata: {
+      runtime: 'nodejs',
+      node_version: process.version,
+      plugin_version: '1.0.0',
+    },
+  },
+  ...overrides,
+});
+
 describe('PermissionManager', () => {
   // Suppress console output during tests
   let consoleErrorSpy: jest.SpyInstance;
@@ -29,12 +46,7 @@ describe('PermissionManager', () => {
     originalEnv = { ...process.env };
 
     // Default mock for ConfigValidator
-    mockedConfigValidator.validate.mockReturnValue({
-      apiKey: 'test-api-key',
-      appKey: 'test-app-key',
-      site: 'datadoghq.com',
-      autoApprove: false,
-    });
+    mockedConfigValidator.validate.mockReturnValue(createMockConfig());
   });
 
   afterEach(() => {
@@ -149,12 +161,7 @@ describe('PermissionManager', () => {
 
   describe('Auto-approve via DD_AUTO_APPROVE', () => {
     it('should skip prompts when DD_AUTO_APPROVE is true', async () => {
-      mockedConfigValidator.validate.mockReturnValue({
-        apiKey: 'test-api-key',
-        appKey: 'test-app-key',
-        site: 'datadoghq.com',
-        autoApprove: true,
-      });
+      mockedConfigValidator.validate.mockReturnValue(createMockConfig({ autoApprove: true }));
 
       const check = {
         operation: OperationType.WRITE,
@@ -170,12 +177,7 @@ describe('PermissionManager', () => {
     });
 
     it('should skip DELETE prompts when DD_AUTO_APPROVE is true', async () => {
-      mockedConfigValidator.validate.mockReturnValue({
-        apiKey: 'test-api-key',
-        appKey: 'test-app-key',
-        site: 'datadoghq.com',
-        autoApprove: true,
-      });
+      mockedConfigValidator.validate.mockReturnValue(createMockConfig({ autoApprove: true }));
 
       const check = {
         operation: OperationType.DELETE,
@@ -357,12 +359,7 @@ describe('PermissionManager', () => {
     });
 
     it('should not throw when auto-approved', async () => {
-      mockedConfigValidator.validate.mockReturnValue({
-        apiKey: 'test-api-key',
-        appKey: 'test-app-key',
-        site: 'datadoghq.com',
-        autoApprove: true,
-      });
+      mockedConfigValidator.validate.mockReturnValue(createMockConfig({ autoApprove: true }));
 
       const check = PermissionManager.createDeleteCheck(
         'dashboards',
