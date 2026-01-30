@@ -7,9 +7,9 @@
  * Automatic token refresh management
  */
 
-import { OAuthTokens, TOKEN_REFRESH_BUFFER_SECONDS, DATADOG_CLI_CLIENT_ID } from './types';
+import { OAuthTokens, ITokenStorage, TOKEN_REFRESH_BUFFER_SECONDS, DATADOG_CLI_CLIENT_ID } from './types';
 import { isTokenExpired, refreshAccessToken } from './oauth-client';
-import { TokenStorage, getTokenStorage } from './token-storage';
+import { getTokenStorage } from './token-storage-factory';
 
 /**
  * Error thrown when refresh token is expired and re-authentication is required
@@ -35,7 +35,7 @@ export class NoTokensError extends Error {
  * TokenRefresher manages automatic token refresh with deduplication
  */
 export class TokenRefresher {
-  private storage: TokenStorage;
+  private storage: ITokenStorage;
   private site: string;
   private clientId: string;
   private refreshPromise: Promise<OAuthTokens> | null = null;
@@ -51,7 +51,7 @@ export class TokenRefresher {
   constructor(
     site: string,
     clientId: string = DATADOG_CLI_CLIENT_ID,
-    storage?: TokenStorage,
+    storage?: ITokenStorage,
     bufferSeconds: number = TOKEN_REFRESH_BUFFER_SECONDS
   ) {
     this.site = site;
@@ -195,13 +195,15 @@ export class TokenRefresher {
       return { hasTokens: false, needsRefresh: false };
     }
 
-    const expirationInfo = this.storage.getTokenExpiration(this.site);
+    // Calculate expiration info from tokens directly
+    const expiresAt = tokens.issuedAt + tokens.expiresIn;
+    const now = Math.floor(Date.now() / 1000);
 
     return {
       hasTokens: true,
       needsRefresh: isTokenExpired(tokens, this.bufferSeconds),
-      expiresAt: expirationInfo?.accessTokenExpiresAt,
-      expiresInSeconds: expirationInfo?.expiresInSeconds,
+      expiresAt: new Date(expiresAt * 1000),
+      expiresInSeconds: Math.max(0, expiresAt - now),
     };
   }
 }

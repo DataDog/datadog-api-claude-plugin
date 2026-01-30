@@ -71,6 +71,64 @@ export interface StoredTokens {
 }
 
 /**
+ * Token storage interface - abstracts the underlying storage mechanism
+ * Implemented by both FileTokenStorage (plaintext file) and SecureTokenStorage (OS keychain)
+ */
+export interface ITokenStorage {
+  /**
+   * Save tokens for a specific Datadog site
+   * @param site The Datadog site (e.g., 'datadoghq.com')
+   * @param tokens The OAuth tokens to save
+   */
+  saveTokens(site: string, tokens: OAuthTokens): void;
+
+  /**
+   * Get tokens for a specific Datadog site
+   * @param site The Datadog site (e.g., 'datadoghq.com')
+   * @returns The stored tokens, or null if none exist
+   */
+  getTokens(site: string): OAuthTokens | null;
+
+  /**
+   * Delete tokens for a specific Datadog site
+   * @param site The Datadog site (e.g., 'datadoghq.com')
+   * @returns Whether tokens were deleted
+   */
+  deleteTokens(site: string): boolean;
+
+  /**
+   * Delete all stored tokens
+   */
+  deleteAllTokens(): void;
+
+  /**
+   * Check if valid (non-expired) tokens exist for a site
+   * @param site The Datadog site (e.g., 'datadoghq.com')
+   * @param includeRefreshable If true, consider tokens valid if they can be refreshed
+   * @returns Whether valid tokens exist
+   */
+  hasValidTokens(site: string, includeRefreshable?: boolean): boolean;
+
+  /**
+   * Get all sites with stored tokens
+   * @returns Array of site names
+   */
+  listSites(): string[];
+
+  /**
+   * Get storage location description (for display/debugging)
+   * @returns Description of where tokens are stored
+   */
+  getStorageLocation(): string;
+
+  /**
+   * Get the storage backend type
+   * @returns 'keychain' or 'file'
+   */
+  getBackendType(): 'keychain' | 'file';
+}
+
+/**
  * OAuth configuration
  */
 export interface OAuthConfig {

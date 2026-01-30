@@ -39,6 +39,7 @@ export {
   OAuthConfig,
   LoginResult,
   OAuthEndpoints,
+  ITokenStorage,
   DEFAULT_OAUTH_SCOPES,
   DATADOG_CLI_CLIENT_ID,
   DEFAULT_OAUTH_TIMEOUT_MS,
@@ -59,8 +60,43 @@ export {
   isTokenExpired,
 } from './oauth-client';
 
-// Export token storage
-export { TokenStorage, getTokenStorage, resetTokenStorage } from './token-storage';
+// Export token storage (file-based)
+export {
+  FileTokenStorage,
+  TokenStorage,
+  getFileTokenStorage,
+  getTokenStorage as getFileTokenStorageAlias,
+  resetFileTokenStorage,
+  resetTokenStorage,
+} from './token-storage';
+
+// Export secure token storage (OS keychain)
+export {
+  SecureTokenStorage,
+  KeychainError,
+  getSecureTokenStorage,
+  resetSecureTokenStorage,
+} from './secure-token-storage';
+
+// Export token storage factory
+export {
+  getTokenStorage,
+  getActiveStorageBackend,
+  getStorageDescription,
+  isUsingSecureStorage,
+  resetAllTokenStorage,
+  StorageBackend,
+  TokenStorageOptions,
+} from './token-storage-factory';
+
+// Export token migration
+export {
+  migrateTokensToKeychain,
+  performMigrationIfNeeded,
+  hasLegacyTokenFile,
+  getLegacyTokenFilePath,
+  MigrationResult,
+} from './token-migration';
 
 // Export callback server
 export { CallbackServer, CallbackResult, findAvailablePort } from './callback-server';

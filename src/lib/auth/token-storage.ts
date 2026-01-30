@@ -10,7 +10,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
-import { OAuthTokens, StoredTokens } from './types';
+import { OAuthTokens, StoredTokens, ITokenStorage } from './types';
 import { isTokenExpired } from './oauth-client';
 
 /**
@@ -34,19 +34,36 @@ const SECURE_FILE_MODE = 0o600;
 const SECURE_DIR_MODE = 0o700;
 
 /**
- * TokenStorage provides secure persistence for OAuth tokens
+ * FileTokenStorage provides file-based persistence for OAuth tokens
+ * Tokens are stored as JSON in ~/.datadog/oauth_tokens.json with 0600 permissions
  */
-export class TokenStorage {
+export class FileTokenStorage implements ITokenStorage {
   private storageDir: string;
   private tokenFilePath: string;
 
   /**
-   * Create a new TokenStorage instance
+   * Create a new FileTokenStorage instance
    * @param storageDir Custom storage directory (default: ~/.datadog)
    */
   constructor(storageDir?: string) {
     this.storageDir = storageDir || DEFAULT_STORAGE_DIR;
     this.tokenFilePath = path.join(this.storageDir, TOKEN_FILE_NAME);
+  }
+
+  /**
+   * Get the storage backend type
+   * @returns 'file'
+   */
+  getBackendType(): 'keychain' | 'file' {
+    return 'file';
+  }
+
+  /**
+   * Get storage location description
+   * @returns The path to the token storage file
+   */
+  getStorageLocation(): string {
+    return this.tokenFilePath;
   }
 
   /**
@@ -229,25 +246,30 @@ export class TokenStorage {
 }
 
 /**
- * Global token storage instance
+ * Global file token storage instance
  */
-let globalTokenStorage: TokenStorage | null = null;
+let globalFileTokenStorage: FileTokenStorage | null = null;
 
 /**
- * Get the global token storage instance
+ * Get the global file token storage instance
  * @param storageDir Optional custom storage directory
- * @returns The token storage instance
+ * @returns The file token storage instance
  */
-export function getTokenStorage(storageDir?: string): TokenStorage {
-  if (!globalTokenStorage || storageDir) {
-    globalTokenStorage = new TokenStorage(storageDir);
+export function getFileTokenStorage(storageDir?: string): FileTokenStorage {
+  if (!globalFileTokenStorage || storageDir) {
+    globalFileTokenStorage = new FileTokenStorage(storageDir);
   }
-  return globalTokenStorage;
+  return globalFileTokenStorage;
 }
 
 /**
- * Reset the global token storage instance (for testing)
+ * Reset the global file token storage instance (for testing)
  */
-export function resetTokenStorage(): void {
-  globalTokenStorage = null;
+export function resetFileTokenStorage(): void {
+  globalFileTokenStorage = null;
 }
+
+// Legacy aliases for backward compatibility
+export { FileTokenStorage as TokenStorage };
+export const getTokenStorage = getFileTokenStorage;
+export const resetTokenStorage = resetFileTokenStorage;

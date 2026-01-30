@@ -22,9 +22,10 @@ import {
   exchangeCodeForTokens,
   revokeToken,
 } from './oauth-client';
-import { getTokenStorage } from './token-storage';
+import { getTokenStorage, getStorageDescription, isUsingSecureStorage } from './token-storage-factory';
 import { CallbackServer } from './callback-server';
 import { getTokenRefresher, RefreshTokenExpiredError, NoTokensError } from './token-refresher';
+import { performMigrationIfNeeded } from './token-migration';
 
 /**
  * Open a URL in the default browser
@@ -68,6 +69,13 @@ export async function performLogin(
   scopes: string[] = [...DEFAULT_OAUTH_SCOPES],
   timeoutMs: number = DEFAULT_OAUTH_TIMEOUT_MS
 ): Promise<LoginResult> {
+  // Attempt to migrate legacy tokens to keychain before login
+  const migrationMessage = performMigrationIfNeeded();
+  if (migrationMessage) {
+    console.log(migrationMessage);
+    console.log();
+  }
+
   const storage = getTokenStorage();
   const callbackServer = new CallbackServer('/oauth/callback', timeoutMs);
 
@@ -210,7 +218,10 @@ export async function showAuthStatus(site: string): Promise<void> {
   const status = refresher.getStatus();
 
   console.log('Status: Authenticated (OAuth)');
-  console.log(`Token storage: ${storage.getStoragePath()}`);
+  console.log(`Token storage: ${getStorageDescription()}`);
+  if (isUsingSecureStorage()) {
+    console.log('Security: Tokens encrypted via OS keychain');
+  }
 
   if (status.expiresAt) {
     const now = new Date();
@@ -291,10 +302,24 @@ OAuth Authentication Commands:
 Environment Variables:
   DD_SITE                   Datadog site (default: datadoghq.com)
   DD_USE_OAUTH              Set to "true" to prefer OAuth over API keys
+  DD_TOKEN_STORAGE          Token storage backend: 'keychain' or 'file'
+                            Default: auto-detect (prefers OS keychain)
+
+Token Storage:
+  By default, OAuth tokens are stored in your OS keychain (macOS Keychain,
+  Windows Credential Manager, or Linux Secret Service). This provides
+  hardware-backed encryption on supported systems.
+
+  If the OS keychain is unavailable (e.g., in CI/CD or Docker), tokens
+  fall back to file storage at ~/.datadog/oauth_tokens.json with 0600
+  permissions.
+
+  Set DD_TOKEN_STORAGE=file to force file-based storage.
 
 Examples:
   dd-plugin auth login
   DD_SITE=datadoghq.eu dd-plugin auth login
+  DD_TOKEN_STORAGE=file dd-plugin auth login
   dd-plugin auth status
   dd-plugin auth logout
 `);
