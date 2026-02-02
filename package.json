@@ -41,7 +41,7 @@
   "dependencies": {
     "@datadog/datadog-api-client": "^1.51.0",
     "asciichart": "^1.5.25",
-    "inquirer": "^13.2.1"
+    "inquirer": "^13.2.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
