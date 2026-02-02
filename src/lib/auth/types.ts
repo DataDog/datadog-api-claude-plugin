@@ -173,7 +173,6 @@ export interface OAuthEndpoints {
  * These map to current plugin tools that have available OAuth scopes.
  *
  * NOTE: Some tools do NOT have OAuth scopes available yet:
- * - Logs (requires logs_read - not available)
  * - Metrics submit (requires metrics_write - not available)
  * - RUM events search (requires rum_read - not available)
  * - RUM metrics (requires rum_metrics_read/write - not available)
@@ -236,6 +235,10 @@ export const DEFAULT_OAUTH_SCOPES = [
 
   // Events
   'events_read',
+
+  // Logs
+  'logs_read_data',
+  'logs_read_index_data',
 
   // Metrics (read only - metrics_write not available)
   'metrics_read',
