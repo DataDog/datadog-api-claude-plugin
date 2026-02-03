@@ -116,6 +116,7 @@ node dist/index.js metrics query --query="avg:system.cpu.user{*}" --generate=go
 
 ### 🔒 Security First
 
+- **OAuth with OS keychain** - Tokens stored securely in macOS Keychain, Windows Credential Manager, or Linux Secret Service
 - Environment variable-based credentials (no hardcoded keys)
 - **Interactive confirmation prompts** for WRITE and DELETE operations
 - Permission checks before destructive operations
@@ -140,7 +141,7 @@ See [AGENT_IDENTIFICATION.md](./AGENT_IDENTIFICATION.md) for detailed informatio
 
 - Node.js 16.0 or higher
 - Claude Code CLI
-- Datadog account with API and Application keys
+- Datadog account (OAuth login recommended, or API and Application keys)
 
 ### Install Dependencies
 
@@ -154,9 +155,38 @@ npm install
 npm run build
 ```
 
-### Configure Credentials
+### Configure Authentication
 
-Set up your Datadog credentials as environment variables:
+#### Option 1: OAuth Login (Recommended)
+
+OAuth is the recommended authentication method. It provides secure, browser-based login with automatic token refresh and stores credentials securely in your OS keychain.
+
+```bash
+# Log in via browser (opens Datadog login page)
+node dist/index.js auth login
+
+# For EU or other Datadog sites
+DD_SITE=datadoghq.eu node dist/index.js auth login
+```
+
+**Benefits of OAuth:**
+- No manual key management - tokens refresh automatically
+- Secure storage in OS keychain (macOS Keychain, Windows Credential Manager, or Linux Secret Service)
+- Fine-grained permission scopes
+- Easy logout and token revocation
+
+**OAuth Commands:**
+```bash
+node dist/index.js auth login      # Start OAuth login flow (opens browser)
+node dist/index.js auth logout     # Revoke tokens and delete local storage
+node dist/index.js auth status     # Show current authentication status
+node dist/index.js auth refresh    # Force refresh the access token
+node dist/index.js auth help       # Show help for auth commands
+```
+
+#### Option 2: API and Application Keys (Fallback)
+
+If OAuth is not available (e.g., in CI/CD environments, Docker containers, or when running headless), you can use traditional API and Application keys:
 
 ```bash
 export DD_API_KEY="your-datadog-api-key"
@@ -171,6 +201,8 @@ export DD_SITE="datadoghq.com"  # Optional, defaults to datadoghq.com
 3. Create or copy your API Key
 4. Navigate to **Organization Settings** → **Application Keys**
 5. Create or copy your Application Key
+
+**Note:** When both OAuth tokens and API keys are available, the plugin prefers OAuth. Set `DD_USE_OAUTH=false` to force API key usage.
 
 ## Quick Start
 
@@ -731,8 +763,12 @@ npm run format
 Error: DD_API_KEY environment variable is required
 ```
 
-**Solution:** Set environment variables:
+**Solution:** Either authenticate via OAuth (recommended) or set environment variables:
 ```bash
+# Option 1: OAuth login (recommended)
+node dist/index.js auth login
+
+# Option 2: Set API keys
 export DD_API_KEY="your-api-key"
 export DD_APP_KEY="your-app-key"
 ```
@@ -743,7 +779,26 @@ export DD_APP_KEY="your-app-key"
 Error: 403 Forbidden - API key is invalid
 ```
 
-**Solution:** Verify your API and Application keys are correct and have proper permissions.
+**Solution:** Verify your API and Application keys are correct and have proper permissions. If using OAuth, try logging in again:
+```bash
+node dist/index.js auth logout
+node dist/index.js auth login
+```
+
+### OAuth Token Expired
+
+```
+Error: Refresh token has expired
+```
+
+**Solution:** Re-authenticate via OAuth:
+```bash
+node dist/index.js auth login
+```
+
+### OAuth Browser Not Opening
+
+If the browser doesn't open automatically during login, manually copy the URL displayed in the terminal and paste it into your browser.
 
 ### Command Not Found
 
@@ -763,11 +818,12 @@ Error: Invalid time format: xyz
 
 ## Security Best Practices
 
-1. **Never commit credentials** - Use environment variables only
-2. **Use read-only keys** when possible for querying operations
-3. **Rotate keys regularly** - Update API and Application keys periodically
-4. **Limit key scope** - Use keys with minimal required permissions
-5. **Monitor key usage** - Review API key usage in Datadog audit logs
+1. **Use OAuth authentication** - OAuth tokens are stored securely in your OS keychain and refresh automatically
+2. **Never commit credentials** - Use OAuth or environment variables, never hardcode keys
+3. **Use read-only keys** when using API keys for querying operations
+4. **Rotate keys regularly** - Update API and Application keys periodically if not using OAuth
+5. **Limit key scope** - Use keys with minimal required permissions
+6. **Monitor access** - Review API key usage and OAuth sessions in Datadog audit logs
 
 ## Contributing
 
