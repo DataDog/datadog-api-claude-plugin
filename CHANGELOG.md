@@ -17,6 +17,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Complete roadmap for post-pup-migration cleanup
   - Phase-based approach with priorities
   - Expected impact metrics and success criteria
+- **Agent Templates** (Phase 3): Created template system to reduce duplication
+  - 5 reusable templates for common agent sections
+  - Proof-of-concept shows 10% reduction per agent (21 lines)
+  - Projected 43.7% reduction across all agents (~14,807 lines)
+  - Templates: pup-context, time-formats, permission models (read/write/mixed)
+  - Full documentation in agents/_templates/README.md
 
 ### Changed
 - **Documentation Modernization**: Updated all docs to reflect pup CLI architecture
