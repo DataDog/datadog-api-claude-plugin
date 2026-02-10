@@ -688,23 +688,27 @@ For detailed information, see [AGENT_IDENTIFICATION.md](./AGENT_IDENTIFICATION.m
 
 ## Architecture
 
-### Direct API Integration
+### Pup CLI Integration
 
-Unlike traditional MCP-based approaches, this plugin leverages Datadog's official API clients directly:
+This plugin leverages the [pup CLI tool](https://github.com/DataDog/pup), a Go-based command-line wrapper for Datadog APIs:
 
-- **TypeScript Client**: [datadog-api-client-typescript](https://github.com/DataDog/datadog-api-client-typescript)
-- **Python Client**: [datadog-api-client-python](https://github.com/DataDog/datadog-api-client-python)
-- **Go Client**: [datadog-api-client-go](https://github.com/DataDog/datadog-api-client-go)
-- **Rust Client**: [datadog-api-client-rust](https://github.com/DataDog/datadog-api-client-rust)
-- **Java Client**: [datadog-api-client-java](https://github.com/DataDog/datadog-api-client-java)
-- **API Documentation**: [Datadog API Reference](https://docs.datadoghq.com/api/latest/?tab=typescript)
+- **Pup CLI**: Located at `../pup/pup` - provides 28 command groups covering 33+ API domains
+- **Official API Clients**: Pup uses official Datadog API clients internally
+  - **Go Client**: [datadog-api-client-go](https://github.com/DataDog/datadog-api-client-go)
+  - **TypeScript Client**: [datadog-api-client-typescript](https://github.com/DataDog/datadog-api-client-typescript)
+  - **Python Client**: [datadog-api-client-python](https://github.com/DataDog/datadog-api-client-python)
+  - **Java Client**: [datadog-api-client-java](https://github.com/DataDog/datadog-api-client-java)
+  - **Rust Client**: [datadog-api-client-rust](https://github.com/DataDog/datadog-api-client-rust)
+- **API Documentation**: [Datadog API Reference](https://docs.datadoghq.com/api/latest/)
 - **OpenAPI Specifications**: Available in the private `datadog-api-spec` repository (locally ../datadog-api-spec, or https://github.com/DataDog/datadog-api-spec on github)
 
-This direct integration approach offers several advantages:
-- Lower latency by eliminating the MCP server layer
+This architecture offers several advantages:
+- Fast, single-binary Go tool for quick execution
+- OAuth2 authentication with secure token storage
+- Multiple output formats (JSON, YAML, table)
 - Direct access to all Datadog API endpoints
-- Automatic updates with API client library releases
-- Native support for multiple programming languages
+- Automatic updates with pup releases
+- Code generation capabilities for multiple languages
 
 ## Use Cases
 
@@ -855,17 +859,31 @@ The plugin provides access to all Datadog API endpoints, including:
 ### Project Structure
 
 ```
-.
+datadog-api-claude-plugin/
 ├── .claude-plugin/
-│   └── plugin.json          # Plugin metadata and configuration
-├── src/                     # Plugin implementation (TBD)
-├── tests/                   # Test suite (TBD)
-└── AGENTS.md               # This file
+│   └── plugin.json          # Plugin metadata (references 46 agents)
+├── agents/                  # 46 specialized domain agents
+│   ├── logs.md
+│   ├── metrics.md
+│   ├── monitoring-alerting.md
+│   ├── dashboards.md
+│   └── ...                  # (all other agent files)
+├── skills/
+│   └── code-generation/     # Code generation skill
+│       └── SKILL.md
+├── CLAUDE.md               # Plugin instructions (symlink to this file)
+├── AGENTS.md               # This file - comprehensive agent guide
+├── README.md               # Main documentation
+└── package.json            # Plugin metadata
+
+External dependency:
+../pup/                     # Pup CLI tool (sibling directory)
+└── pup                     # Go binary for executing Datadog API calls
 ```
 
 ### Contributing
 
-Contributions are welcome! Please refer to the main repository for contribution guidelines.
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## Security Considerations
 

@@ -1,362 +1,551 @@
 ---
-description: Generate TypeScript, Python, or Java code for Datadog API operations instead of executing them directly
-tags: [code-generation, typescript, python, java, templates]
+description: Use pup CLI for immediate Datadog operations or generate code for integration into applications
+tags: [pup, cli, code-generation, typescript, python, java, go, rust]
 ---
 
-# Code Generation Skill
+# Datadog Integration Skill
 
-This skill enables you to generate ready-to-use TypeScript, Python, or Java code for Datadog API operations instead of executing them directly. This is useful when users want to integrate Datadog operations into their own applications.
+This skill helps users interact with Datadog through two complementary approaches:
+1. **Immediate execution** using the `pup` CLI tool
+2. **Code generation** for application integration using Datadog API clients
 
 ## When to Use This Skill
 
 Use this skill when the user:
+- Wants to query Datadog data (logs, traces, metrics, etc.)
+- Needs to configure Datadog (monitors, dashboards, SLOs, etc.)
 - Asks to "generate code" for a Datadog operation
-- Wants to "create a script" or "write code" for querying/managing Datadog
-- Needs code they can integrate into their application
-- Wants to see how to use the Datadog API client libraries
-- Specifies a programming language (TypeScript, Python) for the implementation
+- Wants to integrate Datadog operations into their application
+- Needs examples of using Datadog API clients in a specific language
 
-## How It Works
+## Pup CLI Tool
 
-The code generation system:
-1. Takes the same parameters as normal command execution
-2. Generates complete, working code using official Datadog API clients
-3. Includes proper error handling, configuration, and documentation
-4. Outputs code that can be saved to a file and run immediately
+The `pup` CLI is a Go-based command-line wrapper for Datadog APIs. It's located at `../pup/pup` and provides:
+- OAuth2 authentication (preferred) or API key authentication
+- 28 command groups covering 33+ API domains
+- JSON, YAML, and table output formats
+- 200+ subcommands for comprehensive Datadog operations
 
-## Supported Languages
-
-- **TypeScript** (using `@datadog/datadog-api-client`)
-- **Python** (using `datadog-api-client`)
-- **Java** (using `com.datadoghq:datadog-api-client`)
-
-## Usage Pattern
-
-Add the `--generate` flag to any command with optional language specification:
+### Pup Authentication
 
 ```bash
-# Generate TypeScript (default)
-node dist/index.js metrics query --query="..." --generate
+# OAuth2 (preferred)
+pup auth login
 
-# Generate Python
-node dist/index.js metrics query --query="..." --generate=python
+# API Keys (fallback)
+export DD_API_KEY="your-api-key"
+export DD_APP_KEY="your-app-key"
+export DD_SITE="datadoghq.com"
+```
 
-# Generate Java
-node dist/index.js metrics query --query="..." --generate=java
+### Pup Command Structure
 
-# Alternative syntax
-node dist/index.js metrics query --query="..." --generate --language=java
+```bash
+pup <domain> <action> [options]
+pup <domain> <subgroup> <action> [options]
+
+# Examples
+pup monitors list --tag="env:prod"
+pup logs search --query="status:error" --from="1h"
+pup metrics query --query="avg:system.cpu.user{*}" --from="1h"
 ```
 
 ## Supported Operations
 
-Code generation is currently supported for:
+### Core Observability
+- **Metrics**: Query, list, search, submit metrics
+- **Logs**: Search and aggregate log data
+- **Traces**: Query APM traces and spans
+- **Events**: List and search events
+- **RUM**: Real user monitoring data
 
-### Metrics
-- `metrics list` - List available metrics
-- `metrics query` - Query metric time-series data
-- `metrics submit` - Submit custom metrics
+### Monitoring & Alerting
+- **Monitors**: Full CRUD operations
+- **Dashboards**: Create, list, get, delete
+- **SLOs**: Service level objectives management
+- **Synthetics**: Synthetic test management
+- **Downtimes**: Monitor downtime management
+- **Notebooks**: Investigation notebooks
 
-### Monitors
-- `monitors list` - List all monitors
-- `monitors get <id>` - Get monitor details
-- `monitors create` - Create a new monitor
+### Security & Compliance
+- **Security Monitoring**: Rules, signals, findings
+- **Vulnerabilities**: Security vulnerability scanning
+- **Static Analysis**: Code security analysis
+- **Audit Logs**: Organizational audit trail
+- **Data Governance**: Sensitive data scanning
 
-### Dashboards
-- `dashboards list` - List all dashboards
-- `dashboards create` - Create a new dashboard
+### Infrastructure & Cloud
+- **Infrastructure**: Host inventory and metrics
+- **Tags**: Resource tagging
+- **Cloud Integrations**: AWS, GCP, Azure
 
-### Logs
-- `logs search` - Search logs
+### Incident & Operations
+- **Incidents**: Incident management
+- **On-Call**: On-call team management
+- **Error Tracking**: Application error tracking
+- **Service Catalog**: Service registry
+- **Scorecards**: Service quality metrics
 
-### Traces
-- `traces search` - Search traces/spans
+### Organization & Access
+- **Users**: User and role management
+- **Organizations**: Org settings
+- **API Keys**: API key management
 
-### SLOs
-- `slos list` - List Service Level Objectives
+See `pup --help` for complete command reference.
 
-### Incidents
-- `incidents list` - List incidents
+## Usage Patterns
 
-### Synthetics
-- `synthetics list` - List synthetic tests
+### Pattern 1: Quick Query (Use Pup Directly)
 
-### RUM
-- `rum search` - Search RUM events
+When users want immediate results, execute pup commands:
 
-### Security
-- `security signals` - Search security signals
+```bash
+# Query metrics
+../pup/pup metrics query --query="avg:system.cpu.user{*}" --from="1h" --to="now"
 
-### Infrastructure
-- `infrastructure hosts` - List hosts
+# Search logs
+../pup/pup logs search --query="status:error service:api" --from="30m"
 
-### Admin
-- `admin users` - List users
+# List monitors
+../pup/pup monitors list --tag="team:backend"
 
-## Example Interactions
-
-### Example 1: Generate TypeScript Code for Metrics Query
-
-**User**: "Generate TypeScript code to query CPU metrics"
-
-**Response**:
-```
-I'll generate TypeScript code to query CPU metrics from Datadog.
-
-<Execute: node dist/index.js metrics query --query="avg:system.cpu.user{*}" --generate=typescript>
-
-Here's the TypeScript code:
-
-[Generated code output]
-
-To use this code:
-1. Save it to a file (e.g., `query-metrics.ts`)
-2. Install dependencies: `npm install @datadog/datadog-api-client`
-3. Set environment variables: `export DD_API_KEY="..." DD_APP_KEY="..."`
-4. Compile: `tsc query-metrics.ts`
-5. Run: `node query-metrics.js`
+# Get dashboard
+../pup/pup dashboards get abc-123-def
 ```
 
-### Example 2: Generate Python Code for Monitor Creation
+### Pattern 2: Code Generation (For Application Integration)
 
-**User**: "Show me how to create a monitor in Python"
+When users want to integrate into their application, provide code examples using official Datadog API clients.
 
-**Response**:
-```
-I'll generate Python code to create a Datadog monitor.
-
-<Execute: node dist/index.js monitors create --name="High CPU" --query="avg(last_5m):avg:system.cpu.user{*} > 90" --generate=python>
-
-Here's the Python code:
-
-[Generated code output]
-
-To use this code:
-1. Save it to a file (e.g., `create_monitor.py`)
-2. Install dependencies: `pip install datadog-api-client`
-3. Set environment variables: `export DD_API_KEY="..." DD_APP_KEY="..."`
-4. Make it executable: `chmod +x create_monitor.py`
-5. Run: `./create_monitor.py`
-```
-
-### Example 2.5: Generate Java Code for Monitor Creation
-
-**User**: "Generate Java code to create a monitor"
-
-**Response**:
-```
-I'll generate Java code to create a Datadog monitor.
-
-<Execute: node dist/index.js monitors create --name="High CPU" --query="avg(last_5m):avg:system.cpu.user{*} > 90" --generate=java>
-
-Here's the Java code:
-
-[Generated code output]
-
-To use this code:
-1. Save it to a file (e.g., `MonitorsCreateExample.java`)
-2. Add to pom.xml: `<dependency><groupId>com.datadoghq</groupId><artifactId>datadog-api-client</artifactId></dependency>`
-3. Set environment variables: `export DD_API_KEY="..." DD_APP_KEY="..."`
-4. Compile: `javac MonitorsCreateExample.java`
-5. Run: `java com.datadog.api.example.MonitorsCreateExample`
-```
-
-### Example 3: Generate Code for Application Integration
-
-**User**: "I need Python code to query logs and save them to a file"
-
-**Response**:
-```
-I'll generate Python code to query Datadog logs.
-
-<Execute: node dist/index.js logs search --query="status:error" --generate=python>
-
-Here's the Python code:
-
-[Generated code output]
-
-You can extend this code to:
-- Save results to a file by adding `json.dump(result, open('logs.json', 'w'))`
-- Process logs in a loop
-- Schedule it with cron for regular log exports
-- Integrate with your existing application
-```
-
-## Generated Code Features
-
-All generated code includes:
-
-1. **Proper Imports**: Official Datadog API client libraries
-2. **Configuration**: Environment variable handling for credentials
-3. **Error Handling**: Try/catch blocks with detailed error messages
-4. **Documentation**: Comments explaining what the code does
-5. **Type Annotations**: TypeScript types or Python type hints
-6. **Main Function**: Ready-to-run main() function
-7. **Usage Examples**: Comments showing how to run the code
-
-## TypeScript Generated Code Structure
+#### TypeScript Example (using @datadog/datadog-api-client)
 
 ```typescript
-// Imports
 import { client, v2 } from '@datadog/datadog-api-client';
 
-// Configuration
-const configuration = client.createConfiguration({...});
+// Configure authentication
+const configuration = client.createConfiguration({
+  authMethods: {
+    apiKeyAuth: process.env.DD_API_KEY || '',
+    appKeyAuth: process.env.DD_APP_KEY || '',
+  },
+});
 
-// Main operation function
+// Query metrics
 async function queryMetrics() {
   const apiInstance = new v2.MetricsApi(configuration);
-  // ... operation logic
+
+  try {
+    const params: v2.MetricsApiQueryTimeseriesDataRequest = {
+      body: {
+        data: {
+          type: 'timeseries_request',
+          attributes: {
+            formulas: [{
+              formula: 'query1'
+            }],
+            queries: [{
+              name: 'query1',
+              dataSource: 'metrics',
+              query: 'avg:system.cpu.user{*}'
+            }],
+            from: Date.now() - 3600000, // 1 hour ago
+            to: Date.now()
+          }
+        }
+      }
+    };
+
+    const result = await apiInstance.queryTimeseriesData(params);
+    console.log(JSON.stringify(result, null, 2));
+  } catch (error) {
+    console.error('Error:', error);
+  }
 }
 
-// Error handling
-function handleError(error: any) {
-  // ... error formatting
-}
-
-// Main execution
-async function main() {
-  // ... validation and execution
-}
-
-main().catch(...);
+queryMetrics();
 ```
 
-## Python Generated Code Structure
+**Installation**: `npm install @datadog/datadog-api-client`
+
+#### Python Example (using datadog-api-client)
 
 ```python
 #!/usr/bin/env python3
-# Imports
+import os
+from datetime import datetime, timedelta
 from datadog_api_client import ApiClient, Configuration
 from datadog_api_client.v2.api.metrics_api import MetricsApi
+from datadog_api_client.v2.model.timeseries_formula_request import TimeseriesFormulaRequest
+from datadog_api_client.v2.model.timeseries_formula_query_request import TimeseriesFormulaQueryRequest
+from datadog_api_client.v2.model.timeseries_formula_request_attributes import TimeseriesFormulaRequestAttributes
+from datadog_api_client.v2.model.timeseries_formula_request_type import TimeseriesFormulaRequestType
 
-# Configuration
 def configure_datadog():
     configuration = Configuration()
-    # ... configuration logic
+    configuration.api_key['apiKeyAuth'] = os.getenv('DD_API_KEY')
+    configuration.api_key['appKeyAuth'] = os.getenv('DD_APP_KEY')
+    configuration.server_variables['site'] = os.getenv('DD_SITE', 'datadoghq.com')
     return configuration
 
-# Main operation function
-def query_metrics(configuration):
+def query_metrics():
+    configuration = configure_datadog()
+
     with ApiClient(configuration) as api_client:
         api_instance = MetricsApi(api_client)
-        # ... operation logic
 
-# Error handling
-def handle_error(error):
-    # ... error formatting
+        # Query parameters
+        now = int(datetime.now().timestamp())
+        one_hour_ago = int((datetime.now() - timedelta(hours=1)).timestamp())
 
-# Main execution
-def main():
-    configuration = configure_datadog()
-    query_metrics(configuration)
+        body = TimeseriesFormulaRequest(
+            data=TimeseriesFormulaQueryRequest(
+                type=TimeseriesFormulaRequestType.TIMESERIES_REQUEST,
+                attributes=TimeseriesFormulaRequestAttributes(
+                    formulas=[{"formula": "query1"}],
+                    queries=[{
+                        "name": "query1",
+                        "data_source": "metrics",
+                        "query": "avg:system.cpu.user{*}"
+                    }],
+                    _from=one_hour_ago,
+                    to=now
+                )
+            )
+        )
+
+        try:
+            result = api_instance.query_timeseries_data(body=body)
+            print(result)
+        except Exception as e:
+            print(f"Error: {e}")
 
 if __name__ == "__main__":
-    main()
+    query_metrics()
 ```
 
-## Java Generated Code Structure
+**Installation**: `pip install datadog-api-client`
+
+#### Java Example (using com.datadoghq:datadog-api-client)
 
 ```java
 package com.datadog.api.example;
 
-// Imports
 import com.datadog.api.client.ApiClient;
 import com.datadog.api.client.ApiException;
 import com.datadog.api.client.v2.api.MetricsApi;
+import com.datadog.api.client.v2.model.*;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 
 public class MetricsQueryExample {
-    // Main method with configuration
     public static void main(String[] args) {
-        // Environment variable validation
-        // API client configuration
-        // Authentication setup
-        // Operation execution
+        // Validate environment variables
+        String apiKey = System.getenv("DD_API_KEY");
+        String appKey = System.getenv("DD_APP_KEY");
+        String site = System.getenv().getOrDefault("DD_SITE", "datadoghq.com");
+
+        if (apiKey == null || appKey == null) {
+            System.err.println("Error: DD_API_KEY and DD_APP_KEY must be set");
+            System.exit(1);
+        }
+
+        // Configure API client
+        ApiClient apiClient = ApiClient.getDefaultApiClient();
+        apiClient.setServerVariableValue("site", site);
+        apiClient.configureApiKeys(Collections.singletonMap("apiKeyAuth", apiKey));
+        apiClient.configureApiKeys(Collections.singletonMap("appKeyAuth", appKey));
+
+        try {
+            queryMetrics(apiClient);
+        } catch (ApiException e) {
+            System.err.println("API Error: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
-    // Operation method
     private static void queryMetrics(ApiClient apiClient) throws ApiException {
         MetricsApi apiInstance = new MetricsApi(apiClient);
-        // ... operation logic
+
+        // Time range: last hour
+        long now = Instant.now().getEpochSecond();
+        long oneHourAgo = Instant.now().minus(1, ChronoUnit.HOURS).getEpochSecond();
+
+        // Build query
+        TimeseriesFormulaQueryRequest query = new TimeseriesFormulaQueryRequest()
+            .type(TimeseriesFormulaRequestType.TIMESERIES_REQUEST)
+            .attributes(new TimeseriesFormulaRequestAttributes()
+                .formulas(Collections.singletonList(new QueryFormula().formula("query1")))
+                .queries(Collections.singletonList(
+                    new MetricsTimeseriesQuery()
+                        .name("query1")
+                        .dataSource(MetricsDataSource.METRICS)
+                        .query("avg:system.cpu.user{*}")
+                ))
+                .from(oneHourAgo)
+                .to(now)
+            );
+
+        TimeseriesFormulaRequest body = new TimeseriesFormulaRequest().data(query);
+
+        // Execute query
+        TimeseriesFormulaResponse result = apiInstance.queryTimeseriesData(body);
+        System.out.println(result);
     }
 }
 ```
 
-## When NOT to Use Code Generation
+**Installation**: Add to `pom.xml`:
+```xml
+<dependency>
+    <groupId>com.datadoghq</groupId>
+    <artifactId>datadog-api-client</artifactId>
+    <version>2.30.0</version>
+</dependency>
+```
 
-Don't use code generation when:
-- User wants immediate results (use direct execution instead)
-- User is exploring/experimenting with Datadog (execute directly first)
-- User hasn't specified they want code
+#### Go Example (using github.com/DataDog/datadog-api-client-go)
 
-Instead, execute the command directly and only suggest code generation if they ask to automate or integrate the operation.
+```go
+package main
 
-## Tips for Using This Skill
+import (
+    "context"
+    "encoding/json"
+    "fmt"
+    "os"
+    "time"
 
-1. **Ask about language preference**: If user doesn't specify, TypeScript is the default
-2. **Explain how to use the code**: Always provide instructions for running generated code
-3. **Suggest improvements**: Point out how they can extend or customize the code
-4. **Security reminders**: Remind users not to commit credentials to version control
-5. **Install instructions**: Provide package installation commands for each language:
-   - TypeScript: `npm install @datadog/datadog-api-client`
-   - Python: `pip install datadog-api-client`
-   - Java: Add Maven/Gradle dependency for `com.datadoghq:datadog-api-client`
+    datadog "github.com/DataDog/datadog-api-client-go/v2/api/datadog"
+    "github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+)
 
-## Common User Phrases That Trigger This Skill
+func main() {
+    // Validate environment variables
+    apiKey := os.Getenv("DD_API_KEY")
+    appKey := os.Getenv("DD_APP_KEY")
 
-- "Generate code to..."
-- "Show me how to... in TypeScript/Python/Java"
-- "I need a script that..."
-- "How do I integrate Datadog with..."
-- "Create a Python/Java program to..."
-- "Write TypeScript/Java code for..."
-- "I want to automate..."
-- "Generate Java code for..."
+    if apiKey == "" || appKey == "" {
+        fmt.Println("Error: DD_API_KEY and DD_APP_KEY must be set")
+        os.Exit(1)
+    }
 
-## Integration with Agents
+    // Configure API client
+    ctx := context.WithValue(
+        context.Background(),
+        datadog.ContextAPIKeys,
+        map[string]datadog.APIKey{
+            "apiKeyAuth": {Key: apiKey},
+            "appKeyAuth": {Key: appKey},
+        },
+    )
 
-The code generation skill works seamlessly with all 12 domain agents:
-- Metrics agent
-- Monitors agent
-- Dashboards agent
-- Logs agent
-- Traces agent
-- SLOs agent
-- Incidents agent
-- Synthetics agent
-- RUM agent
-- Security agent
-- Infrastructure agent
-- Admin agent
+    configuration := datadog.NewConfiguration()
+    apiClient := datadog.NewAPIClient(configuration)
+    api := datadogV2.NewMetricsApi(apiClient)
 
-Each agent can trigger code generation by adding the `--generate` flag to their CLI commands.
+    // Time range: last hour
+    now := time.Now().Unix()
+    oneHourAgo := time.Now().Add(-1 * time.Hour).Unix()
+
+    // Build query
+    body := datadogV2.TimeseriesFormulaRequest{
+        Data: datadogV2.TimeseriesFormulaQueryRequest{
+            Type: datadogV2.TIMESERIESFORMULAREQUESTTYPE_TIMESERIES_REQUEST,
+            Attributes: datadogV2.TimeseriesFormulaRequestAttributes{
+                Formulas: []datadogV2.QueryFormula{
+                    {Formula: "query1"},
+                },
+                Queries: []datadogV2.TimeseriesQuery{
+                    datadogV2.MetricsTimeseriesQuery{
+                        Name:       datadog.PtrString("query1"),
+                        DataSource: datadogV2.METRICSDATASOURCE_METRICS,
+                        Query:      "avg:system.cpu.user{*}",
+                    },
+                },
+                From: oneHourAgo,
+                To:   now,
+            },
+        },
+    }
+
+    // Execute query
+    result, _, err := api.QueryTimeseriesData(ctx, body)
+    if err != nil {
+        fmt.Printf("Error: %v\n", err)
+        os.Exit(1)
+    }
+
+    jsonData, _ := json.MarshalIndent(result, "", "  ")
+    fmt.Println(string(jsonData))
+}
+```
+
+**Installation**: `go get github.com/DataDog/datadog-api-client-go/v2`
+
+#### Rust Example (using datadog-api-client)
+
+```rust
+use datadog_api_client::datadog;
+use datadog_api_client::datadogV2::api_metrics::MetricsAPI;
+use datadog_api_client::datadogV2::model::*;
+use std::collections::HashMap;
+
+#[tokio::main]
+async fn main() {
+    // Validate environment variables
+    let api_key = std::env::var("DD_API_KEY")
+        .expect("DD_API_KEY must be set");
+    let app_key = std::env::var("DD_APP_KEY")
+        .expect("DD_APP_KEY must be set");
+
+    // Configure API client
+    let mut configuration = datadog::Configuration::new();
+    configuration.api_key = Some(HashMap::from([
+        ("apiKeyAuth".to_string(), api_key),
+        ("appKeyAuth".to_string(), app_key),
+    ]));
+
+    let api = MetricsAPI::with_config(configuration);
+
+    // Time range: last hour
+    let now = chrono::Utc::now().timestamp();
+    let one_hour_ago = (chrono::Utc::now() - chrono::Duration::hours(1)).timestamp();
+
+    // Build query
+    let body = TimeseriesFormulaRequest::new(
+        TimeseriesFormulaQueryRequest::new(
+            TimeseriesFormulaRequestAttributes::new(
+                vec![QueryFormula::new("query1".to_string())],
+                one_hour_ago,
+                vec![
+                    TimeseriesQuery::MetricsTimeseriesQuery(Box::new(
+                        MetricsTimeseriesQuery::new(
+                            MetricsDataSource::METRICS,
+                            "avg:system.cpu.user{*}".to_string(),
+                        )
+                        .name("query1".to_string())
+                    ))
+                ],
+                now,
+            ),
+            TimeseriesFormulaRequestType::TIMESERIES_REQUEST,
+        )
+    );
+
+    // Execute query
+    match api.query_timeseries_data(body).await {
+        Ok(result) => {
+            println!("{:#?}", result);
+        }
+        Err(err) => {
+            eprintln!("Error: {}", err);
+        }
+    }
+}
+```
+
+**Installation**: Add to `Cargo.toml`:
+```toml
+[dependencies]
+datadog-api-client = "0.3"
+tokio = { version = "1", features = ["full"] }
+chrono = "0.4"
+```
+
+## Example Interactions
+
+### Example 1: Quick Metrics Query
+
+**User**: "Show me CPU usage for the last hour"
+
+**Response**:
+```bash
+# Execute pup command for immediate results
+../pup/pup metrics query --query="avg:system.cpu.user{*}" --from="1h" --to="now" --output=table
+```
+
+### Example 2: Code Generation for Application
+
+**User**: "Generate Python code to query error logs"
+
+**Response**:
+```
+Here's Python code to query error logs using the Datadog API client:
+
+[Provide Python code example using datadog-api-client]
+
+To use this code:
+1. Save to a file: `query_logs.py`
+2. Install: `pip install datadog-api-client`
+3. Set environment variables: `export DD_API_KEY="..." DD_APP_KEY="..."`
+4. Run: `python query_logs.py`
+
+For immediate results without writing code, you can also use:
+../pup/pup logs search --query="status:error" --from="1h"
+```
+
+### Example 3: Monitor Management
+
+**User**: "List all production monitors"
+
+**Response**:
+```bash
+# Using pup CLI
+../pup/pup monitors list --tag="env:production" --output=table
+
+# Or generate code for your application (specify language: typescript, python, java, go, rust)
+```
+
+## When to Use Each Approach
+
+### Use Pup CLI When:
+- User wants immediate results
+- Exploring/experimenting with Datadog
+- One-off queries or operations
+- Quick troubleshooting
+- Testing queries before coding
+
+### Generate Code When:
+- User asks to "generate code" or "create a script"
+- Integrating into an application
+- Automating recurring operations
+- Building custom tools or dashboards
+- User specifies a programming language
 
 ## Best Practices
 
-1. **Always validate parameters**: Ensure required parameters are provided before generating code
-2. **Use meaningful examples**: Generate code with realistic queries and parameters
-3. **Include error handling**: All generated code should handle errors gracefully
-4. **Add comments**: Explain non-obvious parts of the generated code
-5. **Test locally**: Verify generated code templates work before showing them to users
+1. **Start with pup for exploration**: Use pup to test queries before generating code
+2. **Match the user's language**: If they mention TypeScript, Python, Java, Go, or Rust, use that language
+3. **Provide complete examples**: Include imports, error handling, and configuration
+4. **Explain authentication**: Always mention DD_API_KEY, DD_APP_KEY, DD_SITE
+5. **Security reminders**: Warn about not committing credentials to version control
+6. **Show both approaches**: Mention pup for quick testing + code for integration
 
-## Future Enhancements
+## Integration with Agents
 
-Planned improvements:
-- Generate code for WRITE operations (create, update, delete)
-- Support for additional languages (Ruby, more JVM languages)
-- Generate complete applications (multi-file projects)
-- Add unit tests to generated code
-- Generate Terraform/IaC configurations
-- CLI tool installation code generation
+This skill works with all 46 domain agents in the plugin:
+- Each agent describes Datadog functionality (logs, traces, metrics, monitors, etc.)
+- Use pup commands that match the agent's domain
+- Generate code using the corresponding Datadog API client methods
 
-## Technical Details
+## Common User Phrases
 
-The code generation system uses template-based generation:
-- TypeScript templates in `src/codegen/typescript-templates.ts`
-- Python templates in `src/codegen/python-templates.ts`
-- Java templates in `src/codegen/java-templates.ts`
-- Go templates in `src/codegen/go-templates.ts`
-- Rust templates in `src/codegen/rust-templates.ts`
-- Each domain has specific templates for common operations
-- Parameters are interpolated into templates at generation time
-- Generated code uses official Datadog API clients for type safety and compatibility
+- "Query [logs/metrics/traces]"
+- "Generate code to..."
+- "Show me [data type]"
+- "Create a [monitor/dashboard/SLO]"
+- "Write a [Python/TypeScript/Java/Go/Rust] script that..."
+- "I need a script to..."
+- "How do I integrate Datadog with..."
+
+## Resources
+
+- **Pup CLI**: `../pup/pup --help`
+- **Pup Documentation**: `../pup/README.md`, `../pup/docs/COMMANDS.md`
+- **TypeScript Client**: [@datadog/datadog-api-client](https://github.com/DataDog/datadog-api-client-typescript)
+- **Python Client**: [datadog-api-client](https://github.com/DataDog/datadog-api-client-python)
+- **Go Client**: [datadog-api-client-go](https://github.com/DataDog/datadog-api-client-go)
+- **Java Client**: [datadog-api-client-java](https://github.com/DataDog/datadog-api-client-java)
+- **Rust Client**: [datadog-api-client-rust](https://github.com/DataDog/datadog-api-client-rust)
+- **API Documentation**: [Datadog API Reference](https://docs.datadoghq.com/api/latest/)

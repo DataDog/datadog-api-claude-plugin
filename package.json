@@ -1,30 +1,16 @@
 {
   "name": "datadog-api-claude-plugin",
-  "version": "1.16.0",
-  "description": "A Claude plugin to use Datadog directly through its APIs with code generation support",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "bin": {
-    "dd-plugin": "./dist/index.js"
-  },
-  "scripts": {
-    "build": "tsc",
-    "watch": "tsc --watch",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "lint": "eslint src/**/*.ts",
-    "format": "prettier --write 'src/**/*.ts'",
-    "clean": "rm -rf dist",
-    "prebuild": "npm run clean"
-  },
+  "version": "2.0.0",
+  "description": "A Claude plugin that provides Datadog agents for querying and configuring observability data using the pup CLI tool",
   "keywords": [
     "datadog",
     "claude",
     "plugin",
     "monitoring",
     "observability",
-    "api"
+    "api",
+    "pup",
+    "cli"
   ],
   "author": {
     "name": "DatadogHQ"
@@ -34,28 +20,5 @@
     "type": "git",
     "url": "https://github.com/DataDog/datadog-api-claude-plugin"
   },
-  "homepage": "http://www.datadoghq.com",
-  "engines": {
-    "node": ">=16.0.0"
-  },
-  "dependencies": {
-    "@datadog/datadog-api-client": "^1.51.0",
-    "@napi-rs/keyring": "^1.2.0",
-    "asciichart": "^1.5.25",
-    "inquirer": "^13.2.2"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.39.2",
-    "@types/asciichart": "^1.5.8",
-    "@types/inquirer": "^9.0.7",
-    "@types/jest": "^30.0.0",
-    "@types/node": "^25.2.2",
-    "eslint": "^9.39.2",
-    "globals": "^17.3.0",
-    "jest": "^30.2.0",
-    "prettier": "^3.8.1",
-    "ts-jest": "^29.1.1",
-    "typescript": "^5.3.3",
-    "typescript-eslint": "^8.54.0"
-  }
+  "homepage": "http://www.datadoghq.com"
 }
