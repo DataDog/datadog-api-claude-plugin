@@ -1,167 +1,203 @@
 # Simplification Plan for Pup CLI Migration
 
 ## Overview
-Now that the plugin uses `pup` CLI instead of TypeScript, we can significantly simplify the codebase.
 
-## Phase 1: Remove Obsolete Code & Dependencies ✅ HIGH PRIORITY
+This document tracks the simplification effort after migrating from TypeScript to `pup` CLI. The goal is to remove technical debt, reduce duplication, and improve maintainability.
 
-### Files to Remove
-- [ ] `node_modules/` - All TypeScript/Jest/ESLint dependencies (21 folders)
-- [ ] `ARCHITECTURE.md` - Describes outdated TypeScript architecture
-- [ ] `examples/agent-identification.ts` - TypeScript example no longer relevant
-- [ ] `package-lock.json` - No dependencies = no lock file needed
-- [ ] `.gitignore` entries for TypeScript build artifacts (dist/, *.tsbuild, etc.)
+## Completed Work ✅
 
-### Files to Update
-- [ ] `package.json` - ✅ Already minimal, just metadata
-- [ ] `LICENSE-3rdparty.csv` - Verify contents, may only need pup
-- [ ] `.gitignore` - Remove TypeScript-specific entries
+### Phase 1: Remove Obsolete Code & Dependencies ✅ COMPLETE
+**Status**: All TypeScript artifacts removed
 
-**Expected Impact**: ~90% reduction in repository size, cleaner structure
+**Removed**:
+- `node_modules/` - 21 empty TypeScript/Jest/ESLint dependency folders
+- `ARCHITECTURE_LEGACY.md` - Outdated TypeScript architecture documentation
+- `examples/agent-identification.ts` - TypeScript example
+- `package-lock.json` - No dependencies needed
+- `.gitignore` TypeScript entries - Cleaned from 44 to 27 lines
 
-## Phase 2: Documentation Modernization ✅ HIGH PRIORITY
+**Impact**: ~90% reduction in repository cruft, cleaner structure
 
-### CLAUDE.md Updates
-- [ ] Remove references to "TypeScript implementation"
-- [ ] Clarify what code generation still exists (if any)
-- [ ] Update "Multi-Language Support" section - does this still apply with pup?
-- [ ] Simplify "Development" section - no TypeScript build process
-- [ ] Update project structure diagram to reflect current state
+### Phase 2: Documentation Modernization ✅ COMPLETE
+**Status**: All documentation updated for pup CLI
 
-### README.md Updates
-- [ ] Remove TypeScript-specific language
-- [ ] Emphasize pup CLI as the primary tool
-- [ ] Update installation instructions
-- [ ] Simplify "How It Works" section
+**Updated**:
+- `CLAUDE.md` - Removed TypeScript references, emphasized pup CLI
+- `README.md` - Updated examples to use shell scripts and pup commands
+- `AGENTS.md` - Removed Node.js architecture references
+- `CHANGELOG.md` - Documented all changes
 
-### AGENTS.md Updates
-- [ ] Remove references to TypeScript/Node.js architecture
-- [ ] Update decision trees and workflows for pup CLI approach
-- [ ] Simplify agent selection guide
+**Impact**: 100% documentation alignment with pup CLI architecture
 
-**Expected Impact**: Clearer documentation, easier onboarding
+### Phase 3A: Agent Template Infrastructure ✅ COMPLETE
+**Status**: Template system created and validated
 
-## Phase 3: Agent File Consolidation ✅ IN PROGRESS
+**Created**:
+- `agents/_templates/` directory with 5 reusable templates:
+  - `pup-context.md` - CLI tool context and environment variables
+  - `time-formats.md` - Time format documentation
+  - `permission-model-read.md` - Read-only operations
+  - `permission-model-write.md` - Write operations
+  - `permission-model-mixed.md` - Mixed operations
+- Comprehensive documentation (README.md, IMPLEMENTATION_NOTES.md)
+- Proof-of-concept: `EXAMPLE_logs_refactored.md`
 
-### Current State
-- 46 agent files
-- ~33,897 total lines
-- ~735 lines per agent average
-- High redundancy in boilerplate sections
+**Validation Results**:
+- Test case: logs.md agent
+  - Before: 211 lines
+  - After (with templates): 190 lines
+  - Reduction: 21 lines (10%)
 
-### Consolidation Opportunities
+**Projected Impact** (all 46 agents):
+- Current: ~33,897 lines
+- With templates: ~19,090 lines
+- **Reduction: ~14,807 lines (43.7%)**
 
-#### Option A: Template-Based Approach
-Extract common sections into templates that agents inherit/reference:
-
-1. **Create `agents/_templates/`**:
-   - `common-header.md` - Standard agent header
-   - `pup-context.md` - CLI tool context, env vars
-   - `time-formats.md` - Time format documentation
-   - `permission-model-read.md` - Read-only operations
-   - `permission-model-write.md` - Write operations with confirmation
-
-2. **Simplify agents** to just:
-   - Frontmatter (description, metadata)
-   - Domain-specific capabilities
-   - Pup commands for this domain
-   - Domain-specific examples
-
-**Estimated reduction**: 30-50% per agent file
-
-#### Option B: Macro/Include System
-Use markdown includes or templating to reference common content:
-
-```markdown
----
-description: Search and analyze Datadog logs
 ---
 
-# Logs Agent
+## Remaining Work 🚧
 
-{{include: common-header}}
+### Phase 3B: Template Validation ⏳ NEXT
+**Goal**: Validate template approach with additional agents
 
-## Your Capabilities
-- Search logs with flexible queries
-- Filter by tags and attributes
-...
+**Tasks**:
+- [ ] Refactor 2-3 more agents to use templates
+- [ ] Verify template completeness for different agent types
+- [ ] Identify any edge cases or missing templates
+- [ ] Adjust templates based on findings
 
-{{include: pup-context}}
-{{include: time-formats}}
-{{include: permission-model-read}}
-```
+**Acceptance Criteria**:
+- Templates work for read-only, write-only, and mixed agents
+- No missing common sections identified
+- Validation shows consistent 10% reduction per agent
 
-#### Option C: Consolidate Similar Agents
-Some agents could potentially be merged:
+### Phase 3C: Template Rollout 📋 FUTURE
+**Goal**: Apply templates to all remaining agents
 
-**Candidates for merging**:
-- `aws-integration.md` + `gcp-integration.md` + `azure-integration.md` → `cloud-integrations.md` with provider-specific sections
-- `application-security.md` + `cloud-workload-security.md` → `runtime-security.md`
-- Consider carefully - domain separation has benefits
+**Tasks**:
+- [ ] Refactor all 46 agents to use template references
+- [ ] Update agent files to use `<!-- TEMPLATE: filename.md -->` comments
+- [ ] Verify all agents maintain functionality
+- [ ] Update AGENTS.md to document template system
 
-**Trade-offs**:
-- ✅ Fewer agents to maintain
-- ✅ Less duplication
-- ❌ Potentially less focused agents
-- ❌ Harder for Claude to select right agent
+**Estimated Effort**: Can be done incrementally, 5-10 agents at a time
 
-### Recommended Approach: Template-Based (Option A) ✅ IMPLEMENTED
+**Expected Results**:
+- 43.7% reduction in agent content (~14,807 lines)
+- Guaranteed consistency across all agents
+- Single source of truth for common sections
 
-**Status**: Infrastructure complete, proof-of-concept successful
+### Phase 4: Skills & Repository Cleanup 🔧 FUTURE
 
-**Benefits**:
-- Maintains 46 specialized agents (good for selection)
-- Reduces duplication significantly
-- Easier to maintain consistent documentation
-- Updates to common sections propagate automatically
+**Skills Review**:
+- [x] ~~GitHub issue filing skill~~ - ✅ Added as `/dd-file-issue`
+- [ ] Review `skills/code-generation/SKILL.md` - Does this still apply with pup CLI?
+- [ ] Consider pup CLI troubleshooting skill
+- [ ] Consider agent selection helper skill
 
-**Implementation**:
-1. ✅ Create `agents/_templates/` directory
-2. ✅ Extract common content into template files (5 templates created)
-3. ✅ Proof-of-concept: EXAMPLE_logs_refactored.md (10% reduction)
-4. ✅ Add documentation on template system (README.md, IMPLEMENTATION_NOTES.md)
-5. ⏳ NEXT: Refactor remaining 45 agents to use templates
+**Repository Cleanup**:
+- [ ] Review `.github/workflows/` - Remove TypeScript build steps if any
+- [ ] Update `CONTRIBUTING.md` - Clarify no TypeScript knowledge needed
+- [ ] Update `RELEASING.md` - Simplify release process
+- [ ] Verify CI/CD reflects pup-based architecture
 
-**Expected Impact**:
-- ~14,807 lines removed from agent files (43.7% reduction)
-- Easier maintenance and consistency
-- Cleaner agent-specific content
-- **Proof-of-concept results**: 21 lines saved per agent (10% direct reduction)
-
-## Phase 4: Skills & Commands Review 🔍 LOW PRIORITY
-
-### Current Skills
-- `skills/code-generation/SKILL.md` - Does this still work with pup CLI?
-
-### Potential New Skills
-- [ ] GitHub issue filing skill (see separate plan)
-- [ ] Pup CLI troubleshooting skill
-- [ ] Agent selection helper skill
-
-## Phase 5: Repository Cleanup 🧹 LOW PRIORITY
-
-### GitHub Actions / CI
-- [ ] Review `.github/workflows/` - any TypeScript build steps?
-- [ ] Update CI to reflect pup-based architecture
-
-### Developer Experience
-- [ ] Update `CONTRIBUTING.md` - no TypeScript knowledge needed
-- [ ] Simplify development setup instructions
-- [ ] Update `RELEASING.md` process
-
-## Implementation Priority
-
-1. **Phase 1** (Do First): Remove obsolete code - immediate wins
-2. **Phase 2** (Do Second): Documentation updates - clarity for users
-3. **Phase 3** (Do Third): Agent consolidation - long-term maintenance
-4. **Phase 4** (Do Fourth): Skills review - enhances functionality
-5. **Phase 5** (Do Last): Repository cleanup - polish
+---
 
 ## Success Metrics
 
-- [ ] Repository size reduced by >80%
-- [ ] Documentation references pup CLI consistently
-- [ ] No references to TypeScript/Node.js execution
-- [ ] Agent files 30-50% smaller
-- [ ] Contributing guide doesn't require TS knowledge
-- [ ] New contributors can understand architecture in <10 minutes
+### Achieved ✅
+- [x] Repository size reduced by >80% (removed node_modules, examples, etc.)
+- [x] Documentation references pup CLI consistently
+- [x] No references to TypeScript/Node.js execution
+- [x] Template infrastructure proven (10% reduction per agent)
+- [x] Issue filing automation (`/dd-file-issue` skill)
+
+### In Progress ⏳
+- [ ] Agent files 30-50% smaller (Phase 3B/C)
+- [ ] Contributing guide updated for pup-only workflow
+- [ ] All 46 agents use template system
+
+### Target Metrics
+- **Final repository reduction**: 50-60% overall
+- **Agent maintenance**: 5 template files instead of 46 duplicated sections
+- **Onboarding time**: <10 minutes to understand architecture
+- **Documentation accuracy**: 100% aligned with implementation
+
+---
+
+## Implementation Strategy
+
+### Recommended Approach for Phase 3B/C
+
+**Incremental Rollout**:
+1. Start with 2-3 diverse agents (read-only, write-only, mixed)
+2. Validate templates work for all types
+3. Roll out in batches of 5-10 agents
+4. Review and adjust as needed
+
+**Agent Prioritization**:
+1. **High-traffic agents first**: logs, metrics, traces, monitoring-alerting
+2. **Similar agents together**: All integration agents, all security agents, etc.
+3. **Complex agents last**: Agents with unique patterns
+
+**Template Reference Format**:
+```markdown
+<!-- TEMPLATE: pup-context.md -->
+<!-- TEMPLATE: time-formats.md -->
+<!-- TEMPLATE: permission-model-read.md -->
+```
+
+### Quality Assurance
+
+Before completing Phase 3C:
+- [ ] All agents maintain functionality
+- [ ] Template content is accurate and complete
+- [ ] No agent-specific variations in template sections
+- [ ] Documentation updated to reference template system
+
+---
+
+## Future Enhancements
+
+Beyond the current plan, consider:
+
+1. **Additional Templates**
+   - Common response formatting patterns
+   - Error handling boilerplate
+   - Integration notes patterns
+
+2. **Validation Tooling**
+   - Script to verify template usage
+   - Lint rules for template compliance
+   - CI check for template consistency
+
+3. **Agent Consolidation** (Optional)
+   - Consider merging very similar agents if it makes sense
+   - Keep 46 specialized agents unless compelling reason to merge
+   - Domain separation has benefits for agent selection
+
+---
+
+## Timeline Estimate
+
+| Phase | Effort | Status |
+|-------|--------|--------|
+| Phase 1 & 2 | 4-6 hours | ✅ Complete |
+| Phase 3A | 2-3 hours | ✅ Complete |
+| Phase 3B | 1-2 hours | ⏳ Next |
+| Phase 3C | 4-6 hours | 📋 Future |
+| Phase 4 | 2-3 hours | 📋 Future |
+
+**Total remaining**: ~8-12 hours of focused work
+
+---
+
+## Notes
+
+- **No breaking changes**: All phases maintain functionality
+- **Incremental approach**: Can be done in small batches
+- **Measurable progress**: Each phase has clear success metrics
+- **Documentation-driven**: Keep docs updated as we go
+
+**Last Updated**: 2026-02-10
+**Current Phase**: 3B (Template Validation)
