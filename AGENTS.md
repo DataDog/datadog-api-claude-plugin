@@ -693,12 +693,7 @@ For detailed information, see [AGENT_IDENTIFICATION.md](./AGENT_IDENTIFICATION.m
 This plugin leverages the [pup CLI tool](https://github.com/DataDog/pup), a Go-based command-line wrapper for Datadog APIs:
 
 - **Pup CLI**: Provides 28 command groups covering 33+ API domains
-- **Official API Clients**: Pup uses official Datadog API clients internally
-  - **Go Client**: [datadog-api-client-go](https://github.com/DataDog/datadog-api-client-go)
-  - **TypeScript Client**: [datadog-api-client-typescript](https://github.com/DataDog/datadog-api-client-typescript)
-  - **Python Client**: [datadog-api-client-python](https://github.com/DataDog/datadog-api-client-python)
-  - **Java Client**: [datadog-api-client-java](https://github.com/DataDog/datadog-api-client-java)
-  - **Rust Client**: [datadog-api-client-rust](https://github.com/DataDog/datadog-api-client-rust)
+- **Official API Clients**: Pup uses official Datadog API clients internally (Go-based)
 - **API Documentation**: [Datadog API Reference](https://docs.datadoghq.com/api/latest/)
 - **OpenAPI Specifications**: Available in the private `datadog-api-spec` repository (locally ../datadog-api-spec, or https://github.com/DataDog/datadog-api-spec on github)
 
@@ -708,7 +703,7 @@ This architecture offers several advantages:
 - Multiple output formats (JSON, YAML, table)
 - Direct access to all Datadog API endpoints
 - Automatic updates with pup releases
-- Code generation capabilities for multiple languages
+- Simple markdown-based agent definitions
 
 ## Use Cases
 
@@ -755,22 +750,20 @@ The plugin implements a permission-aware interaction model:
 3. **Destructive Operations**: Require additional confirmation with clear impact statements
 4. **Credential Management**: Securely handles API keys and application keys
 
-## Multi-Language Support
+## Working with Datadog APIs
 
-The plugin intelligently selects the appropriate Datadog API client based on the user's context:
+The plugin uses the `pup` CLI tool to interact with Datadog APIs. All agents provide:
+- Pre-configured `pup` commands for common operations
+- Flexible query syntax and filtering options
+- Multiple output formats (JSON, YAML, table)
+- OAuth2 or API key authentication
+- Clear examples and best practices
 
-- **TypeScript/JavaScript**: Uses `datadog-api-client-typescript` for Node.js applications
-- **Python**: Uses `datadog-api-client-python` for Python applications
-- **Go**: Uses `datadog-api-client-go` for Go applications
-- **Rust**: Uses `datadog-api-client` for Rust applications
-- **Java**: Uses `datadog-api-client-java` for Java applications
-- **Other Languages**: Provides HTTP API guidance with examples
-
-When generating code, the plugin ensures:
-- Proper error handling
-- Appropriate authentication configuration
-- Best practices for the target language
-- Clear documentation and comments
+When building custom applications or scripts:
+- Use `pup` commands directly in your shell scripts
+- Parse `pup` JSON/YAML output in your preferred language
+- Reference the [pup documentation](https://github.com/DataDog/pup) for advanced usage
+- Use official Datadog API clients if you need programmatic access
 
 ## Getting Started
 
@@ -816,20 +809,17 @@ User: "Create a monitor that alerts when error rate exceeds 5% for my web servic
 Claude: [Generates monitor configuration and asks for confirmation before creating]
 ```
 
-### Build an Application
+### Build Scripts and Automation
 
 ```
-User: "Help me build a Python script that exports all my monitors to JSON files"
-Claude: [Generates complete Python application using datadog-api-client-python]
+User: "Help me build a shell script that exports all my monitors to JSON files"
+Claude: [Creates shell script using pup commands]
 
-User: "Help me build a Go program that queries metrics"
-Claude: [Generates complete Go application using datadog-api-client-go]
+User: "How can I query metrics from my application?"
+Claude: [Shows pup command that outputs JSON, explains how to parse it]
 
-User: "Help me build a Rust application that searches logs"
-Claude: [Generates complete Rust application using datadog-api-client]
-
-User: "Help me build a Java application that queries metrics"
-Claude: [Generates complete Java application using datadog-api-client-java]
+User: "I want to automate log searches"
+Claude: [Provides pup command examples with cron integration]
 ```
 
 ### Dashboard Management
@@ -869,7 +859,9 @@ datadog-api-claude-plugin/
 │   ├── dashboards.md
 │   └── ...                  # (all other agent files)
 ├── skills/
-│   └── code-generation/     # Code generation skill
+│   ├── code-generation/     # Code generation skill
+│   │   └── SKILL.md
+│   └── file-issue/          # GitHub issue filing skill
 │       └── SKILL.md
 ├── CLAUDE.md               # Plugin instructions (symlink to this file)
 ├── AGENTS.md               # This file - comprehensive agent guide
@@ -895,8 +887,9 @@ Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for gui
 ## Support
 
 - **Documentation**: [Datadog API Documentation](https://docs.datadoghq.com/api/latest/)
-- **Client Libraries**: See official Datadog client repositories
-- **Issues**: Report issues on the [GitHub repository](https://github.com/DataDog/datadog-api-claude-plugin/issues)
+- **Pup CLI**: [Pup repository](https://github.com/DataDog/pup) for CLI tool issues
+- **Plugin Issues**: [Plugin repository](https://github.com/DataDog/datadog-api-claude-plugin/issues) for agent/documentation issues
+- **File Issue Skill**: Use `/file-issue` to intelligently route issue reports
 
 ## License
 
@@ -905,11 +898,8 @@ MIT License - See LICENSE file for details
 ## Related Resources
 
 - [Datadog Documentation](https://docs.datadoghq.com/)
-- [Datadog API Client TypeScript](https://github.com/DataDog/datadog-api-client-typescript)
-- [Datadog API Client Python](https://github.com/DataDog/datadog-api-client-python)
-- [Datadog API Client Go](https://github.com/DataDog/datadog-api-client-go)
-- [Datadog API Client Rust](https://github.com/DataDog/datadog-api-client-rust)
-- [Datadog API Client Java](https://github.com/DataDog/datadog-api-client-java)
+- [Pup CLI Tool](https://github.com/DataDog/pup) - The command-line tool used by this plugin
+- [Datadog API Reference](https://docs.datadoghq.com/api/latest/)
 - [Datadog OpenAPI Specification](https://github.com/DataDog/datadog-api-spec) (Private)
 
 ## Landing the Plane (Session Completion)

@@ -10,7 +10,8 @@
   "repository": "https://github.com/DataDog/datadog-api-claude-plugin",
   "homepage": "http://www.datadoghq.com",
   "skills": [
-    "./skills/code-generation/SKILL.md"
+    "./skills/code-generation/SKILL.md",
+    "./skills/file-issue/SKILL.md"
   ],
   "agents": [
     "./agents/agentless-scanning.md",

@@ -104,7 +104,7 @@ The plugin uses [pup](https://github.com/DataDog/pup), a Go-based CLI tool that 
 - **Domain expertise**: Each agent specializes in one Datadog domain
 - **Context-aware**: Agents provide relevant suggestions and examples
 - **Permission-aware**: Guidance on read vs. write operations
-- **Code generation**: Can generate Python, TypeScript, Java, Go, or Rust code
+- **Script assistance**: Helps create shell scripts and automation with pup
 
 ### 🏷️ Agent Identification
 
@@ -210,54 +210,40 @@ Claude: [Uses logs agent and executes: pup logs search --query="service:api stat
 You: "What monitors are currently alerting?"
 Claude: [Uses monitoring-alerting agent and executes: pup monitors list --state=Alert]
 
-You: "Generate Python code to query metrics"
-Claude: [Provides Python code using datadog-api-client library]
+You: "Create a shell script to export monitors to JSON"
+Claude: [Provides shell script using pup commands and JSON parsing]
 ```
 
-## Code Generation
+## Building Scripts and Applications
 
-The plugin can generate code in multiple languages for integration into your applications:
+The plugin helps you build scripts and automation using pup commands:
 
-### Python Example
+### Shell Script Example
 
-```python
-#!/usr/bin/env python3
-import os
-from datadog_api_client import ApiClient, Configuration
-from datadog_api_client.v2.api.metrics_api import MetricsApi
+```bash
+#!/bin/bash
+# Export all monitors to JSON files
 
-configuration = Configuration()
-configuration.api_key['apiKeyAuth'] = os.getenv('DD_API_KEY')
-configuration.api_key['appKeyAuth'] = os.getenv('DD_APP_KEY')
+# Authenticate with pup (OAuth2 recommended)
+pup auth login
 
-with ApiClient(configuration) as api_client:
-    api_instance = MetricsApi(api_client)
-    # Query logic here...
+# Get all monitors and save to file
+pup monitors list --output=json > monitors.json
+
+# Process individual monitors
+for monitor_id in $(pup monitors list --output=json | jq -r '.[].id'); do
+  pup monitors get "$monitor_id" --output=json > "monitor_${monitor_id}.json"
+  echo "Exported monitor $monitor_id"
+done
 ```
 
-### TypeScript Example
+### Integration with Applications
 
-```typescript
-import { client, v2 } from '@datadog/datadog-api-client';
-
-const configuration = client.createConfiguration({
-  authMethods: {
-    apiKeyAuth: process.env.DD_API_KEY || '',
-    appKeyAuth: process.env.DD_APP_KEY || '',
-  },
-});
-
-const apiInstance = new v2.MetricsApi(configuration);
-// Query logic here...
-```
-
-### Supported Languages
-
-- **Python**: Using `datadog-api-client`
-- **TypeScript/JavaScript**: Using `@datadog/datadog-api-client`
-- **Java**: Using `com.datadoghq:datadog-api-client`
-- **Go**: Using `github.com/DataDog/datadog-api-client-go`
-- **Rust**: Using `datadog-api-client`
+For programmatic access in your applications:
+- Parse pup JSON/YAML output in your language of choice
+- Use pup in CI/CD pipelines for automation
+- Integrate with existing monitoring workflows
+- For advanced needs, use official Datadog API clients directly
 
 ## Pup Command Reference
 
@@ -443,12 +429,8 @@ Copyright 2024-present Datadog, Inc.
 
 ## Related Resources
 
-- [Pup CLI](https://github.com/DataDog/pup) - Go-based Datadog API CLI
-- [Datadog API Client TypeScript](https://github.com/DataDog/datadog-api-client-typescript)
-- [Datadog API Client Python](https://github.com/DataDog/datadog-api-client-python)
-- [Datadog API Client Go](https://github.com/DataDog/datadog-api-client-go)
-- [Datadog API Client Java](https://github.com/DataDog/datadog-api-client-java)
-- [Datadog API Client Rust](https://github.com/DataDog/datadog-api-client-rust)
+- [Pup CLI](https://github.com/DataDog/pup) - The Go-based Datadog API CLI used by this plugin
+- [Datadog API Reference](https://docs.datadoghq.com/api/latest/) - Complete API documentation
 - [Claude Code Documentation](https://docs.anthropic.com/claude/docs)
 
 ## Changelog

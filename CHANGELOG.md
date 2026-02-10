@@ -8,18 +8,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- **Agent Identification**: Automatic detection and reporting of AI agent information with every API request
-  - Detects Claude, Letta, ChatGPT, and other AI agents from environment variables
-  - Sends agent type, version, and metadata via HTTP headers (`DD-Agent-Type`, `DD-Agent-Version`, `DD-Agent-Metadata`)
-  - Includes runtime context (Node.js version, plugin version) for better support and debugging
-  - Privacy-focused: No user data, API keys, or request content included
-  - Customizable via `DD_AGENT_TYPE` and `DD_AGENT_VERSION` environment variables
-  - See [AGENT_IDENTIFICATION.md](./AGENT_IDENTIFICATION.md) for detailed documentation
+- **GitHub Issue Filing Skill**: New `/file-issue` skill to intelligently route issue reports
+  - Automatically determines if issue is for pup CLI or plugin repository
+  - Searches for existing issues to avoid duplicates
+  - Provides issue templates and best practices
+  - Uses `gh` CLI for seamless issue creation
+- **Simplification Documentation**: Added SIMPLIFICATION_PLAN.md and NEXT_STEPS.md
+  - Complete roadmap for post-pup-migration cleanup
+  - Phase-based approach with priorities
+  - Expected impact metrics and success criteria
 
 ### Changed
-- Enhanced HTTP client to automatically inject agent identification headers on all requests
-- Updated configuration system to detect and store agent information
-- Added comprehensive test coverage for agent detection and identification
+- **Documentation Modernization**: Updated all docs to reflect pup CLI architecture
+  - Removed TypeScript/Node.js implementation references from CLAUDE.md
+  - Updated README.md to emphasize pup CLI and shell scripting
+  - Clarified code generation capabilities with pup focus
+  - Updated Related Resources to focus on pup and Datadog API docs
+- **Simplified .gitignore**: Removed TypeScript-specific build artifacts and dependencies
+- **Archived ARCHITECTURE.md**: Renamed to ARCHITECTURE_LEGACY.md (outdated TypeScript architecture docs)
+
+### Removed
+- **Obsolete Dependencies**: Removed node_modules/ and package-lock.json (no longer needed)
+- **TypeScript Examples**: Removed examples/ directory with outdated TypeScript code
+- **Multi-Language Code Generation Claims**: Clarified that plugin uses pup CLI, not multi-language client libraries
+
+### Fixed
+- Documentation accuracy: All references now correctly describe pup CLI-based architecture
+- Resource links: Updated to focus on pup CLI and Datadog API documentation
 
 ## [1.14.0] - 2025-12-31
 
