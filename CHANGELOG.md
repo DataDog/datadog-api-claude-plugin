@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - None
 
-## [1.15.0] - 2026-02-10
+## [1.17.0] - 2026-02-10
 
 ### Added
 - **GitHub Issue Filing Skill**: New `/dd-file-issue` skill to intelligently route issue reports
@@ -256,8 +256,8 @@ We follow [Semantic Versioning](https://semver.org/):
 
 ### Linking
 
-- [Unreleased]: https://github.com/DataDog/datadog-api-claude-plugin/compare/v1.15.0...HEAD
-- [1.15.0]: https://github.com/DataDog/datadog-api-claude-plugin/compare/v1.14.0...v1.15.0
+- [Unreleased]: https://github.com/DataDog/datadog-api-claude-plugin/compare/v1.17.0...HEAD
+- [1.17.0]: https://github.com/DataDog/datadog-api-claude-plugin/compare/v1.14.0...v1.17.0
 - [1.14.0]: https://github.com/DataDog/datadog-api-claude-plugin/compare/v1.11.0...v1.14.0
 - [1.11.0]: https://github.com/DataDog/datadog-api-claude-plugin/compare/v1.10.0...v1.11.0
 - [1.10.0]: https://github.com/DataDog/datadog-api-claude-plugin/compare/v1.0.0...v1.10.0

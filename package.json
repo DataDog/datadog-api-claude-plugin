@@ -1,6 +1,6 @@
 {
   "name": "datadog-api-claude-plugin",
-  "version": "1.15.0",
+  "version": "1.17.0",
   "description": "A Claude plugin that provides Datadog agents for querying and configuring observability data using the pup CLI tool",
   "keywords": [
     "datadog",

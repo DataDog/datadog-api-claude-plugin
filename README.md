@@ -1,6 +1,6 @@
 # Datadog API Claude Plugin
 
-[![Version](https://img.shields.io/badge/version-1.15.0-blue.svg)](https://github.com/DataDog/datadog-api-claude-plugin)
+[![Version](https://img.shields.io/badge/version-1.17.0-blue.svg)](https://github.com/DataDog/datadog-api-claude-plugin)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
 A comprehensive Claude Code plugin that provides direct integration with Datadog APIs through an agent-based architecture powered by the `pup` CLI tool. Query metrics, manage monitors, create dashboards, search logs, and more—all through natural language interactions with Claude.
