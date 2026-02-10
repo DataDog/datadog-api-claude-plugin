@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- **GitHub Issue Filing Skill**: New `/file-issue` skill to intelligently route issue reports
+- **GitHub Issue Filing Skill**: New `/dd-file-issue` skill to intelligently route issue reports
   - Automatically determines if issue is for pup CLI or plugin repository
   - Searches for existing issues to avoid duplicates
   - Provides issue templates and best practices

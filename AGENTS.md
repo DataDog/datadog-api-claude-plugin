@@ -861,7 +861,7 @@ datadog-api-claude-plugin/
 ├── skills/
 │   ├── code-generation/     # Code generation skill
 │   │   └── SKILL.md
-│   └── file-issue/          # GitHub issue filing skill
+│   └── dd-file-issue/       # GitHub issue filing skill
 │       └── SKILL.md
 ├── CLAUDE.md               # Plugin instructions (symlink to this file)
 ├── AGENTS.md               # This file - comprehensive agent guide
@@ -889,7 +889,7 @@ Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for gui
 - **Documentation**: [Datadog API Documentation](https://docs.datadoghq.com/api/latest/)
 - **Pup CLI**: [Pup repository](https://github.com/DataDog/pup) for CLI tool issues
 - **Plugin Issues**: [Plugin repository](https://github.com/DataDog/datadog-api-claude-plugin/issues) for agent/documentation issues
-- **File Issue Skill**: Use `/file-issue` to intelligently route issue reports
+- **File Issue Skill**: Use `/dd-file-issue` to intelligently route issue reports
 
 ## License
 

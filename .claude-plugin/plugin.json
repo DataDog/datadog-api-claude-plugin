@@ -11,7 +11,7 @@
   "homepage": "http://www.datadoghq.com",
   "skills": [
     "./skills/code-generation/SKILL.md",
-    "./skills/file-issue/SKILL.md"
+    "./skills/dd-file-issue/SKILL.md"
   ],
   "agents": [
     "./agents/agentless-scanning.md",

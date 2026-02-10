@@ -1,5 +1,5 @@
 ---
-name: file-issue
+name: dd-file-issue
 description: File GitHub issues to the right repository (pup CLI or plugin)
 trigger: |
   Use this skill when the user wants to:
@@ -16,9 +16,11 @@ examples:
   - "Report this error to the team"
 ---
 
-# File Issue Skill
+# DD File Issue Skill
 
 This skill helps you file GitHub issues to the correct repository - either the `pup` CLI tool or the Claude plugin, depending on the nature of the issue.
+
+**Invocation**: `/dd-file-issue`
 
 ## Decision Logic: Which Repository?
 
