@@ -121,17 +121,14 @@ See [AGENT_IDENTIFICATION.md](./AGENT_IDENTIFICATION.md) for detailed informatio
 ### Prerequisites
 
 - Claude Code CLI
-- [Pup CLI tool](https://github.com/DataDog/pup) (located at `../pup`)
+- [Pup CLI tool](https://github.com/DataDog/pup) installed and available in PATH
 - Datadog account with OAuth2 or API/Application keys
 
 ### Setup
 
-The plugin automatically uses the `pup` CLI tool located at `../pup/pup`. Ensure pup is built:
+The plugin automatically uses the `pup` CLI tool. Ensure pup is installed and available in your PATH.
 
-```bash
-cd ../pup
-go build -o pup .
-```
+See the [pup installation guide](https://github.com/DataDog/pup#installation) for setup instructions.
 
 ### Authentication
 
@@ -140,8 +137,7 @@ The plugin uses pup's authentication. Configure it once:
 #### Option 1: OAuth Login (Recommended)
 
 ```bash
-cd ../pup
-./pup auth login
+pup auth login
 ```
 
 **Benefits:**
@@ -152,10 +148,10 @@ cd ../pup
 
 **OAuth Commands:**
 ```bash
-./pup auth login      # Start OAuth login flow
-./pup auth logout     # Revoke tokens
-./pup auth status     # Show authentication status
-./pup auth refresh    # Force token refresh
+pup auth login      # Start OAuth login flow
+pup auth logout     # Revoke tokens
+pup auth status     # Show authentication status
+pup auth refresh    # Force token refresh
 ```
 
 #### Option 2: API Keys (Fallback)
@@ -175,31 +171,30 @@ Get your keys from:
 ### Test Connection
 
 ```bash
-cd ../pup
-./pup test
+pup test
 ```
 
 ### Query Metrics
 
 ```bash
 # List available metrics
-./pup metrics list
+pup metrics list
 
 # Query CPU usage for the last hour
-./pup metrics query --query="avg:system.cpu.user{*}" --from="1h" --to="now"
+pup metrics query --query="avg:system.cpu.user{*}" --from="1h" --to="now"
 ```
 
 ### List Monitors
 
 ```bash
-./pup monitors list
+pup monitors list
 ```
 
 ### Search Logs
 
 ```bash
 # Search for errors in the last hour
-./pup logs search --query="status:error" --from="1h" --to="now"
+pup logs search --query="status:error" --from="1h" --to="now"
 ```
 
 ## Using with Claude
@@ -384,14 +379,10 @@ datadog-api-claude-plugin/
 ### Pup Not Found
 
 ```
-Error: Command not found: ../pup/pup
+Error: Command not found: pup
 ```
 
-**Solution:** Build pup in the sibling directory:
-```bash
-cd ../pup
-go build -o pup .
-```
+**Solution:** Install pup and ensure it's in your PATH. See the [pup installation guide](https://github.com/DataDog/pup#installation).
 
 ### Authentication Errors
 
@@ -402,8 +393,7 @@ Error: No authentication credentials found
 **Solution:** Authenticate using OAuth or set API keys:
 ```bash
 # OAuth (recommended)
-cd ../pup
-./pup auth login
+pup auth login
 
 # API Keys
 export DD_API_KEY="..."
@@ -418,9 +408,8 @@ Error: 403 Forbidden
 
 **Solution:** Verify your credentials are correct:
 ```bash
-cd ../pup
-./pup auth status  # Check OAuth status
-./pup test         # Test connection
+pup auth status  # Check OAuth status
+pup test         # Test connection
 ```
 
 ## Security Best Practices
@@ -447,7 +436,7 @@ Copyright 2024-present Datadog, Inc.
 ## Support
 
 - **Plugin Documentation**: [AGENTS.md](AGENTS.md) - Comprehensive agent guide
-- **Pup Documentation**: [../pup/README.md](../pup/README.md), [../pup/docs/COMMANDS.md](../pup/docs/COMMANDS.md)
+- **Pup Documentation**: [Pup CLI Repository](https://github.com/DataDog/pup)
 - **Datadog API**: [Datadog API Documentation](https://docs.datadoghq.com/api/latest/)
 - **Issues**: [GitHub Issues](https://github.com/DataDog/datadog-api-claude-plugin/issues)
 - **Community**: [Datadog Community](https://community.datadoghq.com/)

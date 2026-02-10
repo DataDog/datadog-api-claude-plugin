@@ -20,7 +20,7 @@ Use this skill when the user:
 
 ## Pup CLI Tool
 
-The `pup` CLI is a Go-based command-line wrapper for Datadog APIs. It's located at `../pup/pup` and provides:
+The `pup` CLI is a Go-based command-line wrapper for Datadog APIs. It provides:
 - OAuth2 authentication (preferred) or API key authentication
 - 28 command groups covering 33+ API domains
 - JSON, YAML, and table output formats
@@ -101,16 +101,16 @@ When users want immediate results, execute pup commands:
 
 ```bash
 # Query metrics
-../pup/pup metrics query --query="avg:system.cpu.user{*}" --from="1h" --to="now"
+pup metrics query --query="avg:system.cpu.user{*}" --from="1h" --to="now"
 
 # Search logs
-../pup/pup logs search --query="status:error service:api" --from="30m"
+pup logs search --query="status:error service:api" --from="30m"
 
 # List monitors
-../pup/pup monitors list --tag="team:backend"
+pup monitors list --tag="team:backend"
 
 # Get dashboard
-../pup/pup dashboards get abc-123-def
+pup dashboards get abc-123-def
 ```
 
 ### Pattern 2: Code Generation (For Application Integration)
@@ -462,7 +462,7 @@ chrono = "0.4"
 **Response**:
 ```bash
 # Execute pup command for immediate results
-../pup/pup metrics query --query="avg:system.cpu.user{*}" --from="1h" --to="now" --output=table
+pup metrics query --query="avg:system.cpu.user{*}" --from="1h" --to="now" --output=table
 ```
 
 ### Example 2: Code Generation for Application
@@ -482,7 +482,7 @@ To use this code:
 4. Run: `python query_logs.py`
 
 For immediate results without writing code, you can also use:
-../pup/pup logs search --query="status:error" --from="1h"
+pup logs search --query="status:error" --from="1h"
 ```
 
 ### Example 3: Monitor Management
@@ -492,7 +492,7 @@ For immediate results without writing code, you can also use:
 **Response**:
 ```bash
 # Using pup CLI
-../pup/pup monitors list --tag="env:production" --output=table
+pup monitors list --tag="env:production" --output=table
 
 # Or generate code for your application (specify language: typescript, python, java, go, rust)
 ```
@@ -541,8 +541,8 @@ This skill works with all 46 domain agents in the plugin:
 
 ## Resources
 
-- **Pup CLI**: `../pup/pup --help`
-- **Pup Documentation**: `../pup/README.md`, `../pup/docs/COMMANDS.md`
+- **Pup CLI**: `pup --help`
+- **Pup Documentation**: [Pup CLI Repository](https://github.com/DataDog/pup)
 - **TypeScript Client**: [@datadog/datadog-api-client](https://github.com/DataDog/datadog-api-client-typescript)
 - **Python Client**: [datadog-api-client](https://github.com/DataDog/datadog-api-client-python)
 - **Go Client**: [datadog-api-client-go](https://github.com/DataDog/datadog-api-client-go)

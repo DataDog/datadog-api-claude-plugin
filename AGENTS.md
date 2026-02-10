@@ -692,7 +692,7 @@ For detailed information, see [AGENT_IDENTIFICATION.md](./AGENT_IDENTIFICATION.m
 
 This plugin leverages the [pup CLI tool](https://github.com/DataDog/pup), a Go-based command-line wrapper for Datadog APIs:
 
-- **Pup CLI**: Located at `../pup/pup` - provides 28 command groups covering 33+ API domains
+- **Pup CLI**: Provides 28 command groups covering 33+ API domains
 - **Official API Clients**: Pup uses official Datadog API clients internally
   - **Go Client**: [datadog-api-client-go](https://github.com/DataDog/datadog-api-client-go)
   - **TypeScript Client**: [datadog-api-client-typescript](https://github.com/DataDog/datadog-api-client-typescript)
@@ -877,8 +877,8 @@ datadog-api-claude-plugin/
 └── package.json            # Plugin metadata
 
 External dependency:
-../pup/                     # Pup CLI tool (sibling directory)
-└── pup                     # Go binary for executing Datadog API calls
+pup                         # Pup CLI tool - Go binary for executing Datadog API calls
+                            # See: https://github.com/DataDog/pup
 ```
 
 ### Contributing
