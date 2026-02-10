@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- None
+
+### Changed
+- None
+
+### Fixed
+- None
+
+## [1.17.0] - 2026-02-10
+
+### Added
 - **GitHub Issue Filing Skill**: New `/dd-file-issue` skill to intelligently route issue reports
   - Automatically determines if issue is for pup CLI or plugin repository
   - Searches for existing issues to avoid duplicates
@@ -245,7 +256,11 @@ We follow [Semantic Versioning](https://semver.org/):
 
 ### Linking
 
-- [Unreleased]: https://github.com/DataDog/datadog-api-claude-plugin/compare/v1.0.0...HEAD
+- [Unreleased]: https://github.com/DataDog/datadog-api-claude-plugin/compare/v1.17.0...HEAD
+- [1.17.0]: https://github.com/DataDog/datadog-api-claude-plugin/compare/v1.14.0...v1.17.0
+- [1.14.0]: https://github.com/DataDog/datadog-api-claude-plugin/compare/v1.11.0...v1.14.0
+- [1.11.0]: https://github.com/DataDog/datadog-api-claude-plugin/compare/v1.10.0...v1.11.0
+- [1.10.0]: https://github.com/DataDog/datadog-api-claude-plugin/compare/v1.0.0...v1.10.0
 - [1.0.0]: https://github.com/DataDog/datadog-api-claude-plugin/compare/v0.2.0...v1.0.0
 - [0.2.0]: https://github.com/DataDog/datadog-api-claude-plugin/compare/v0.1.0...v0.2.0
 - [0.1.0]: https://github.com/DataDog/datadog-api-claude-plugin/releases/tag/v0.1.0

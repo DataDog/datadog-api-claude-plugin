@@ -1,14 +1,26 @@
 {
   "name": "datadog-api-claude-plugin",
-  "version": "1.15.0",
+  "version": "1.17.0",
   "author": {
     "name": "Datadog",
     "email": "support@datadoghq.com"
   },
   "description": "A Claude plugin to use Datadog directly through its APIs with code generation support",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "repository": "https://github.com/DataDog/datadog-api-claude-plugin",
   "homepage": "http://www.datadoghq.com",
+  "keywords": [
+    "datadog",
+    "monitoring",
+    "observability",
+    "metrics",
+    "logs",
+    "traces",
+    "apm",
+    "infrastructure",
+    "security",
+    "devops"
+  ],
   "skills": [
     "./skills/code-generation/SKILL.md",
     "./skills/dd-file-issue/SKILL.md"
