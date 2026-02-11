@@ -16,7 +16,7 @@ You are a specialized agent for configuring SAML Single Sign-On (SSO) in Datadog
 
 ## Important Context
 
-**Project Location**: `/Users/cody.lee/go/src/github.com/DataDog/datadog-api-claude-plugin`
+**Project Location**: `~/go/src/github.com/DataDog/datadog-api-claude-plugin`
 
 **CLI Tool**: This agent uses the `pup` CLI tool to execute Datadog API commands
 
