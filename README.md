@@ -125,8 +125,7 @@ See [AGENT_IDENTIFICATION.md](./AGENT_IDENTIFICATION.md) for detailed informatio
 - Claude Code CLI
 - [Pup CLI tool](https://github.com/DataDog/pup) installed and available in PATH
 - Datadog account with OAuth2 or API/Application keys
-- Check out this repo and:
-    `npx skills add ./datadog-api-claude-plugin`
+- Check out this repo `git clone git@github.com:DataDog/datadog-api-claude-plugin.git` and `npx skills add ./datadog-api-claude-plugin`
 
 ### Setup
 
