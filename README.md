@@ -1,4 +1,6 @@
-# Datadog API Claude Plugin
+# [PREVIEW] Datadog API Claude Plugin
+
+**Notice: This is a preview skill to leverage `pup`, still very experimental and may contain bugs.**
 
 [![Version](https://img.shields.io/badge/version-1.17.0-blue.svg)](https://github.com/DataDog/datadog-api-claude-plugin)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
@@ -123,6 +125,8 @@ See [AGENT_IDENTIFICATION.md](./AGENT_IDENTIFICATION.md) for detailed informatio
 - Claude Code CLI
 - [Pup CLI tool](https://github.com/DataDog/pup) installed and available in PATH
 - Datadog account with OAuth2 or API/Application keys
+- Check out this repo and:
+    `npx skills add ./datadog-api-claude-plugin`
 
 ### Setup
 
