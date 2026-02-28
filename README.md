@@ -122,10 +122,26 @@ See [AGENT_IDENTIFICATION.md](./AGENT_IDENTIFICATION.md) for detailed informatio
 
 ### Prerequisites
 
-- Claude Code CLI
+- [Claude Code CLI](https://docs.anthropic.com/claude/docs/claude-code)
 - [Pup CLI tool](https://github.com/DataDog/pup) installed and available in PATH
 - Datadog account with OAuth2 or API/Application keys
-- Check out this repo `git clone git@github.com:DataDog/datadog-api-claude-plugin.git` and `npx skills add ./datadog-api-claude-plugin`
+
+### Install via Claude Marketplace (Recommended)
+
+```bash
+/plugin add marketplace Datadog/datadog-api-claude-plugin
+```
+
+That's it! The plugin is now available in your Claude Code session.
+
+### Install from Source
+
+Alternatively, clone and install manually:
+
+```bash
+git clone git@github.com:DataDog/datadog-api-claude-plugin.git
+npx skills add ./datadog-api-claude-plugin
+```
 
 ### Setup
 

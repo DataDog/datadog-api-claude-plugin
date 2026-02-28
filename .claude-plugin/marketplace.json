@@ -1,0 +1,32 @@
+{
+  "name": "datadog-api-claude-plugin",
+  "owner": {
+    "name": "Datadog",
+    "email": "support@datadoghq.com"
+  },
+  "metadata": {
+    "description": "A Claude Code plugin to interact with Datadog directly through its APIs — query metrics, searchlogs, manage monitors, create dashboards, investigate SLOs, and more using 46 specialized agents.",
+    "version": "1.17.0"
+  },
+  "plugins": [
+    {
+      "name": "datadog-api-claude-plugin",
+      "source": {
+        "source": "github",
+        "repo": "DataDog/datadog-api-claude-plugin",
+        "ref": "main"
+      },
+      "description": "A Claude plugin to use Datadog directly through its APIs with code generation support",
+      "version": "1.17.0",
+      "author": {
+        "name": "Datadog",
+        "email": "support@datadoghq.com"
+      },
+      "homepage": "http://www.datadoghq.com",
+      "repository": "https://github.com/DataDog/datadog-api-claude-plugin",
+      "license": "Apache-2.0",
+      "keywords": ["datadog","monitoring","observability","metrics","logs","traces","apm","infrastructure","security","devops"],
+      "category": "observability"
+    }
+  ]
+}
