@@ -23,7 +23,9 @@
   ],
   "skills": [
     "./skills/code-generation/SKILL.md",
-    "./skills/dd-file-issue/SKILL.md"
+    "./skills/dd-file-issue/SKILL.md",
+    "./skills/investigate-report/SKILL.md",
+    "./skills/alert-investigate/SKILL.md"
   ],
   "agents": [
     "./agents/agentless-scanning.md",
@@ -43,10 +45,12 @@
     "./agents/data-deletion.md",
     "./agents/data-governance.md",
     "./agents/database-monitoring.md",
+    "./agents/dba.md",
     "./agents/error-tracking.md",
     "./agents/events.md",
     "./agents/fleet-automation.md",
     "./agents/gcp-integration.md",
+    "./agents/implementation-review.md",
     "./agents/incident-response.md",
     "./agents/infrastructure.md",
     "./agents/log-configuration.md",
@@ -66,7 +70,9 @@
     "./agents/security.md",
     "./agents/service-catalog.md",
     "./agents/slos.md",
+    "./agents/sotas-environment.md",
     "./agents/spark-pod-autosizing.md",
+    "./agents/sre-triage.md",
     "./agents/static-analysis.md",
     "./agents/synthetics.md",
     "./agents/third-party-integrations.md",
