@@ -1,3 +1,7 @@
+# [Notice] We are archiving this repo
+
+We are archiving this repo now that `pup` has the skills commands built into the repo! Thanks for all that tried this out. Migrate to https://github.com/datadog-labs/pup ! 
+
 # [PREVIEW] Datadog API Claude Plugin
 
 **Notice: This is a preview skill to leverage `pup`, still very experimental and may contain bugs.**
